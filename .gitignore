@@ -7,4 +7,6 @@
 /public/bundles/
 /var/
 /vendor/
+/nbproject/*
 ###< symfony/framework-bundle ###
+/nbproject/private/
