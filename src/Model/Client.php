@@ -19,6 +19,8 @@ class Client {
         private string $name,
         private string $street,
         private string $town,
+        private string $zipCode, 
+        private string $nin, 
         private string $status,  
     ){
         
@@ -42,6 +44,13 @@ class Client {
     public function getStatus(): string {
         return $this->status;
     }
-
-
+    public function getZipCode(): string {
+        return $this->zipCode;
+    }
+    /*
+     * NIN (National Insurance Number) jest brytyjskim odpowiednikiem polskiego NIP/PESEL.
+     */
+    public function getNin(): string {
+        return $this->nin;
+    }
 }
