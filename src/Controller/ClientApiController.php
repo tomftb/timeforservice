@@ -5,45 +5,27 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Model\Client;
+use App\Repository\ClientRepository;
 /**
  * Description of ClientApiController
  *
  * @author Tomasz Borczynski
  */
+ #[Route('/api/clients')]
 class ClientApiController extends AbstractController{
     
-    #[Route('/api/clients','name: api_all_clients',methods:['GET'])]
-    public function getCollection():Response
-    {
-        $clients = [
-            new Client(
-                1,
-                'Farmline',
-                'Sieradzka',
-                'Toruń',
-                'working',
-            ),
-            new Client(
-                2,
-                'Taalo',
-                'Niedzialkowskiego',
-                'Wąbrzeźno',
-                'working'
-            ),
-            new Client(
-                2,
-                'Hospicjum Nadzieja',
-                'Niedzialkowskiego',
-                'Toruń',
-                'working'
-            ),
-        ];
-        return $this->json($clients,200);
+    #[Route('',name: 'app_clientapi_getcollection',methods:['GET'])]
+    public function getCollection(ClientRepository $clientRepository):Response
+    {        
+        return $this->json($clientRepository->findAll(),200);
     }
-    #[Route('/api/client/{id}','name: api_client',methods:['GET'])]
-    public function get():Response
+    #[Route('/{id<\d+>}',name: 'app_clientapi_get',methods:['GET'])]
+    public function get(int $id,ClientRepository $clientRepository):Response
     {
-        
+        $client = $clientRepository->find($id);
+        if(!$client){
+            throw $this->createNotFoundException('Client not found');   
+        }
+        return $this->json($client,200);
     }
 }
