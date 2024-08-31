@@ -1,0 +1,7 @@
+{%  extends 'base.html.twig' %}
+{% set clientName =  client.getName()|capitalize  %}
+{%  block title %} {{ parent() }} - {{ clientName }} {%  endblock %}
+{%  block body %}
+    <h1>{{ clientName }}</h1>
+{% endblock %}
+  
