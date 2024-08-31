@@ -3,10 +3,9 @@
 {% block body %}
 <p>homepage</p>
 
-<p>Variable - {{ starshipCount }}</p>
-
-
-    <p>{{  test.bb|upper }}</p>
-    
-    {% endblock %}
+<p>Clients - {{ clientCount }}</p>
+{% for client in clients %}
+    <p>Name - <a href="{{ path('app_client_show',{id:client.getId()}) }}">{{  client.getName()|capitalize }}</a></p>
+{% endfor %}
+{% endblock %}
     
