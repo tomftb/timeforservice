@@ -5,7 +5,7 @@
 
 <p>Clients - {{ clientCount }}</p>
 {% for client in clients %}
-    <p>Name - <a href="{{ path('app_client_show',{id:client.getId()}) }}">{{  client.getName()|capitalize }}</a></p>
+    <p>Name - <a href="{{ path('app_client_show',{id:client.getId()}) }}">{{  client.getName() }}</a></p>
 {% endfor %}
 {% endblock %}
     
