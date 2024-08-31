@@ -5,7 +5,7 @@ namespace App\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-
+use App\Model\Client;
 /**
  * Description of ClientApiController
  *
@@ -17,27 +17,27 @@ class ClientApiController extends AbstractController{
     public function getCollection():Response
     {
         $clients = [
-            [
-                'id'=>1,
-                'name'=>'Farmline',
-                'street'=>'Sieradzka',
-                'town'=>'Toruń',
-                'status'=>'working',
-            ],
-            [
-                'id'=>2,
-                'name'=>'Taalo',
-                'street'=>'Niedzialkowskiego',
-                'town'=>'Wąbrzeźno',
-                'status'=>'working'
-            ],
-            [
-                'id'=>2,
-                'name'=>'Hospicjum Nadzieja',
-                'street'=>'Niedzialkowskiego',
-                'town'=>'Toruń',
-                'status'=>'working'
-            ],
+            new Client(
+                1,
+                'Farmline',
+                'Sieradzka',
+                'Toruń',
+                'working',
+            ),
+            new Client(
+                2,
+                'Taalo',
+                'Niedzialkowskiego',
+                'Wąbrzeźno',
+                'working'
+            ),
+            new Client(
+                2,
+                'Hospicjum Nadzieja',
+                'Niedzialkowskiego',
+                'Toruń',
+                'working'
+            ),
         ];
         return $this->json($clients,200);
     }
