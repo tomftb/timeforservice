@@ -1,11 +1,56 @@
 {% extends 'base.html.twig' %}
 {% block title %} {{ parent() }} - home {%  endblock %}
 {% block body %}
-<p class="text-2xl font-bold">homepage</p>
+    <main class="flex flex-col lg:flex-row">
+        {{ include('_statusAside.html.twig') }}
 
-<p>Clients - {{ clientCount }}</p>
-{% for client in clients %}
-    <p>Name - <a href="{{ path('app_client_show',{id:client.getId()}) }}">{{  client.getName() }}</a></p>
-{% endfor %}
+        <div class="px-12 pt-10 w-full">
+            <h1 class="text-4xl font-semibold mb-8">
+                Ship Repair Queue
+            </h1>
+
+            <div class="space-y-5">
+                {% for client in clients %}
+                    <div class="bg-[#16202A] rounded-2xl pl-5 py-5 pr-11 flex flex-col min-[1174px]:flex-row min-[1174px]:justify-between">
+                        <div class="flex justify-center min-[1174px]:justify-start">
+                            <img class="h-[83px] w-[84px]" src="" alt="Status: ">
+                            <div class="ml-5">
+                                <div class="rounded-2xl py-1 px-3 flex justify-center w-32 items-center bg-amber-400/10">
+                                    <div class="rounded-full h-2 w-2 bg-amber-400 blur-[1px] mr-2"></div>
+                                    <p class="uppercase text-xs text-nowrap"></p>
+                                </div>
+                                <h4 class="text-[22px] pt-1 font-semibold">
+                                    <a
+                                        class="hover:text-slate-200"
+                                        href="{{ path('app_client_show', { id: client.getId() }) }}"
+                                    >{{ client.name }}</a>
+                                </h4>
+                                <div>
+                                    Arrived at: 
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex justify-center min-[1174px]:justify-start mt-2 min-[1174px]:mt-0 shrink-0">
+                            <div class="border-r border-white/20 pr-8">
+                                <p class="text-slate-400 text-xs">Captain</p>
+                                <p class="text-xl"></p>
+                            </div>
+
+                            <div class="pl-8 w-[100px]">
+                                <p class="text-slate-400 text-xs">Class</p>
+                                <p class="text-xl"></p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <p class="text-lg mt-4 text-center md:text-left">
+                Looking for your next galactic ride?
+                <a href="#" class="underline font-semibold">Browse the  starships for sale!</a>
+            </p>
+           
+        </div>
+    </main>
 {% endblock %}
     
