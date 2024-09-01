@@ -62,6 +62,24 @@ class ClientRepository {
                         '879-026-09-45',
                         'working',
                     ),
+                    new Client(
+                        6,
+                        'TAALO SP. Z O.O.',
+                        'Wolności 10',
+                        'Wąbrzeźno',
+                        '87-200',
+                        '878-179-86-39',
+                        'working',
+                    ),
+                    new Client(
+                        7,
+                        'FUNDACJA SPOŁECZNO-CHARYTATYWNA POMOC RODZINIE I ZIEMI',
+                        'WŁOCŁAWSKA 169 B',
+                        'Toruń',
+                        '87-100',
+                        '9561603640',
+                        'working',
+                    ),
                 ];
     }
     public function find(int $id):?Client{
