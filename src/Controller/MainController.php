@@ -7,9 +7,9 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use App\Repository\ClientRepository;
 
-class MainConotroller extends AbstractController
+class MainController extends AbstractController
 {
-    #[Route('/', name: 'app_main_home', methods: ['GET'])]
+    #[Route('/', name: 'app_main_homepage', methods: ['GET'])]
     public function homepage(ClientRepository $clientRepository): Response
     {
         $clients = $clientRepository->findAll();
