@@ -7,6 +7,10 @@
         "php": ">=8.2",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "doctrine/dbal": "^3",
+        "doctrine/doctrine-bundle": "^2.13",
+        "doctrine/doctrine-migrations-bundle": "^3.3",
+        "doctrine/orm": "^3.2",
         "php-cs-fixer/shim": "^3.63",
         "phpdocumentor/reflection-docblock": "^5.4",
         "phpstan/phpdoc-parser": "^1.30",
@@ -77,7 +81,8 @@
     "extra": {
         "symfony": {
             "allow-contrib": true,
-            "require": "7.1.*"
+            "require": "7.1.*",
+            "docker": true
         }
     },
     "require-dev": {
