@@ -1,11 +1,8 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/PHPClass.php to edit this template
- */
-
 namespace App\Model;
+
+use App\Model\ClientStatusEnum;
 
 /**
  * Description of Client
@@ -21,7 +18,7 @@ class Client {
         private string $town,
         private string $zipCode, 
         private string $nin, 
-        private string $status,  
+        private ClientStatusEnum $status,  
     ){
         
     }
@@ -41,8 +38,18 @@ class Client {
         return $this->town;
     }
 
-    public function getStatus(): string {
+    public function getStatus(): ClientStatusEnum {
         return $this->status;
+    }
+    public function getStringStatus(): string {
+        return $this->status->value;
+    }
+    public function getStatusImageFilename(): string {
+        return match($this->status){
+            ClientStatusEnum::NEW => 'images/NEW.png',
+            ClientStatusEnum::TO_BE_SETTLED => 'images/TO_BE_SETTLED.png',
+            ClientStatusEnum::SETTLED => 'images/SETTLED.png',
+        };
     }
     public function getZipCode(): string {
         return $this->zipCode;
