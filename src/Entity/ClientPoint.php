@@ -37,6 +37,10 @@ class ClientPoint
     #[ORM\Column(length: 255)]
     private ?string $phoneNumber = null;
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Client $Client = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -134,6 +138,18 @@ class ClientPoint
     public function setPhoneNumber(string $phoneNumber): static
     {
         $this->phoneNumber = $phoneNumber;
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->Client;
+    }
+
+    public function setClient(?Client $Client): static
+    {
+        $this->Client = $Client;
 
         return $this;
     }
