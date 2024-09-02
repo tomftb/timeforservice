@@ -3,6 +3,7 @@ namespace App\Repository;
 
 use App\Model\Client;
 use Psr\Log\LoggerInterface;
+use App\Model\ClientStatusEnum;
 /**
  * Description of ClientRepository
  *
@@ -24,7 +25,7 @@ class ClientRepository {
                         'Lubicz Górny',
                         '87-162',
                         '879-264-70-97',
-                        'working',
+                        ClientStatusEnum::TO_BE_SETTLED,
                     ),
                     new Client(
                         2,
@@ -33,7 +34,7 @@ class ClientRepository {
                         'Lubicz Górny',
                         '87-162',
                         '701-039-21-23',
-                        'working',
+                        ClientStatusEnum::NEW,
                     ),
                     new Client(
                         3,
@@ -42,7 +43,7 @@ class ClientRepository {
                         'Lubicz Górny',
                         '87-162',
                         '701-039-21-52',
-                        'working',
+                        ClientStatusEnum::NEW,
                     ),
                     new Client(
                         4,
@@ -51,7 +52,7 @@ class ClientRepository {
                         'Lubicz Górny',
                         '87-162',
                         '879-267-79-51',
-                        'working',
+                        ClientStatusEnum::NEW,
                     ),
                     new Client(
                         5,
@@ -60,7 +61,7 @@ class ClientRepository {
                         'Lubicz Górny',
                         '87-162',
                         '879-026-09-45',
-                        'working',
+                        ClientStatusEnum::NEW,
                     ),
                     new Client(
                         6,
@@ -69,7 +70,7 @@ class ClientRepository {
                         'Wąbrzeźno',
                         '87-200',
                         '878-179-86-39',
-                        'working',
+                        ClientStatusEnum::NEW,
                     ),
                     new Client(
                         7,
@@ -78,7 +79,7 @@ class ClientRepository {
                         'Toruń',
                         '87-100',
                         '9561603640',
-                        'working',
+                        ClientStatusEnum::NEW,
                     ),
                 ];
     }
