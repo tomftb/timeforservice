@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\Service;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -15,7 +16,42 @@ class ServiceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Service::class);
     }
+    /**
+     * @return Voyage[]
+     */
+    public function findBySearch(?string $query, array $searchServices, int $limit = null): array
+    {
+        $qb =  $this->findBySearchQueryBuilder($query, $searchServices);
 
+        if ($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findBySearchQueryBuilder(?string $query, array $searchServices, ?string $sort = null, string $direction = 'DESC'): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        if ($query) {
+            $qb->andWhere('s.description LIKE :query')
+                ->setParameter('query', '%' . $query . '%');
+        }
+
+        if ($searchServices) {
+            $qb->andWhere('s.id IN (:id)')
+                ->setParameter('id', $searchServices);
+        }
+
+        if ($sort) {
+            $qb->orderBy('s.' . $sort, $direction);
+        }
+
+        return $qb;
+    }
     //    /**
     //     * @return Service[] Returns an array of Service objects
     //     */

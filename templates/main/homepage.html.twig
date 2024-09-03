@@ -1,56 +1,157 @@
 {% extends 'base.html.twig' %}
-{% block title %} {{ parent() }} - Strona główna {%  endblock %}
+
+{% block title %}{{ parent() }} - Usługi{% endblock %}
+
+{% macro sortArrow(sortName, sort, sortDirection) %}
+    {% if sort == sortName %}
+        {% if sortDirection == 'asc' %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+               <path d="M6 15l6 -6l6 6"></path>
+            </svg>
+        {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+               <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+               <path d="M6 9l6 6l6 -6"></path>
+            </svg>
+        {% endif %}
+    {% else %}
+        <!-- up and down arrow svg -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 text-slate-300" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+           <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+           <path d="M8 9l4 -4l4 4"></path>
+           <path d="M16 15l-4 4l-4 -4"></path>
+        </svg>
+    {% endif %}
+{% endmacro %}
+
 {% block body %}
-    <main class="flex flex-col lg:flex-row">
-        {{ include('main/_statusAside.html.twig') }}
+    <div class="flex">
+        <aside class="hidden md:block md:w-64 bg-gray-900 px-2 py-6">
+            <h2 class="text-xl text-white font-semibold mb-6 px-2">Planets</h2>
+            <turbo-frame id="planet-info">
+                {{ include('main/_client_list.html.twig') }}
+            </turbo-frame>
+        </aside>
 
-        <div class="px-12 pt-10 w-full">
-            <h1 class="text-4xl font-semibold mb-8">
-                Klienci
-            </h1>
-
-            <div class="space-y-5">
-                {% for client in clients %}
-                    <div class="bg-[#16202A] rounded-2xl pl-5 py-5 pr-11 flex flex-col min-[1174px]:flex-row min-[1174px]:justify-between">
-                        <div class="flex justify-center min-[1174px]:justify-start">
-                            <img class="h-[83px] w-[84px]" src="" alt="Status: {{ client.getStatus() }}">
-                            <div class="ml-5">
-                                <div class="rounded-2xl py-1 px-3 flex justify-center w-32 items-center bg-amber-400/10">
-                                    <div class="rounded-full h-2 w-2 bg-amber-400 blur-[1px] mr-2"></div>
-                                    <p class="uppercase text-xs text-nowrap">{{ client.getStatus() }}</p>
-                                </div>
-                                <h4 class="text-[22px] pt-1 font-semibold">
-                                    <a
-                                        class="hover:text-slate-200"
-                                        href="{{ path('app_client_show', { id: client.getId() }) }}"
-                                    >{{ client.name }}</a>
-                                </h4>
-                                <div>
-                                    Arrived at: 
-                                </div>
-                            </div>
+        <section class="flex-1 ml-10">
+            <form
+                method="GET"
+                action="{{ path('app_main_homepage') }}"
+                class="mb-6 flex justify-between"
+                data-controller="autosubmit"
+                data-turbo-frame="voyage-list"
+            >
+                <div class="w-1/3 flex">
+                <input
+                    type="search"
+                    name="query"
+                    value="{{ app.request.query.get('query') }}"
+                    aria-label="Search voyages"
+                    placeholder="Search voyages"
+                    class="px-4 py-2 rounded bg-gray-800 text-white placeholder-gray-400"
+                    data-action="autosubmit#debouncedSubmit"
+                    autofocus
+                >
+                {# tag with : pass variable type, ex :closeButton="true" pass boolean true, if only closeButton="true" it pass string #}
+                <twig:Modal :closeButton="true">
+                    <twig:block name="trigger">
+                        <twig:Button variant="link" type="button" data-action="modal#open">Options</twig:Button>
+                    </twig:block>
+                    <h3 class="text-white text-lg font-semibold mb-2">Search Options</h3>
+                    <hr class="mb-4">
+                    <h4 class="text-white text-sm font-semibold mb-2">Planets</h4>
+                    {% for client in clients %}
+                        <div class="flex items-center mb-4">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" name="clients[]" value=" {{ client.id }}" id="planet-search-{{ client.id }}" {{ client.id in searchClients ? 'checked' : '' }}>
+                            <label for="client-search-{{ client.id }}" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">{{ client.name }}</label>
                         </div>
-                        <div class="flex justify-center min-[1174px]:justify-start mt-2 min-[1174px]:mt-0 shrink-0">
-                            <div class="border-r border-white/20 pr-8">
-                                <p class="text-slate-400 text-xs">Captain</p>
-                                <p class="text-xl"></p>
-                            </div>
-
-                            <div class="pl-8 w-[100px]">
-                                <p class="text-slate-400 text-xs">Class</p>
-                                <p class="text-xl"></p>
-                            </div>
-                        </div>
+                    {% endfor %}      
+                    <div class="flex justify-end">
+                        <twig:Button variant="success" data-action="modal#close">See Results</twig:Button>
                     </div>
-                {% endfor %}
-            </div>
-
-            <p class="text-lg mt-4 text-center md:text-left">
-                Looking for your next galactic ride?
-                <a href="#" class="underline font-semibold">Browse the  starships for sale!</a>
-            </p>
-           
-        </div>
-    </main>
+                        
+                </twig:Modal>
+                </div>
+                {% block result_count %}
+                    <div id="voyage-result-count" class="whitespace-nowrap m-2 mr-4">{{ clients|length }} results</div>
+                {%  endblock %}
+            </form>
+            <turbo-frame id="voyage-list" data-turbo-action="advance">
+                <div class="bg-gray-800 p-4 rounded">
+                    <table class="w-full text-white">
+                        <thead>
+                            <tr>
+                                <th class="text-left py-2">
+                                    <a 
+                                        href="{{ path('app_main_homepage',{ 
+                                                ...app.request.query.all(),
+                                                sort: 'purpose',
+                                                sortDirection: sort == 'purpose' and sortDirection == 'asc' ? 'desc' : 'asc'
+                                                }) }}"  
+                                    >
+                                        Purpose {{ _self.sortArrow('purpose', sort, sortDirection) }}
+                                    </a>
+                                </th>
+                                <th class="text-left py-2 pr-4">Planet</th>
+                                <th class="text-left py-2">  <a 
+                                        href="{{ path('app_main_homepage',{ 
+                                                ...app.request.query.all(),
+                                                sort: 'endedAt',
+                                                sortDirection: sort == 'endedAt' and sortDirection == 'asc' ? 'desc' : 'asc'
+                                                }) }}"
+                                    >
+                                        Departing {{ _self.sortArrow('endedAt', sort, sortDirection) }}
+                                    </a>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for service in services %}
+                            <tr class="border-b border-gray-700 {% if loop.index is odd %} bg-gray-800 {% else %} bg-gray-700 {% endif %}">
+                                <td class="p-4">{{ service.description }}</td>
+                                <td class="px-2 whitespace-nowrap">
+                                   <div data-controller="popover" 
+                                        data-action="mouseenter->popover#show mouseleave->popover#hide"
+                                         class="relative"
+                                    > 
+                                    <img
+                                        src="
+                                        alt="Image of"
+                                        class="inline-block w-8 h-8 rounded-full bg-gray-600 ml-2"
+                                    >
+                                    <template data-popover-target="content">
+                                            <div
+                                                data-popover-target="card"
+                                                class="max-w-sm rounded shadow-lg bg-gray-900 absolute left-0 bottom-10"
+                                            >
+                                            </div>
+                                        </template>
+                                    </div>
+                                </td>
+                                <td class="px-2 whitespace-nowrap">{{ voyage.endedAt }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="flex items-center mt-6 space-x-4">
+                    {% if services.hasPreviousPage %}
+                    <a href="{{ pagerfanta_page_url(services, services.previousPage) }}" class="block py-2 px-4 bg-gray-700 text-white rounded hover:bg-gray-600">Previous</a>
+                    {% endif %}
+                    {% if services.hasNextPage %}
+                    <a href="{{ pagerfanta_page_url(services, services.nextPage) }}" class="block py-2 px-4 bg-gray-700 text-white rounded hover:bg-gray-600">Next</a>
+                    {% endif %}
+                    <div class="ml-4">
+                        Page {{ services.currentPage }} / {{ services.nbPages }}
+                    </div>
+                </div>
+                    <turbo-stream action="replace" target="voyage-result-count">
+                        <template>
+                            {{ block('result_count') }}
+                        </template>
+                    </turbo-stream>
+            </turbo-frame>
+        </section>
+    </div>
 {% endblock %}
-    
