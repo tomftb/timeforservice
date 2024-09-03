@@ -2,12 +2,15 @@
 
 namespace App\Controller;
 
+use App\Entity\Client;
+use App\Form\ClientType;
+use App\Repository\ClientRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use App\Repository\ClientRepository;
-use App\Entity\Client;
-use Doctrine\ORM\EntityManagerInterface;
+
 /**
  * Description of ClientController
  *
@@ -16,38 +19,78 @@ use Doctrine\ORM\EntityManagerInterface;
 #[Route('/client')]
 class ClientController extends AbstractController{
     
-    #[Route('/{id<\d+>}', name: 'app_client_show', methods: ['GET'])]
-    public function show(int $id,ClientRepository $clientRepository): Response
+   #[Route('/', name: 'app_client_index', methods: ['GET'])]
+    public function index(ClientRepository $clientRepository): Response
     {
-        $client = $clientRepository->find($id);
-        if(!$client){
-            throw $this->createNotFoundException('Client not found');   
-        }
-        return $this->render('client/show.html.twig',[
-            'client'=>$client
+       
+        return $this->render('client/index.html.twig', [
+            'clients' => $clientRepository->findAll(),
         ]);
     }
-    #[Route('/new', name: 'app_client_new', methods: ['GET'])]
-    public function new(EntityManagerInterface $entityManager): Response
+
+    #[Route('/new', name: 'app_client_new', methods: ['GET', 'POST'])]
+    public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        
+       
         $client = new Client();
-        $client->setName('Farmline Sp. z o.o.');
-        $client->setStreet('Paderewskiego 3');
-        $client->setZipCode('87-162');
-        $client->setTown('Lubicz Górny');
-        $client->setNin('879-264-70-97');
-        $client->setStatus('NEW');
+         
+        $form = $this->createForm(ClientType::class, $client);
         
-        $entityManager->persist($client);
-        $entityManager->flush();
-        //echo "<pre>";
-        //var_dump($client);
-        //echo "</pre>";
-        //dd('new clinet');
-        return new Response(sprintf(
-                "Client created - %d",
-                $client->getId()
-        ));
+        $form->handleRequest($request);
+        
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->persist($client);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Client created');
+           
+            return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
+        }
+       
+        return $this->render('client/new.html.twig', [
+            'client' => $client,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_client_show', methods: ['GET'])]
+    public function show(Client $client): Response
+    {
+        return $this->render('client/show.html.twig', [
+            'client' => $client,
+        ]);
+    }
+
+    #[Route('/{id}/edit', name: 'app_client_edit', methods: ['GET', 'POST'])]
+    public function edit(Request $request, Client $client, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm(ClientType::class, $client);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Client updated');
+
+            return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->render('client/edit.html.twig', [
+            'client' => $client,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/{id}', name: 'app_client_delete', methods: ['POST'])]
+    public function delete(Request $request, Client $client, EntityManagerInterface $entityManager): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$client->getId(), $request->request->get('_token'))) {
+            $entityManager->remove($client);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Client deleted');
+        }
+
+        return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
     }
 }
