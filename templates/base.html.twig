@@ -8,12 +8,7 @@
         {% endblock %}
 
         {% block javascripts %}
-           
                 {{ importmap('app') }}
-                <script type="module">
-                    import testScript from '{{ asset('lib/test-script.js')}}';
-                    testScript('In peace?',false);
-                </script>
         {% endblock %}
     </head>
     <body>
