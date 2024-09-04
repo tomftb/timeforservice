@@ -117,6 +117,9 @@ class Client
 
     public function getImageFilename(): ?string
     {
+        if(!$this->imageFilename){
+            $this->imageFilename='blank_logo.png';
+        }
         return $this->imageFilename;
     }
 
