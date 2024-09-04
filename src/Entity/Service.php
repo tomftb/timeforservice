@@ -18,12 +18,6 @@ class Service
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?\DateTimeImmutable $createdAt = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $updatedAt = null;
-
-    #[ORM\Column]
     private ?\DateTimeImmutable $startedAt = null;
 
     #[ORM\Column]
