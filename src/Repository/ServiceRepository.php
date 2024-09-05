@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Service;
+use App\Entity\ClientPoint;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
@@ -51,6 +52,14 @@ class ServiceRepository extends ServiceEntityRepository
         }
 
         return $qb;
+    }
+    public function findByWithClientPoint(string $direction = 'DESC'):array
+    {
+        return $this->createQueryBuilder('service')
+                ->leftJoin('service.clientPoint','clientPoint')
+                ->orderBy('service.id',$direction)
+                ->getQuery()
+                ->getResult();
     }
     //    /**
     //     * @return Service[] Returns an array of Service objects
