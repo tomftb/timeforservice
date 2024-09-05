@@ -4,10 +4,9 @@ namespace App\Form;
 
 use App\Entity\Service;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 
 class ServiceType extends AbstractType
 {
@@ -15,11 +14,11 @@ class ServiceType extends AbstractType
     {
         $builder
             ->add('description')
-            ->add('startedAt', DateType::class, [
-                'widget' => 'single_text',
+            ->add('startedAt', DateTimeType::class, [
+                'date_label' => 'Starts On',
             ]) 
-            ->add('endedAt', DateType::class, [
-                'widget' => 'single_text',
+            ->add('endedAt', DateTimeType::class, [
+                'date_label' => 'Starts On',
             ])
             ->add('time')  
             ->add('clientPoint', null, [
