@@ -55,7 +55,7 @@ class ServiceController extends AbstractController
     #[Route('/{id}/edit', name: 'app_service_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Service $service, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(VoyageType::class, $service);
+        $form = $this->createForm(ServiceType::class, $service);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -67,7 +67,7 @@ class ServiceController extends AbstractController
         }
 
         return $this->render('service/edit.html.twig', [
-            'voyage' => $service,
+            'service' => $service,
             'form' => $form,
         ]);
     }
