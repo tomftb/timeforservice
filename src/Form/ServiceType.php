@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TimeType;
 
 class ServiceType extends AbstractType
 {
@@ -24,6 +25,10 @@ class ServiceType extends AbstractType
             ->add('clientPoint', null, [
                 'choice_label' => 'name',
                 'placeholder' => 'Choose a client point',
+            ])
+            ->add('user', null, [
+                'choice_label' => 'name',
+                'placeholder' => 'Choose a user',
             ])
         ;
     }
