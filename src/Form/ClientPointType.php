@@ -2,13 +2,13 @@
 
 namespace App\Form;
 
-use App\Entity\Client;
+use App\Entity\ClientPoint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ClientType extends AbstractType
+class ClientPointType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -17,7 +17,9 @@ class ClientType extends AbstractType
             ->add('street')
             ->add('zipCode')
             ->add('town')
-            ->add('nin')
+            ->add('email')
+            ->add('phoneNumber')
+            ->add('clientId')
                 /*
             ->add('imageFilename', ChoiceType::class, [
                 'choices' => [
@@ -34,7 +36,7 @@ class ClientType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Client::class,
+            'data_class' => ClientPoint::class,
         ]);
     }
 }
