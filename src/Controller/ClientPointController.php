@@ -32,8 +32,11 @@ class ClientPointController extends AbstractController{
         $clientPoint = new ClientPoint();
         $form = $this->createForm(ClientPointType::class, $clientPoint);
         $form->handleRequest($request);
+       
         if ($form->isSubmitted() && $form->isValid()) {
+             
             $entityManager->persist($clientPoint);
+            
             $entityManager->flush();
             $this->addFlash('success', 'Client Point created');  
             return $this->redirectToRoute('app_clientpoint_index', [], Response::HTTP_SEE_OTHER);
