@@ -127,7 +127,6 @@ class ClientPoint
     public function setClient(?Client $Client): static
     {
         $this->Client = $Client;
-
         return $this;
     }
     
