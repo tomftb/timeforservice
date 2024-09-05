@@ -18,8 +18,11 @@ class ServiceController extends AbstractController
     public function index(ServiceRepository $serviceRepository): Response
     {
         return $this->render('service/index.html.twig', [
-            'services' => $serviceRepository->findBy([], ['id' => 'DESC'])
+            'services' => $serviceRepository->findByWithClientPoint()
         ]);
+        //return $this->render('service/index.html.twig', [
+        //    'services' => $serviceRepository->findBy([], ['id' => 'DESC'])
+        //]);
     }
     #[Route('/new', name: 'app_service_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
