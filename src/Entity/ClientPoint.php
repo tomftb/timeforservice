@@ -2,10 +2,10 @@
 
 namespace App\Entity;
 
-
 use App\Repository\ClientPointRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+
 
 #[ORM\Entity(repositoryClass: ClientPointRepository::class)]
 class ClientPoint
@@ -34,13 +34,10 @@ class ClientPoint
 
     #[ORM\Column(length: 255)]
     private ?string $phoneNumber = null;
-    
-    #[ORM\Column(length: 255)]
-    private ?int $clientId = null;
-    
+        
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Client $Client = null;
+    private ?Client $client = null;
 
     public function getId(): ?int
     {
@@ -121,24 +118,12 @@ class ClientPoint
 
     public function getClient(): ?Client
     {
-        return $this->Client;
+        return $this->client;
     }
 
-    public function setClient(?Client $Client): static
+    public function setClient(?Client $client): static
     {
-        $this->Client = $Client;
-        return $this;
-    }
-    
-    public function getClientId(): ?int
-    {
-        return $this->clientId;
-    }
-
-    public function setClientId(?int $clientId): static
-    {
-        $this->clientId = $clientId;
-
+        $this->client = $client;
         return $this;
     }
 }
