@@ -13,12 +13,20 @@
                 <td class="px-6 py-4 whitespace-nowrap">{{ service.id }}</td>
             </tr>
             <tr>
-                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Description</th>
+                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Description:</th>
                 <td class="px-6 py-4">{{ service.description }}</td>
             </tr>
             <tr>
-                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">endedAt</th>
+                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Started at:</th>
+                <td class="px-6 py-4 whitespace-nowrap">{{ service.startedAt ? service.startedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ended at:</th>
                 <td class="px-6 py-4 whitespace-nowrap">{{ service.endedAt ? service.endedAt|date('Y-m-d H:i:s') : '' }}</td>
+            </tr>
+            <tr>
+                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Time <span class="font-light">(in minutes)</span>:</th>
+                <td class="px-6 py-4 whitespace-nowrap">{{ service.time }}</td>
             </tr>
         </tbody>
     </table>
