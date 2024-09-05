@@ -21,29 +21,23 @@ class ServiceController extends AbstractController
             'services' => $serviceRepository->findBy([], ['id' => 'DESC'])
         ]);
     }
-
     #[Route('/new', name: 'app_service_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $service = new Service();
         $form = $this->createForm(ServiceType::class, $service);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($service);
             $entityManager->flush();
-
             $this->addFlash('success', 'Saved');
-
             return $this->redirectToRoute('app_service_index', [], Response::HTTP_SEE_OTHER);
         }
-
         return $this->render('service/new.html.twig', [
             'voyage' => $service,
             'form' => $form,
         ]);
     }
-
     #[Route('/{id}', name: 'app_service_show', methods: ['GET'])]
     public function show(Service $service): Response
     {
@@ -51,37 +45,29 @@ class ServiceController extends AbstractController
             'service' => $service,
         ]);
     }
-
     #[Route('/{id}/edit', name: 'app_service_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Service $service, EntityManagerInterface $entityManager): Response
     {
         $form = $this->createForm(ServiceType::class, $service);
         $form->handleRequest($request);
-
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
             $this->addFlash('success', 'Service updated!');
-
             return $this->redirectToRoute('app_service_index', [], Response::HTTP_SEE_OTHER);
         }
-
         return $this->render('service/edit.html.twig', [
             'service' => $service,
             'form' => $form,
         ]);
     }
-
     #[Route('/{id}', name: 'app_service_delete', methods: ['POST'])]
     public function delete(Request $request, Service $service, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$service->getId(), $request->request->get('_token'))) {
             $entityManager->remove($service);
             $entityManager->flush();
-
             $this->addFlash('success', 'Service deleted!');
         }
-
         return $this->redirectToRoute('app_service_index', [], Response::HTTP_SEE_OTHER);
     }
 }
