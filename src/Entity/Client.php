@@ -33,10 +33,15 @@ class Client
     private ?string $nin = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $status = null;
+    private string $status;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageFilename = null;
+    
+    public function __construct()
+    {
+        $this->status='NEW';
+    }
     
     public function getId(): ?int
     {
@@ -103,7 +108,7 @@ class Client
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): string
     {
         return $this->status;
     }
@@ -111,7 +116,6 @@ class Client
     public function setStatus(string $status): static
     {
         $this->status = $status;
-
         return $this;
     }
 
