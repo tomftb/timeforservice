@@ -10,3 +10,22 @@ App\Entity\Client:
             - NotBlank: ~
         nin:
             - NotBlank: ~
+
+App\Entity\ClientPoint:
+    properties:
+        name:
+            - NotBlank: ~
+        street:
+            - NotBlank: ~
+        zipCode:
+            - NotBlank: ~
+        town:
+            - NotBlank: ~
+        email:
+            - NotBlank: ~
+            - Email:
+                 message: The email "{{ value }}" is not a valid email.
+        phoneNumber:
+            - NotBlank: ~
+        client:
+            - NotBlank: ~
