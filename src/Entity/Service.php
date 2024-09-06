@@ -36,7 +36,13 @@ class Service
     #[ORM\ManyToOne]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
-
+    
+    public function __construct()
+    {
+        //$this->startedAt = new \DateTimeImmutable("NOW");
+        //$this->endedAt = new \DateTimeImmutable("NOW");
+    }
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -47,7 +53,7 @@ class Service
         return $this->startedAt;
     }
 
-    public function setStartedAt(\DateTimeImmutable $startedAt): static
+    public function setStartedAt(?\DateTimeImmutable $startedAt): static
     {
         $this->startedAt = $startedAt;
 
@@ -59,7 +65,7 @@ class Service
         return $this->endedAt;
     }
 
-    public function setEndedAt(\DateTimeImmutable $endedAt): static
+    public function setEndedAt(?\DateTimeImmutable $endedAt): static
     {
         $this->endedAt = $endedAt;
 
