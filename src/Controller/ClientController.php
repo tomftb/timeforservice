@@ -31,13 +31,9 @@ class ClientController extends AbstractController{
     #[Route('/new', name: 'app_client_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-       
         $client = new Client();
-         
         $form = $this->createForm(ClientType::class, $client);
-        
         $form->handleRequest($request);
-        
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($client);
             $entityManager->flush();
