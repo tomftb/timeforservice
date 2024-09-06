@@ -1,0 +1,12 @@
+App\Entity\Client:
+    properties:
+        name:
+            - NotBlank: ~
+        street:
+            - NotBlank: ~
+        zipCode:
+            - NotBlank: ~
+        town:
+            - NotBlank: ~
+        nin:
+            - NotBlank: ~
