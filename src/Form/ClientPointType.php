@@ -21,7 +21,7 @@ class ClientPointType extends AbstractType
             ->add('client', null, [
                 'choice_label' => 'name',
                 'placeholder' => 'Choose a client',
-                'autocomplete'=>true
+                'autocomplete'=> true
             ])
         ;
     }
