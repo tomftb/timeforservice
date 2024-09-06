@@ -56,6 +56,7 @@ App\Entity\User:
             - NotBlank: ~
             - Length:
                 min: 3
+            - App\Validator\ContainsAlphanumeric: ~
         firstName:
             - NotBlank: ~
             - Length:
