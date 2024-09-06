@@ -29,3 +29,21 @@ App\Entity\ClientPoint:
             - NotBlank: ~
         client:
             - NotBlank: ~
+            
+App\Entity\Service:
+    properties:
+        startedAt:
+            - DateTime: ~
+        endedAt:
+            - DateTime: ~
+        time:
+            - NotBlank: ~
+            - Positive: ~
+        description:
+            - NotBlank: ~
+            - Length:
+                min: 3
+        clientPoint:
+            - NotBlank: ~
+        user:
+            - NotBlank: ~
