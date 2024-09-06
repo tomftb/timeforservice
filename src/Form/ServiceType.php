@@ -24,10 +24,12 @@ class ServiceType extends AbstractType
             ->add('clientPoint', null, [
                 'choice_label' => 'name',
                 'placeholder' => 'Choose a client point',
+                'autocomplete'=> true
             ])
             ->add('user', null, [
                 'choice_label' => 'name',
                 'placeholder' => 'Choose a user',
+                'autocomplete'=> true
             ])
         ;
     }
