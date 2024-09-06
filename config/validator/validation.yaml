@@ -33,9 +33,11 @@ App\Entity\ClientPoint:
 App\Entity\Service:
     properties:
         startedAt:
-            - DateTime: ~
+            - NotBlank: ~
+            - Type: \DateTimeInterface
         endedAt:
-            - DateTime: ~
+            - NotBlank: ~
+            - Type: \DateTimeInterface
         time:
             - NotBlank: ~
             - Positive: ~
