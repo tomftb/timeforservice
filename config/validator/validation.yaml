@@ -47,3 +47,18 @@ App\Entity\Service:
             - NotBlank: ~
         user:
             - NotBlank: ~
+            
+App\Entity\User:
+    properties:
+        name:
+            - NotBlank: ~
+            - Length:
+                min: 3
+        firstName:
+            - NotBlank: ~
+            - Length:
+                min: 2
+        lastName:
+            - NotBlank: ~
+            - Length:
+                min: 2
