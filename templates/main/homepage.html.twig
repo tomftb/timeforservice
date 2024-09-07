@@ -5,9 +5,9 @@
     <div class="flex">
         <aside class="hidden md:block md:w-64 bg-gray-900 px-2 py-6">
             <h2 class="text-xl text-white font-semibold mb-6 px-2">Clients</h2>
-            <div>
+            <turbo-frame id="client-info">
                 {{ include('main/_client_list.html.twig') }}
-            </div>
+            </turbo-frame>
         </aside>
 
         <section class="flex-1 ml-10">
