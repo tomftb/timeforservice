@@ -21,7 +21,7 @@ class MainController extends AbstractController
     ): Response
     {
 
-        $services = $serviceRepository->findBySearch($query, $searchClients);
+        $services = $serviceRepository->findBySearchWithClientPoint($query, $searchClients);
 
         return $this->render('main/homepage.html.twig', [
             'services' => $services,
