@@ -78,4 +78,11 @@ class ClientPointController extends AbstractController{
         }
         return $this->redirectToRoute('app_clientpoint_index', [], Response::HTTP_SEE_OTHER);
     }
+    #[Route('/{id}/card', name: 'app_clientpoint_card',methods:['GET'])]
+    public function showCard(ClientPoint $clientPoint): Response
+    {
+        return $this->render('clientpoint/_card.html.twig',[
+           'clientPoint' => $clientPoint 
+        ]);
+    }
 }
