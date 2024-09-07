@@ -46,12 +46,13 @@
                                     data-action="mouseenter->popover#show mouseleave->popover#hide"
                                     class="relative"
                                 >
-                                    {{ service.clientPoint.name }}
                                     <img
                                         src="{{ asset( 'images/'~service.cLientPoint.id) }} "
                                         alt="Image of {{ service.cLientPoint.name }} "
                                         class="inline-block w-8 h-8 rounded-full bg-gray-600 ml-2"
                                     >
+                                    {{ service.clientPoint.name }}
+                                    
                                     <template data-popover-target="content">
                                         <div 
                                             data-popover-target="card"
