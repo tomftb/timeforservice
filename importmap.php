@@ -32,4 +32,7 @@ return [
         'version' => '2.3.1',
         'type' => 'css',
     ],
+    'stimulus-popover' => [
+        'version' => '6.2.0',
+    ],
 ];
