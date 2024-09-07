@@ -61,6 +61,39 @@ class ServiceRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();
     }
+    public function findBySearchWithClientPoint(?string $query, array $searchServices, int $limit = null): array
+    {
+        $qb =  $this->findBySearchWithClientPointQueryBuilder($query, $searchServices);
+
+        if ($limit) {
+            $qb->setMaxResults($limit);
+        }
+
+        return $qb
+            ->getQuery()
+            ->getResult();
+    }
+    public function findBySearchWithClientPointQueryBuilder(?string $query, array $searchServices, ?string $sort = null, string $direction = 'DESC'): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('s');
+
+        if ($query) {
+            $qb->andWhere('s.description LIKE :query')
+                ->leftJoin('s.clientPoint','clientPoint') 
+                ->setParameter('query', '%' . $query . '%');
+        }
+
+        if ($searchServices) {
+            $qb->andWhere('s.id IN (:id)')
+                ->setParameter('id', $searchServices);
+        }
+
+        if ($sort) {
+            $qb->orderBy('s.' . $sort, $direction);
+        }
+
+        return $qb;
+    }
     //    /**
     //     * @return Service[] Returns an array of Service objects
     //     */
