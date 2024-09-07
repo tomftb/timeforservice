@@ -58,17 +58,18 @@
                                             data-popover-target="card"
                                             class="max-w-sm rounded shadow-lg bg-gray-900 absolute left-0 bottom-10"
                                         >
-                                            <div class="px-6 py-4">
-                                                <h4>
-                                                    <a
-                                                        class="hover:text-blue-300 transition-colors duration-100"
-                                                        href=" {{ path ( 'app_clientpoint_show',{ id: service.clientPoint.id }) }} ">
-                                                        {{ service.clientPoint.name }}
-                                                    </a>
-                                                </h4>
-                                                <small>{{ service.clientPoint.street }}</small>
-                                                <small>{{ service.clientPoint.zipCode~ " " ~ service.clientPoint.town }}</small>
-                                            </div>
+                                            <turbo-frame
+                                                loading="lazy"
+                                                id="clientpoint-card-{{ service.clientPoint.id }}"
+                                                src="{{ path ( 'app_clientpoint_card' , { id: service.clientPoint.id } ) }}"
+                                            >
+                                                <div class="p-10">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="animate-spin" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                                        <path d="M12 3a9 9 0 1 0 9 9" ></path>
+                                                    </svg >
+                                                </div>
+                                            </turbo-frame>
                                         </div>
                                     </template>
                                 </div>
