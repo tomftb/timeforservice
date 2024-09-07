@@ -1,0 +1,18 @@
+<turbo-frame
+    id="clientpoint-card-{{ clientPoint.id }}"
+>
+    <div class="px-6 py-4">
+        <h4>
+            <a
+                class="hover:text-blue-300 transition-colors duration-100"
+                href=" {{ path ( 'app_clientpoint_show',{ id: clientPoint.id }) }} "
+                target="_blank"
+            >
+                {{ clientPoint.name }}
+               
+            </a>
+        </h4>
+            <small>{{ clientPoint.street }}</small>
+            <small>{{ clientPoint.zipCode~ " " ~ clientPoint.town }}</small>
+    </div>
+</turbo-frame>
