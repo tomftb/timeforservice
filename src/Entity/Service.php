@@ -29,11 +29,13 @@ class Service
     #[ORM\Column(type: Types::TEXT)]
     private ?string $description = null;
 
-    #[ORM\ManyToOne]
+    //#[ORM\ManyToOne('ClientPoint',null,'EAGER')]
+    #[ORM\ManyToOne()]
     #[ORM\JoinColumn(nullable: false)]
     private ?ClientPoint $clientPoint = null;
 
-    #[ORM\ManyToOne]
+    //#[ORM\ManyToOne('User',null,'EAGER')]
+    #[ORM\ManyToOne()]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
     
