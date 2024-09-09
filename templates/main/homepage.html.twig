@@ -53,7 +53,7 @@
                                 >
                                     <img
                                         src="{{ asset( 'images/'~service.cLientPoint.id) }} "
-                                        alt="Image of {{ service.cLientPoint.name }} "
+                                        alt="Image of {{ service.clientPoint.name }} "
                                         class="inline-block w-8 h-8 rounded-full bg-gray-600 ml-2"
                                     >
                                     {{ service.clientPoint.name }}
@@ -87,8 +87,18 @@
                 </table>
             </div>
             <div class="flex items-center mt-6 space-x-4">
-                <a href="#" class="block py-2 px-4 bg-gray-700 text-white rounded hover:bg-gray-600">Previous</a>
-                <a href="#" class="block py-2 px-4 bg-gray-700 text-white rounded hover:bg-gray-600">Next</a>
+                {# SETUP PAGINATION #}
+                {# DEFAULT {{ pagerfanta(services) }} #}
+                {% if services.hasPreviousPage %}
+                    <a href="{{ pagerfanta_page_url(services,services.previousPage) }}" class="block py-2 px-4 bg-gray-700 text-white rounded hover:bg-gray-600">Previous</a>
+                {% endif %}
+                {% if services.hasNextPage %}
+                    <a href="{{ pagerfanta_page_url(services,services.nextPage) }}" class="block py-2 px-4 bg-gray-700 text-white rounded hover:bg-gray-600">Next</a>
+                {% endif %}
+                <div class="ml-4">
+                    Page {{ services.currentPage }} / {{ services.nbPages }}
+                </div>
+                {# END OF PAGINATION #}
             </div>
         </section>
     </div>
