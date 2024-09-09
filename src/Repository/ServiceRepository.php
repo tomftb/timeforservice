@@ -17,42 +17,6 @@ class ServiceRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Service::class);
     }
-    /**
-     * @return Voyage[]
-     */
-    public function findBySearch(?string $query, array $searchServices, int $limit = null): array
-    {
-        $qb =  $this->findBySearchQueryBuilder($query, $searchServices);
-
-        if ($limit) {
-            $qb->setMaxResults($limit);
-        }
-
-        return $qb
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findBySearchQueryBuilder(?string $query, array $searchServices, ?string $sort = null, string $direction = 'DESC'): QueryBuilder
-    {
-        $qb = $this->createQueryBuilder('s');
-
-        if ($query) {
-            $qb->andWhere('s.description LIKE :query')
-                ->setParameter('query', '%' . $query . '%');
-        }
-
-        if ($searchServices) {
-            $qb->andWhere('s.id IN (:id)')
-                ->setParameter('id', $searchServices);
-        }
-
-        if ($sort) {
-            $qb->orderBy('s.' . $sort, $direction);
-        }
-
-        return $qb;
-    }
     public function findByWithClientPoint(string $direction = 'DESC'):array
     {
         return $this->createQueryBuilder('service')
@@ -61,9 +25,9 @@ class ServiceRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();
     }
-    public function findBySearchWithClientPoint(?string $query, array $searchServices, int $limit = null): array
+    public function findBySearchWithClientPoint(?string $query, array $searchClientsPoints, int $limit = null): array
     {
-        $qb =  $this->findBySearchWithClientPointQueryBuilder($query, $searchServices);
+        $qb =  $this->findBySearchWithClientPointQueryBuilder($query, $searchClientsPoints);
 
         if ($limit) {
             $qb->setMaxResults($limit);
@@ -73,7 +37,7 @@ class ServiceRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    public function findBySearchWithClientPointQueryBuilder(?string $query, array $searchServices, ?string $sort = null, string $direction = 'DESC'): QueryBuilder
+    public function findBySearchWithClientPointQueryBuilder(?string $query, array $searchClientsPoints, ?string $sort = null, string $direction = 'DESC'): QueryBuilder
     {
         $qb = $this->createQueryBuilder('s');
 
@@ -83,9 +47,9 @@ class ServiceRepository extends ServiceEntityRepository
                 ->setParameter('query', '%' . $query . '%');
         }
 
-        if ($searchServices) {
-            $qb->andWhere('s.id IN (:id)')
-                ->setParameter('id', $searchServices);
+        if ($searchClientsPoints) {
+            $qb->andWhere('s.clientPoint IN (:id)')
+                ->setParameter('id', $searchClientsPoints);
         }
 
         if ($sort) {
@@ -94,28 +58,4 @@ class ServiceRepository extends ServiceEntityRepository
 
         return $qb;
     }
-    //    /**
-    //     * @return Service[] Returns an array of Service objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Service
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
 }
