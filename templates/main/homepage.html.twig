@@ -15,6 +15,8 @@
                 method="GET"
                 action="{{ path('app_main_homepage') }}"
                 class="mb-6 flex justify-between"
+                {# INITIATE CONTROLLER OF AUTOSUBMIT #}
+                data-controller="autosubmit"
             >
                 <input
                     type="search"
@@ -23,6 +25,9 @@
                     aria-label="Search services"
                     placeholder="Search services"
                     class="w-1/3 px-4 py-2 rounded bg-gray-800 text-white placeholder-gray-400"
+                    {# INITIATE CONTROLLER AUTOSUBMIT METHOD #}
+                    data-action="autosubmit#debouncedSubmit"
+                    autofocus
                 >
                 <div class="whitespace-nowrap m-2 mr-4">{{ services|length }} results</div>
             </form>
