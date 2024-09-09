@@ -28,34 +28,27 @@ class ServiceRepository extends ServiceEntityRepository
     public function findBySearchWithClientPoint(?string $query, array $searchClientsPoints, int $limit = null): array
     {
         $qb =  $this->findBySearchWithClientPointQueryBuilder($query, $searchClientsPoints);
-
         if ($limit) {
             $qb->setMaxResults($limit);
         }
-
         return $qb
             ->getQuery()
             ->getResult();
     }
     public function findBySearchWithClientPointQueryBuilder(?string $query, array $searchClientsPoints, ?string $sort = null, string $direction = 'DESC'): QueryBuilder
     {
-        $qb = $this->createQueryBuilder('s');
-
+        $qb = $this->createQueryBuilder('service');
         if ($query) {
-            $qb->andWhere('s.description LIKE :query')
-                ->leftJoin('s.clientPoint','clientPoint') 
+            $qb->andWhere('service.description LIKE :query')
                 ->setParameter('query', '%' . $query . '%');
         }
-
         if ($searchClientsPoints) {
-            $qb->andWhere('s.clientPoint IN (:id)')
+            $qb->andWhere('service.clientPoint IN (:id)')
                 ->setParameter('id', $searchClientsPoints);
         }
-
         if ($sort) {
-            $qb->orderBy('s.' . $sort, $direction);
+            $qb->orderBy('service.'.$sort, $direction);
         }
-
         return $qb;
     }
 }
