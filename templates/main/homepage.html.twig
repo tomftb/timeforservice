@@ -1,6 +1,32 @@
 {% extends 'base.html.twig' %}
-
 {% block title %}{{ parent()}}{% endblock %}
+{% macro sortArrow(sortName, sort, sortDirection) %}
+    {% if sort == sortName %}
+        {% if sortDirection == 'asc' %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none">
+                </path>
+                <path d="M6 15l6 -6l6 6">
+                </path>
+            </svg> {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none">
+                </path>
+                <path d="M6 9l6 6l6 -6">
+                </path>
+            </svg>
+        {% endif %}
+    {% else %} <!-- up and down arrow svg -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 text-slate-300" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none">
+            </path>
+            <path d="M8 9l4 -4l4 4">
+            </path>
+            <path d="M16 15l-4 4l-4 -4">
+            </path>
+        </svg>
+    {% endif %}
+{% endmacro %}
 {% block body %}
     <div class="flex">
         <aside class="hidden md:block md:w-64 bg-gray-900 px-2 py-6">
@@ -35,9 +61,40 @@
                 <table class="w-full text-white">
                     <thead>
                         <tr>
-                            <th class="text-left py-2">Description</th>
-                            <th class="text-left py-2 pr-4">Client Point</th>
-                            <th class="text-left py-2">Ended at</th>
+                            <th class="text-left py-2">
+                                <a
+                                    href="{{ path('app_main_homepage',{
+                                        ...app.request.query.all(),
+                                        sort: 'description',
+                                        sortDirection: sort == 'description' and sortDirection == 'asc' ? 'desc' : 'asc'
+                                    }) }}"
+                                >
+                                    Description {{ _self.sortArrow('decription', sort, sortDirection) }}
+                                </a>
+                            </th>
+                            <th class="text-left py-2 pr-4">
+                                 <a
+                                    href="{{ path('app_main_homepage',{
+                                        ...app.request.query.all(),
+                                        sort: 'clientPoint',
+                                        sortDirection: sort == 'clientPoint' and sortDirection == 'asc' ? 'desc' : 'asc'
+                                    }) }}"
+                                >
+                                    Client Point {{ _self.sortArrow('clientPoint', sort, sortDirection) }}
+                                </a>
+                                
+                            </th>
+                            <th class="text-left py-2">
+                                <a
+                                    href="{{ path('app_main_homepage',{
+                                        ...app.request.query.all(),
+                                        sort: 'endedAt',
+                                        sortDirection: sort == 'endedAt' and sortDirection == 'asc' ? 'desc' : 'asc'
+                                    }) }}"
+                                >
+                                    Ended at {{ _self.sortArrow('endedAt', sort, sortDirection) }}
+                                </a>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -52,7 +109,7 @@
                                     class="relative"
                                 >
                                     <img
-                                        src="{{ asset( 'images/'~service.cLientPoint.id) }} "
+                                        src="{{ asset( 'images/'~service.clientPoint.id) }} "
                                         alt="Image of {{ service.clientPoint.name }} "
                                         class="inline-block w-8 h-8 rounded-full bg-gray-600 ml-2"
                                     >
