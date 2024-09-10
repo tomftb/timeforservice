@@ -60,7 +60,7 @@
                 <div class="whitespace-nowrap m-2 mr-4">{{ services|length }} results</div>
             </form>
             {# CONTENT REFRESH VIA TURBO-FRAME #}
-            <turbo-frame id="service-list" data-turbo-action="advance" class="aria-busy:opacity-50 aria-busy:blur-sm transition-all">
+            <turbo-frame id="service-list" data-turbo-action="advance">
                 <div class="bg-gray-800 p-4 rounded">
                     <table class="w-full text-white">
                         <thead>
@@ -128,6 +128,7 @@
                                                     loading="lazy"
                                                     id="clientpoint-card-{{ service.clientPoint.id }}"
                                                     src="{{ path ( 'app_clientpoint_card' , { id: service.clientPoint.id } ) }}"
+                                                    data-skip-transition
                                                 >
                                                     <div class="p-10">
                                                         <svg xmlns="http://www.w3.org/2000/svg" class="animate-spin" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
