@@ -6,11 +6,19 @@ export default class extends Controller {
         autoClose: Number
     }
     
+    static targets = ['timebar'];
+    
     connect(){
         if(this.autoCloseValue){
             setTimeout(()=>{
                 this.close();
             },this.autoCloseValue);
+        }
+        if(this.hasTimebarTarget){
+            setTimeout(()=>{
+                 this.timebarTarget.style.width = 0;
+            },10);
+           
         }
     }
     
