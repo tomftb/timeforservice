@@ -1,4 +1,5 @@
 import { Controller } from '@hotwired/stimulus';
+import { useTransition } from 'stimulus-use';
 
 export default class extends Controller {
     
@@ -9,6 +10,16 @@ export default class extends Controller {
     static targets = ['timebar'];
     
     connect(){
+        /*
+         * use useTransition
+         */
+        useTransition(this,{
+            leaveActive : 'transition ease-in duration-200',
+            leaveFrom : 'opacity-100',
+            leaveTo : 'opacity-0',
+            transitioned : true 
+        });
+        
         if(this.autoCloseValue){
             setTimeout(()=>{
                 this.close();
@@ -21,9 +32,7 @@ export default class extends Controller {
            
         }
     }
-    
     close() {
-       console.log(this);
-       this.element.remove();
+       this.leave();
    }
 }
