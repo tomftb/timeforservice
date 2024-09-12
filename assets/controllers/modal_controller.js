@@ -20,4 +20,12 @@ export default class extends Controller{
         }
         document.body.classList.remove('overflow-hidden');
     }
+    /*
+     * close dialog element, if click outside of the dialog box 
+     */
+    closeOutside(event){
+        if(event.target === this.dialogTarget){
+            this.dialogTarget.close();
+        }
+    }
 }
