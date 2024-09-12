@@ -57,7 +57,12 @@
                     data-action="autosubmit#debouncedSubmit"
                     autofocus
                 >
-                <div class="whitespace-nowrap m-2 mr-4">{{ services|length }} results</div>
+                {# SET UPDATE RESULT #}
+                {% set services_length = services|length %}
+                {% block service_result_count %}
+                    <div id="service-result-count" class="whitespace-nowrap m-2 mr-4">{{ services_length }} results</div>
+                {% endblock %}
+                {# END UPDATE RESULT #}
             </form>
             {# CONTENT REFRESH VIA TURBO-FRAME #}
             <turbo-frame id="service-list" data-turbo-action="advance">
@@ -162,6 +167,11 @@
                     </div>
                     {# END OF PAGINATION #}
                 </div>
+                <turbo-stream action="replace" target="service-result-count">
+                    <template>
+                        {{ block('service_result_count') }}
+                    </template>
+                </turbo-stream>
             </turbo-frame>
             {# END CONTENT REFRESH VIA TURBO-FRAME #}
         </section>
