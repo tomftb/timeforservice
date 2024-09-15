@@ -21,8 +21,10 @@ module.exports = {
     }
     },
     plugins: [
-      plugin(function({addVariant}){
-          addVariant('turbo-frame','turbo-frame[src] &')
+        plugin(function({addVariant}){
+            addVariant('turbo-frame','turbo-frame[src] &');
+            /* call this modal, and activate it whenever we are inside a dialog element */
+            addVariant('modal','dialog &');
       })
   ]
 }

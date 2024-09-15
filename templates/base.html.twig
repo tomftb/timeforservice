@@ -72,11 +72,36 @@
                     <div class="flex grow p-5">
                         <div class="grow overflow-auto p-1">
                             <div class="text-white space-y-4">
-                                <turbo-frame id="modal" data-modal-target="dynamicContent"></turbo-frame>
+                                <turbo-frame 
+                                    id="modal"
+                                    data-modal-target="dynamicContent"
+                                    {# ADD LOAD CONTENT ACTION #}
+                                    data-action="turbo:before-fetch-request->modal#showLoading"
+                                    {# SET CSS EFFECT WHE PRES THE SUBMIT BUTTON #}
+                                    class="aria-busy:opacity-50 transition-opacity"
+                                >
+                                </turbo-frame>
                             </div>
                         </div>
                     </div>
                 </dialog>
+                {# LOADING CONTENT FOR MODAL DIALOG #}
+                <template data-modal-target="loadingContent">
+                    <div class="bg-space-pattern bg-cover rounded-lg p-8">
+                        <div class="space-y-2">
+                            <div class="h-4 bg-gray-700 rounded w-3/4 animate-pulse"></div>
+                            <div class="h-4 bg-gray-700 rounded animate-pulse"></div>
+                            <div class="h-4 bg-gray-700 rounded animate-pulse"></div>
+                            <div class="h-4"></div>
+                            <div class="h-4 bg-gray-700 rounded animate-pulse"></div>
+                            <div class="h-4 bg-gray-700 rounded w-1/2 animate-pulse"></div>
+                            <div class="h-4 bg-gray-700 rounded w-3/4 animate-pulse"></div>
+                            <div class="h-4"></div>
+                            <div class="h-4 bg-gray-700 rounded w-1/2 animate-pulse"></div>
+                        </div>
+                    </div>
+                </template>
+                {# END OF LOADING CONTENT FOR MODAL DIALOG #}
             </div>
             {# MODAL END #}
     </body>

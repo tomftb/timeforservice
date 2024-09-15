@@ -28,7 +28,6 @@ class ServiceController extends AbstractController
     #[Route('/new', name: 'app_service_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
-        sleep(2);
         $service = new Service();
         $form = $this->createServiceForm($service);
         $form->handleRequest($request);
