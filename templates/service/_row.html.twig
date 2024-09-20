@@ -4,7 +4,15 @@
                     <td class="px-6 py-4">{{ service.description }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">{{ service.endedAt ? service.endedAt|date('Y-m-d H:i:s') : '' }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                        <a href="{{ path('app_service_show', {'id': service.id}) }}" class="text-blue-400 hover:text-blue-600">show</a>
-                        <a href="{{ path('app_service_edit', {'id': service.id}) }}" class="ml-4 text-yellow-400 hover:text-yellow-600">edit</a>
+                        <a 
+                            href="{{ path('app_service_show', {'id': service.id}) }}" 
+                            class="text-blue-400 hover:text-blue-600"
+                            data-turbo-frame="modal"
+                        >show</a>
+                        <a 
+                            href="{{ path('app_service_edit', {'id': service.id}) }}" 
+                            class="ml-4 text-yellow-400 hover:text-yellow-600"
+                            data-turbo-frame="modal"
+                        >edit</a>
                     </td>
                 </tr>
