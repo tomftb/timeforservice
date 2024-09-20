@@ -22,3 +22,12 @@
         {{ include('service/_form.html.twig') }}
     </div>
 {% endblock %}
+{# ADD TURBO STREAM TO APPEND IN NEW ROW IN TABLE #}
+{% block stream_success %}
+    {# add `s` to target to use CSS selector #}
+    <turbo-stream action="prepend" targets="#service-list tbody">
+        <template>
+             {% include('service/_row.html.twig') %}
+        </template>
+    </turbo-stream>
+{% endblock %}
