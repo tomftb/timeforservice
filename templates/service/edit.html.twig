@@ -18,3 +18,16 @@
         {{ include('service/_form.html.twig') }}
     </div>
 {% endblock %}
+{# ADD TURBO STREAM TO UPDATE ROW IN TABLE WITH CONTENT #}
+{% block stream_success %}
+    {# add `s` to target to use CSS selector #}
+    <turbo-stream action="update" target="modal">
+        <template>
+        </template>
+    </turbo-stream>
+    <turbo-stream action="replace" target="service-list-item-{{ service.id }}">
+        <template>
+            {% include('service/_row.html.twig') %}
+        </template>
+    </turbo-stream>
+{% endblock %}
