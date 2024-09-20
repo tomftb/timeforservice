@@ -66,7 +66,7 @@ class ServiceController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
             $this->addFlash('success', 'Service updated!');
-            return $this->redirectToRoute('app_service_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_service_edit', ['id'=>$service->getId()], Response::HTTP_SEE_OTHER);
         }
         return $this->render('service/edit.html.twig', [
             'service' => $service,
