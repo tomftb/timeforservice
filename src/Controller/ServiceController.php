@@ -66,6 +66,17 @@ class ServiceController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
             $this->addFlash('success', 'Service updated!');
+            
+            /*
+             * ADD CHECK HEADER FOR MODAL
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('service/edit.html.twig','stream_success',[
+                    'service' => $service
+                ]);
+                $this->addFlash('stream',$stream);
+            }
+           
             return $this->redirectToRoute('app_service_edit', ['id'=>$service->getId()], Response::HTTP_SEE_OTHER);
         }
         return $this->render('service/edit.html.twig', [
@@ -77,9 +88,20 @@ class ServiceController extends AbstractController
     public function delete(Request $request, Service $service, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$service->getId(), $request->request->get('_token'))) {
+            $id = $service->getId();
             $entityManager->remove($service);
             $entityManager->flush();
             $this->addFlash('success', 'Service deleted!');
+            
+            /*
+             * ADD CHECK HEADER FOR MODAL
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('service/delete.html.twig','stream_success',[
+                    'id' => $id
+                ]);
+                $this->addFlash('stream',$stream);
+            }
         }
         return $this->redirectToRoute('app_service_index', [], Response::HTTP_SEE_OTHER);
     }
