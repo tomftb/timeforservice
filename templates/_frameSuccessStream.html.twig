@@ -1,0 +1,10 @@
+{% if app.request.headers.get('turbo-frame') == frame %}
+    {# ADD TURBO STREAM FOR TOAST NOTIFICATION TARGET - DIV WITH ID flash-container #}
+    <turbo-stream action="append" target="flash-container">
+        <template>{{ include('_flashes.html.twig') }}</template>
+    </turbo-stream>
+    {% for  stream in app.flashes('stream') %}
+        {{ stream|raw }}
+    {% endfor %}
+    {# END ADD TURBO STREAM FOR TOAST NOTIFICATION #}{# empty Twig template #}
+{%  endif %}
