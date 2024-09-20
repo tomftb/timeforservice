@@ -48,11 +48,7 @@
                 </div>
             </footer>
         </div>
-            {# TOAST NOTIFICATIONS #}
-            <div id="flash-container">
-                {{ include('_flashes.html.twig') }}
-            </div>
-            {# END OF TOAST NOTIFICATIONS #}
+            
             {# MODAL #}
             <div
                 data-controller="modal"
@@ -80,6 +76,11 @@
                                     {# SET CSS EFFECT WHE PRES THE SUBMIT BUTTON #}
                                     class="aria-busy:opacity-50 transition-opacity"
                                 >
+                                {# ADD TURBO STREAM FOR TOAST NOTIFICATION TARGET - DIV WITH ID flash-container #}
+                                    <turbo-stream action="append" target="flash-container">
+                                        <template>{{ include('_flashes.html.twig') }}</template>
+                                    </turbo-stream>
+                                {# END ADD TURBO STREAM FOR TOAST NOTIFICATION #}
                                 </turbo-frame>
                             </div>
                         </div>
@@ -104,5 +105,10 @@
                 {# END OF LOADING CONTENT FOR MODAL DIALOG #}
             </div>
             {# MODAL END #}
+            {# MOVE AFTER MODAL TO SHOW TOAST NOTIFICATIONS #}
+            <div id="flash-container">
+                {{ include('_flashes.html.twig') }}
+            </div>
+            {# END OF TOAST NOTIFICATIONS #}
     </body>
 </html>
