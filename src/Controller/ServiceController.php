@@ -35,6 +35,15 @@ class ServiceController extends AbstractController
             $entityManager->persist($service);
             $entityManager->flush();
             $this->addFlash('success', 'Saved');
+            /*
+             * ADD CHECK HEADER FOR MODAL
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('service/new.html.twig','stream_success',[
+                    'service' => $service
+                ]);
+                $this->addFlash('stream',$stream);
+            }
             return $this->redirectToRoute('app_service_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->render('service/new.html.twig', [
