@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormInterface;
+use Symfony\UX\Turbo\TurboBundle;
 
 #[Route('/service')]
 class ServiceController extends AbstractController
@@ -39,10 +40,11 @@ class ServiceController extends AbstractController
              * ADD CHECK HEADER FOR MODAL
              */
             if($request->headers->has('turbo-frame')){
-                $stream = $this->renderBlockView('service/new.html.twig','stream_success',[
+                $request->setRequestFormat(TurboBundle::STREAM_FORMAT);
+                return $this->renderBlock('service/new.html.twig','stream_success',[
                     'service' => $service
                 ]);
-                $this->addFlash('stream',$stream);
+               
             }
             return $this->redirectToRoute('app_service_index', [], Response::HTTP_SEE_OTHER);
         }
