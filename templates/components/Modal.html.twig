@@ -1,5 +1,5 @@
 {# MODAL #}
-{% props allowSmallWidth=false, closeButton=false %}
+{% props allowSmallWidth=false, closeButton=false, padding='p-5' %}
 
 {# PREVENT CACHE - right before Turbo takes its snapshot, it dispatches an event called turbo:before-cache and next call modal#close add @winodws for the global element #}
 <div {{ attributes.defaults({
@@ -15,7 +15,7 @@
         {# ASSIGN close model method for close dialog via click mouse out of the dialog box add click->modal#closeOutside #}
         data-action="close->modal#close"
     >
-        <div class="flex grow p-5">
+        <div class="flex grow {{ padding }}">
             <div class="grow overflow-auto p-1">
                 {% block content %}{% endblock %}
             </div>
