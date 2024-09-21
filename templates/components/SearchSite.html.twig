@@ -1,0 +1,25 @@
+<div {{ attributes }}>
+    <div class="relative">
+       <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/>
+                                    <path d="M21 21l-6 -6"/>
+                                </svg>
+                            </div>
+                            <input type="search" aria-label="Search site" placeholder="Search for anything" class="px-4 py-2 pl-10 rounded bg-gray-800 text-white placeholder-gray-400 w-full outline-none"/>
+    </div>
+    <div class="text-white py-2 rounded-lg">
+        {% for service in this.services %}
+            <a href=" {{ path ( 'app_service_show' , { id:service.id }) }} " class="flex items-center space-x-4 px-4 p-2 hover:bg-gray-700 cursor-pointer">
+                <img class="h-10 w-10 rounded-full" src=" {{ asset('images/'~service.clientPoint.id) }} " alt="{{ service.clientPoint.name }}">
+        <div>
+        <p class="text-sm font-medium text-white">
+        {{ service.description }} </p>
+        <p class="text-xs text-gray-400">
+        {{ service.endedAt|date('Y-m-d') }} </p>
+        </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>
