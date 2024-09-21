@@ -29,16 +29,18 @@ class MainController extends AbstractController
         #[MapQueryParameter('clientsPoints', \FILTER_VALIDATE_INT)] array $searchClientsPoints = [],
     ): Response
     {
+        //dd($searchClientsPoints);
         $validSorts = ['description','clientPoint','user','endedAt'];
         $sort = in_array($sort,$validSorts) ? $sort : 'endedAt';
-        $maxPerPage = 2;
+        $maxPerPage = 4;
         $pager = Pagerfanta::createForCurrentPageWithMaxPerPage(
                 new QueryAdapter($serviceRepository->findBySearchWithClientPointQueryBuilder($query, $searchClientsPoints,$sort,$sortDirection),false),
-               $page,
+                $page,
                 $maxPerPage
         );
         return $this->render('main/homepage.html.twig', [
             'services' => $pager,
+            'clientsPoints'=>$clientPointRepository->findAll(),
             'clients' => $clientRepository->findAll(),
             'searchClientsPoints' => $searchClientsPoints,
             'sort' => $sort,
