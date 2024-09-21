@@ -30,7 +30,14 @@
                         <a href="{{ path('app_user_index') }}" class="ml-4 hover:text-gray-400">Users</a>
                     </div>
                     {# GLOBAL SEARCH #}
-                    <twig:Modal :closeButton="true" padding="">
+                    <twig:Modal 
+                        :closeButton="true"
+                        padding=""
+                        :fixedTop="true"
+                        data-turbo-permanent
+                        id="global-search-service"
+                        data-action="keydown.ctrl+k@window->modal#open keydown.meta+k@window->modal#open"
+                    >
                         <twig:block name="trigger">
                             <div
                                 class="hidden md:flex pr-10 items-center space-x-2 border-2 border-gray-900 rounded-lg p-2 bg-gray-800 text-white cursor-pointer"
@@ -40,8 +47,8 @@
                                 <span class="pl-2 pr-10 text-gray-500">Search Cmd+K</span>
                             </div>
                         </twig:block>
-                        {# SearchSite component #}
-                        <twig:SearchSite/>
+                        {# SearchSite component add attrbiute defer to load lazy #}
+                        <twig:SearchSite defer/>
                         {# END SearchSite component #}
                     </twig:Modal>
                     {# END GLOBAL SEARCH #}
