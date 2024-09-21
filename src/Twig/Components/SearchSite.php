@@ -2,22 +2,39 @@
 
 namespace App\Twig\Components;
 
-use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 use App\Repository\ServiceRepository;
+/*
+ * OLD VERSION
+ */
+//use Symfony\UX\TwigComponent\Attribute\AsLiveComponent;
+//use Symfony\UX\LiveComponent\Attribute\LiveProp;
+//use Symfony\UX\LiveComponent\DefaultActionTrait;
 
-#[AsTwigComponent]
+use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
+use Symfony\UX\LiveComponent\Attribute\LiveProp;
+use Symfony\UX\LiveComponent\DefaultActionTrait;
+
+#[AsLiveComponent]
 final class SearchSite
 {
+    use DefaultActionTrait;
+    
+    #[LiveProp(writable: true)]
+    public string $query ='';
+    
     public function __construct(private ServiceRepository $serviceRepository)
     {
-        
+       
     }
     /**
      * @return Service[]
      */
     public function services():array
     {
-        return $this->serviceRepository->findBySearchWithClientPoint(null,[],10);
+        if(!$this->query){
+            return [];
+        }
+        return $this->serviceRepository->findBySearchWithClientPoint($this->query,[],10);
     }
 
 }
