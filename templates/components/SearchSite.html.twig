@@ -7,8 +7,15 @@
                                     <path d="M21 21l-6 -6"/>
                                 </svg>
                             </div>
-                            <input type="search" aria-label="Search site" placeholder="Search for anything" class="px-4 py-2 pl-10 rounded bg-gray-800 text-white placeholder-gray-400 w-full outline-none"/>
+        <input 
+            type="search"
+            data-model="query"
+            aria-label="Search site"
+            placeholder="Search for anything"
+            class="px-4 py-2 pl-10 rounded bg-gray-800 text-white placeholder-gray-400 w-full outline-none"
+        />
     </div>
+    {% if this.services is not empty %}
     <div class="text-white py-2 rounded-lg">
         {% for service in this.services %}
             <a href=" {{ path ( 'app_service_show' , { id:service.id }) }} " class="flex items-center space-x-4 px-4 p-2 hover:bg-gray-700 cursor-pointer">
@@ -22,4 +29,5 @@
         </a>
         {% endfor %}
     </div>
+    {% endif %}
 </div>
