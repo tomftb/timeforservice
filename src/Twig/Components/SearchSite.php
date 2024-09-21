@@ -3,12 +3,6 @@
 namespace App\Twig\Components;
 
 use App\Repository\ServiceRepository;
-/*
- * OLD VERSION
- */
-//use Symfony\UX\TwigComponent\Attribute\AsLiveComponent;
-//use Symfony\UX\LiveComponent\Attribute\LiveProp;
-//use Symfony\UX\LiveComponent\DefaultActionTrait;
 
 use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
