@@ -5,6 +5,7 @@
     'data-action':'turbo:before-cache@window->modal#close'
 }) }}
 >
+    {% block trigger %}{% endblock %}
     {# ASSIGN modal_controller.js property target #}
     <dialog 
         data-modal-target="dialog"
