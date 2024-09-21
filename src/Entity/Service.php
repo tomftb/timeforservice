@@ -79,7 +79,7 @@ class Service
         return $this->time;
     }
 
-    public function setTime(int $time): static
+    public function setTime(?int $time): static
     {
         $this->time = $time;
 
@@ -91,7 +91,7 @@ class Service
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
