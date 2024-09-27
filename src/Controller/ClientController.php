@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Form\FormInterface;
 
 /**
  * Description of ClientController
@@ -32,17 +33,23 @@ class ClientController extends AbstractController{
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $client = new Client();
-        $form = $this->createForm(ClientType::class, $client);
+        $form = $this->createClientForm($client);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($client);
             $entityManager->flush();
-
             $this->addFlash('success', 'Client created');
-           
+            /*
+             * CHECK REQUEST HEADER FOR OPEN PROPER WINDOW - MODAL OR NEW FULL PAGE
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('client/new.html.twig','stream_success',[
+                    'client' => $client
+                ]);
+                $this->addFlash('stream',$stream);
+            }
             return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
-        }
-       
+        }   
         return $this->render('client/new.html.twig', [
             'client' => $client,
             'form' => $form,
@@ -88,5 +95,15 @@ class ClientController extends AbstractController{
         }
 
         return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
+    }
+    /*
+     * Custom Client Form
+     */
+    private function createClientForm(Client $client=null ): FormInterface
+    {
+        $client=$client ?? new Client();
+        return $this->createForm(ClientType::class,$client ,[
+            'action' => $client->getId() ? $this->generateUrl('app_client_edit',['id'=>$client->getId()]) : $this->generateUrl( 'app_client_new' ), 
+        ]);
     }
 }
