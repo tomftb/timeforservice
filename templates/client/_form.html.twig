@@ -1,7 +1,1 @@
- {{ form_start(form) }}
-    {{ form_widget(form) }}
-
-    <button formnovalidate class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
-        {{ button_label|default('Save') }}
-    </button>
-{{ form_end(form) }}
+<twig:ClientForm :form="form" :initialFormData="client" />
