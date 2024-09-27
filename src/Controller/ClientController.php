@@ -67,14 +67,21 @@ class ClientController extends AbstractController{
     #[Route('/{id}/edit', name: 'app_client_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Client $client, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(ClientType::class, $client);
+        $form = $this->createClientForm($client);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-
             $this->addFlash('success', 'Client updated');
-
+            /*
+             * CHECK REQUEST HEADER
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('client/edit.html.twig','stream_success',[
+                    'client' => $client
+                ]);
+                $this->addFlash('stream',$stream);
+            }
             return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -88,10 +95,20 @@ class ClientController extends AbstractController{
     public function delete(Request $request, Client $client, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$client->getId(), $request->request->get('_token'))) {
+            $id = $client->getId();
             $entityManager->remove($client);
             $entityManager->flush();
 
             $this->addFlash('success', 'Client deleted');
+            /*
+             * ADD CHECK HEADER FOR MODAL
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('client/delete.html.twig','stream_success',[
+                    'id' => $id
+                ]);
+                $this->addFlash('stream',$stream);
+            }
         }
 
         return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
