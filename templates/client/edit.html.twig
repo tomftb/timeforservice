@@ -1,9 +1,7 @@
-{% extends 'base.html.twig' %}
-
-{% block title %}Edit Client{% endblock %}
-
+{% extends 'modalBase.html.twig' %}
+{% block title %}{{ parent() }} - Edit Client - {{ client.id }}{% endblock %}
 {% block body %}
-<div class="m-4 p-4 bg-gray-800 rounded-lg">
+<div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
     <div class="flex justify-between">
         <h1 class="text-xl font-semibold text-white mb-4">Edit Client</h1>
 
@@ -18,7 +16,19 @@
             </div>
         </div>
     </div>
-
     {{ include('client/_form.html.twig') }}
 </div>
+{% endblock %}
+{# ADD TURBO STREAM TO UPDATE ROW IN TABLE WITH CONTENT #}
+{% block stream_success %}
+    {# add `s` to target to use CSS selector #}
+    <turbo-stream action="update" target="modal">
+        <template>
+        </template>
+    </turbo-stream>
+    <turbo-stream action="replace" target="service-list-item-{{ client.id }}">
+        <template>
+            {% include('client/_row.html.twig') %}
+        </template>
+    </turbo-stream>
 {% endblock %}
