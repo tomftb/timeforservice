@@ -1,7 +1,8 @@
-{% extends 'base.html.twig' %}
-{% block title %}New Client Point{% endblock %}
+{% extends 'modalBase.html.twig' %}
+{% block title %}{{ parent() }} - New Client Point{% endblock %}
 {% block body %}
-    <div class="m-4 p-4 bg-gray-800 rounded-lg">
+    {# ADD CLASS FOR tailwind.config.js  -> addVariant('modal','dialog &'); modal:m-0 and modal:p-0 #}
+    <div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
         <div class="flex justify-between">
             <h1 class="text-xl font-semibold text-white mb-4">Create New Client Point</h1>
             <div class="mr-4">
@@ -17,4 +18,13 @@
         </div>
         {{ include('clientpoint/_form.html.twig') }}
     </div>
+{% endblock %}
+{# ADD TURBO STREAM TO APPEND IN NEW ROW IN TABLE #}
+{% block stream_success %}
+    {# add `s` to target to use CSS selector #}
+    <turbo-stream action="prepend" targets="#clientpoint-list tbody">
+        <template>
+             {% include('clientpoint/_row.html.twig') %}
+        </template>
+    </turbo-stream>
 {% endblock %}
