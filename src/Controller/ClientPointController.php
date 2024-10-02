@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Form\FormInterface;
 
 /**
  * Description of ClientPointController
@@ -30,15 +31,21 @@ class ClientPointController extends AbstractController{
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $clientPoint = new ClientPoint();
-        $form = $this->createForm(ClientPointType::class, $clientPoint);
-        $form->handleRequest($request);
-       
+        $form = $this->createClientPointForm($clientPoint);
+        $form->handleRequest($request);    
         if ($form->isSubmitted() && $form->isValid()) {
-             
             $entityManager->persist($clientPoint);
-            
             $entityManager->flush();
-            $this->addFlash('success', 'Client Point created');  
+            $this->addFlash('success', 'Client Point created');
+            /*
+             * CHECK REQUEST HEADER FOR OPEN PROPER WINDOW - MODAL OR NEW FULL PAGE
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('clientpoint/new.html.twig','stream_success',[
+                    'clientPoint' => $clientPoint
+                ]);
+                $this->addFlash('stream',$stream);
+            }
             return $this->redirectToRoute('app_clientpoint_index', [], Response::HTTP_SEE_OTHER);
         }       
         return $this->render('clientpoint/new.html.twig', [
@@ -83,6 +90,16 @@ class ClientPointController extends AbstractController{
     {
         return $this->render('clientpoint/_card.html.twig',[
            'clientPoint' => $clientPoint 
+        ]);
+    }
+    /*
+     * Custom Client Point Form
+     */
+    private function createClientPointForm(ClientPoint $clientPoint=null ): FormInterface
+    {
+        $clientPoint=$clientPoint ?? new ClientPoint();
+        return $this->createForm(ClientPointType::class,$clientPoint ,[
+            'action' => $clientPoint->getId() ? $this->generateUrl('app_clientpoint_edit',['id'=>$clientPoint->getId()]) : $this->generateUrl( 'app_clientpoint_new' ), 
         ]);
     }
 }
