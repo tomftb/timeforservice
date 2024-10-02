@@ -63,11 +63,20 @@ class ClientPointController extends AbstractController{
     #[Route('/{id}/edit', name: 'app_clientpoint_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, ClientPoint $clientPoint, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(ClientPointType::class, $clientPoint);
+        $form = $this->createClientPointForm($clientPoint);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
             $this->addFlash('success', 'Client Point updated');
+            /*
+             * CHECK REQUEST HEADER
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('clientpoint/edit.html.twig','stream_success',[
+                    'clientPoint' => $clientPoint
+                ]);
+                $this->addFlash('stream',$stream);
+            }
             return $this->redirectToRoute('app_clientpoint_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->render('clientpoint/edit.html.twig', [
@@ -79,9 +88,19 @@ class ClientPointController extends AbstractController{
     public function delete(Request $request, ClientPoint $clientPoint, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$clientPoint->getId(), $request->request->get('_token'))) {
+            $id = $client->getId();
             $entityManager->remove($clientPoint);
             $entityManager->flush();
             $this->addFlash('success', 'Client Point deleted');
+            /*
+             * ADD CHECK HEADER FOR MODAL
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('clientpoint/delete.html.twig','stream_success',[
+                    'id' => $id
+                ]);
+                $this->addFlash('stream',$stream);
+            }
         }
         return $this->redirectToRoute('app_clientpoint_index', [], Response::HTTP_SEE_OTHER);
     }
