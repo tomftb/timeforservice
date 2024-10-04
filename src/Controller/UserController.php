@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Form\FormInterface;
 
 /**
  * Description of UserController
@@ -30,12 +31,21 @@ class UserController extends AbstractController{
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         $user = new User();
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createUserForm($user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($user);
             $entityManager->flush();
             $this->addFlash('success', 'User created');
+            /*
+             * CHECK REQUEST HEADER FOR OPEN PROPER WINDOW - MODAL OR NEW FULL PAGE
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('user/new.html.twig','stream_success',[
+                    'user' => $user
+                ]);
+                $this->addFlash('stream',$stream);
+            }
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->render('user/new.html.twig', [
@@ -54,11 +64,20 @@ class UserController extends AbstractController{
     #[Route('/{id<\d+>}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
     {
-        $form = $this->createForm(UserType::class, $user);
+        $form = $this->createUserForm($user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
             $this->addFlash('success', 'User updated');
+            /*
+             * CHECK REQUEST HEADER
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('user/edit.html.twig','stream_success',[
+                    'user' => $user
+                ]);
+                $this->addFlash('stream',$stream);
+            }
             return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
         }
         return $this->render('user/edit.html.twig', [
@@ -73,7 +92,27 @@ class UserController extends AbstractController{
             $entityManager->remove($user);
             $entityManager->flush();
             $this->addFlash('success', 'User deleted');
+            $id = $user->getId();
+             /*
+             * ADD CHECK HEADER FOR MODAL
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('user/delete.html.twig','stream_success',[
+                    'id' => $id
+                ]);
+                $this->addFlash('stream',$stream);
+            }
         }
         return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
+    /*
+     * Custom User Form
+     */
+    private function createUserForm(User $user=null ): FormInterface
+    {
+        $user=$user ?? new User();
+        return $this->createForm(UserType::class,$user ,[
+            'action' => $user->getId() ? $this->generateUrl('app_user_edit',['id'=>$user->getId()]) : $this->generateUrl( 'app_user_new' ), 
+        ]);
     }
 }
