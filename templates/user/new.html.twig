@@ -22,7 +22,7 @@
 {# ADD TURBO STREAM FOR APPEND NEW ROW ROW IN MAIN TABLE #}
 {% block stream_success %}
     {# add `s` to target to use CSS selector #}
-    <turbo-stream action="prepend" targets="#user-list tbody">
+    <turbo-stream action="prepend" targets="#users-list tbody">
         <template>
              {% include('user/_row.html.twig') %}
         </template>
