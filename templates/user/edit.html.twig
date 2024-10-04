@@ -1,5 +1,5 @@
 {% extends 'modalBase.html.twig' %}
-{% block title %}{{ parent() }} - Edit User - {% client.getId()%}{% endblock %}
+{% block title %}{{ parent() }} - Edit User - {{ user.getId() }}{% endblock %}
 {% block body %}
 <div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
     <div class="flex justify-between">
