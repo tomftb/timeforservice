@@ -31,20 +31,23 @@
             </tr>
         </tbody>
     </table>
-            <div class="mt-2 hidden turbo-frame:block">
-                <a href="{{ path('app_main_homepage') }}"> &lt; Back</a>
-                <a data-turbo-frame="_top" href="{{ path('app_client_edit',{id:client.id}) }}">Edit </a>
-            </div>
+    <div class="mt-2 hidden turbo-frame:block">
+        <a href="{{ path('app_main_homepage') }}"> &lt; Back</a>
+        <a data-turbo-frame="_top" href="{{ path('app_client_edit',{id:client.id}) }}">Edit </a>
+    </div>
     </turbo-frame>
     <div class="flex space-x-4 mt-4">
         <a href="{{ path('app_client_index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
             Back to list
         </a>
-
-        <a href="{{ path('app_client_edit', {'id': client.id}) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700">
-            Edit
-        </a>
-
+        {# EDIT BUTTON #}
+        <twig:Button 
+            variant="success"
+            tag="a"
+            href="{{ path('app_client_edit', {'id': client.id}) }}"
+            data-turbo-frame="modal"
+        >Edit</twig:Button>
+        {# END EDIT BUTTON #}
         {{ include('client/_delete_form.html.twig') }}
     </div>
 </div>
