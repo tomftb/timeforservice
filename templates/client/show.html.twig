@@ -37,9 +37,16 @@
     </div>
     </turbo-frame>
     <div class="flex space-x-4 mt-4">
-        <a href="{{ path('app_client_index') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700">
-            Back to list
-        </a>
+        {# SHOW BUTTON #}
+        <div class="turbo-frame:hidden">
+            <twig:Button 
+            variant="default"
+            tag="a"
+            href="{{ path('app_client_index') }}"
+            class="inline-flex items-center"
+        >Back to list</twig:Button>
+        </div>
+        {# END SHOW BUTTON #}   
         {# EDIT BUTTON #}
         <twig:Button 
             variant="success"
