@@ -1,8 +1,10 @@
+<div class="flex justify-end">
 <{{tag}}{{ attributes.defaults({
-    class: ' px-4 py-2 border border-transparent text-sm font-medium rounded-md '~this.variantClasses
+    class: 'px-4 py-2 border border-transparent text-sm font-medium rounded-md '~this.variantClasses
 }) }}>
     <!-- component html -->
     {% block content %}
         
     {% endblock %}
 </{{ tag }}>
+</div>
