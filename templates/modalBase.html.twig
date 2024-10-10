@@ -1,1 +1,16 @@
-{% extends app.request.headers.get( 'turbo-frame' ) == 'modal' ? 'modalFrame.html.twig' : 'base.html.twig' %}
+{% set modalFrame = {
+                        'frame' : 'modalFrame.html.twig',
+                        'closeAction':'<button class=" text-white flex items-center opacity-70 transition-opacity hover:opacity-100" data-action="modal#close" type="button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                            <path d="M18 6l-12 12"/>
+                            <path d="M6 6l12 12"/>
+                        </svg>
+                        </button>'
+                         } %}
+{% set baseFrame = {
+                        'frame' : 'base.html.twig',
+                        'closeAction':'<a href="'~backPath~'" class="text-sm font-medium text-white">Back to list</a>'
+} %}
+{% set loadFrame = app.request.headers.get( 'turbo-frame' ) == 'modal' ? modalFrame : baseFrame %}
+{% extends loadFrame.frame %}
