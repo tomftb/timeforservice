@@ -1,22 +1,15 @@
+{% set backPath=path('app_service_index') %}
 {% extends 'modalBase.html.twig' %}
-
 {% block title %}{{ parent() }} - Service{% endblock %}
-
 {% block body %}
     {# ADD CLASS FOR tailwind.config.js  -> addVariant('modal','dialog &'); modal:m-0 and modal:p-0 #}
     <div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
         <div class="flex justify-between">
             <h1 class="text-xl font-semibold text-white mb-4">Create New Service</h1>
-
-            <div class="mr-4">
-                <a href="{{ path('app_service_index') }}" class="text-sm font-medium text-white">
-                    Back to list
-                </a>
-                <div class="inline-block">
-                    {% if form.vars.data.id|default %}
-                        {{ include('service/_delete_form.html.twig') }}
-                    {% endif %}
-                </div>
+            <div class="mr-0">
+                {# CLOSE ACTION - DEPENDS OF WINDOWS TYPE #}
+                {{ loadFrame.closeAction | raw }}
+                {# END CLOSE ACTION #}
             </div>
         </div>
         {{ include('service/_form.html.twig') }}

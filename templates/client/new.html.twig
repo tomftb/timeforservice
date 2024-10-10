@@ -1,20 +1,18 @@
+{% set backPath=path('app_client_index') %}
 {% extends 'modalBase.html.twig' %}
-
 {% block title %}{{ parent() }} - New Client{% endblock %}
-
 {% block body %}
     {# ADD CLASS FOR tailwind.config.js  -> addVariant('modal','dialog &'); modal:m-0 and modal:p-0 #}
     <div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
         <div class="flex justify-between">
             <h1 class="text-xl font-semibold text-white mb-4">Create New Client</h1>
-
-            <div class="mr-4">
-                <a href="{{ path('app_client_index') }}" class="text-sm font-medium text-white">
-                    Back to list
-                </a>
+            <div class="mr-0">
+                {# CLOSE ACTION - DEPENDS OF WINDOWS TYPE #}
+                {{ loadFrame.closeAction | raw }}
+                {# END CLOSE ACTION #}
                 <div class="inline-block">
                     {% if form.vars.data.id|default %}
-                        {{ include('client/_delete_form.html.twig') }}
+                        {{ include('user/_delete_form.html.twig') }}
                     {% endif %}
                 </div>
             </div>
