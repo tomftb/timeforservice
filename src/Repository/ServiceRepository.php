@@ -51,4 +51,13 @@ class ServiceRepository extends ServiceEntityRepository
         }
         return $qb;
     }
+    public function findByClientPointId(int $clientPointId = 0,string $direction = 'DESC'):array
+    {
+        return $this->createQueryBuilder('service')
+                ->andWhere('service.clientPoint=:clientPointId')
+                ->setParameter('clientPointId', $clientPointId)
+                ->orderBy('service.id',$direction)
+                ->getQuery()
+                ->getResult();
+    }
 }
