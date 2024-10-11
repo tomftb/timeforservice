@@ -1,15 +1,20 @@
 <tr class="even:bg-gray-700 odd:bg-gray-600" id="clientpoint-list-item-{{ clientPoint.id }}">
     <td class="px-6 py-4 whitespace-nowrap">{{ clientPoint.id }}</td>
-    <td class="px-6 py-4 whitespace-nowrap">{{ clientPoint.name }}</td>
+    <td class="px-6 py-4">{{ clientPoint.name }}</td>
     <td class="px-6 py-4">{{ clientPoint.street }}</td>
     <td class="px-6 py-4">{{ clientPoint.zipCode }}</td>
-    <td class="px-6 py-4 whitespace-nowrap">{{ clientPoint.town }}</td>
+    <td class="px-6 py-4">{{ clientPoint.town }}</td>
     <td class="px-6 py-4 whitespace-nowrap">{{ clientPoint.email }}</td>
     <td class="px-6 py-4 whitespace-nowrap">{{ clientPoint.phoneNumber }}</td>
-    <td class="px-6 py-4 whitespace-nowrap flex">
+    <td class="px-6 py-4 flex">
+        <a 
+            href="{{ path('app_clientpoint_services', {'id': clientPoint.id}) }}" 
+            class="text-indigo-400 hover:text-indigo-600"
+            data-turbo-frame="modal"
+        >services</a>
         <a 
             href="{{ path('app_clientpoint_show', {'id': clientPoint.id}) }}" 
-            class="text-blue-400 hover:text-blue-600"
+            class="ml-4 text-blue-400 hover:text-blue-600"
             data-turbo-frame="modal"
         >show</a>
         <a 
