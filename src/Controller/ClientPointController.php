@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\ClientPoint;
+use App\Entity\Service;
 use App\Form\ClientPointType;
 use App\Repository\ClientPointRepository;
+use App\Repository\ServiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -119,6 +121,14 @@ class ClientPointController extends AbstractController{
         $clientPoint=$clientPoint ?? new ClientPoint();
         return $this->createForm(ClientPointType::class,$clientPoint ,[
             'action' => $clientPoint->getId() ? $this->generateUrl('app_clientpoint_edit',['id'=>$clientPoint->getId()]) : $this->generateUrl( 'app_clientpoint_new' ), 
+        ]);
+    }
+    #[Route('/{id}/services', name: 'app_clientpoint_services', methods: ['GET'])]
+    public function services(ClientPoint $clientPoint,ServiceRepository $serviceRepository, EntityManagerInterface $entityManager): Response
+    {
+        return $this->render('clientpoint/services.html.twig', [
+            'clientPoint' => $clientPoint,
+            'services' => $serviceRepository->findByClientPointId($clientPoint->getId(),'DESC')
         ]);
     }
 }
