@@ -124,7 +124,7 @@ class ClientPointController extends AbstractController{
         ]);
     }
     #[Route('/{id}/services', name: 'app_clientpoint_services', methods: ['GET'])]
-    public function services(ClientPoint $clientPoint,ServiceRepository $serviceRepository, EntityManagerInterface $entityManager): Response
+    public function services(ClientPoint $clientPoint,ServiceRepository $serviceRepository): Response
     {
         return $this->render('clientpoint/services.html.twig', [
             'clientPoint' => $clientPoint,
