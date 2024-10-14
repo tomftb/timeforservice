@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Client;
 use App\Form\ClientType;
 use App\Repository\ClientRepository;
+use App\Repository\ServiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -121,6 +122,14 @@ class ClientController extends AbstractController{
         $client=$client ?? new Client();
         return $this->createForm(ClientType::class,$client ,[
             'action' => $client->getId() ? $this->generateUrl('app_client_edit',['id'=>$client->getId()]) : $this->generateUrl( 'app_client_new' ), 
+        ]);
+    }
+    #[Route('/{id}/services', name: 'app_client_services', methods: ['GET'])]
+    public function services(Client $client,ServiceRepository $serviceRepository): Response
+    {
+        return $this->render('client/services.html.twig', [
+            'client' => $client,
+            'services' => $serviceRepository->findByClientId($client->getId(),'DESC')
         ]);
     }
 }
