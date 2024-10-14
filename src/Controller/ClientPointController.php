@@ -90,7 +90,7 @@ class ClientPointController extends AbstractController{
     public function delete(Request $request, ClientPoint $clientPoint, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$clientPoint->getId(), $request->request->get('_token'))) {
-            $id = $client->getId();
+            $id = $clientPoint->getId();
             $entityManager->remove($clientPoint);
             $entityManager->flush();
             $this->addFlash('success', 'Client Point deleted');
