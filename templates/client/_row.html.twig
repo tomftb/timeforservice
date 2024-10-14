@@ -6,8 +6,13 @@
     <td class="px-6 py-4 whitespace-nowrap">{{ client.town }}</td>
     <td class="px-6 py-4 whitespace-nowrap flex">
         <a 
+            href="{{ path('app_client_services', {'id': client.id}) }}" 
+            class="text-indigo-400 hover:text-indigo-600"
+            data-turbo-frame="modal"
+        >services</a>
+        <a 
             href="{{ path('app_client_show', {'id': client.id}) }}" 
-            class="text-blue-400 hover:text-blue-600"
+            class="ml-4 text-blue-400 hover:text-blue-600"
             data-turbo-frame="modal"
         >show</a>
         <a 
