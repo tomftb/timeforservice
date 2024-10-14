@@ -1,0 +1,48 @@
+{% set backPath=path('app_client_index') %}
+{% extends 'modalBase.html.twig' %}
+{% block title %}{{ parent() }} - Client Point{% endblock %}
+{% block body %}
+<div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
+    <div class="flex justify-between">
+        <h1 class="text-xl font-semibold text-white mb-1 ">{{ client.name }} - Services:</h1>
+        
+        <div class="mr-0">
+            {# CLOSE ACTION - DEPENDS OF WINDOWS TYPE #}
+            {{ loadFrame.closeAction | raw }}
+            {# END CLOSE ACTION #}
+        </div>
+    </div>
+    <div class="flex justify-between mb-1">
+    <p class="text-sm text-neutral-600">{{ client.zipCode~" "~client.town~", "~client.street~" ("~client.nin~")" }}</p>      
+    </div> 
+    <table class="min-w-full bg-gray-800 text-white">
+        <thead class="border-b border-gray-700">
+            <tr>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Id</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Client Point</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Description</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Ended At</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Time (in minutes)</th>
+            </tr>
+        </thead>
+        <tbody class="bg-gray-700 divide-y divide-gray-600">
+            {% for service in services %}
+            <tr class="even:bg-gray-700 odd:bg-gray-600" id="service-list-item-{{ service.id }}">
+                <td class="px-6 py-4 whitespace-nowrap">{{ service.id }}</td>
+                <td class="px-6 py-4">{{ service.clientPoint.name }}</td>
+                <td class="px-6 py-4">{{ service.description }}</td>
+                <td class="px-6 py-4 whitespace-nowrap">{{ service.endedAt ? service.endedAt|date('Y-m-d H:i:s') : '' }}</td>
+                <td class="px-6 py-4">{{ service.time}}</td>
+            </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-gray-400">No records found</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="flex space-x-4 mt-4 justify-end">
+        
+    </div>
+</div>
+{% endblock %}
