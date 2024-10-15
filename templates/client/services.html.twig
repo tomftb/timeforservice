@@ -42,7 +42,17 @@
         </tbody>
     </table>
     <div class="flex space-x-4 mt-4 justify-end">
-        
+        {# EXPORT BUTTON #}
+        <twig:Button
+            tag="a"
+            href="{{ path('app_client_export_services',{'id':client.id}) }}"
+            class="flex items-center space-x-1 font-bold"
+            variant="export"
+            target="_blank"
+        >
+            <span>Excel</span>
+        </twig:Button>
+        {# END EXPORT BUTTON #}
     </div>
 </div>
 {% endblock %}
