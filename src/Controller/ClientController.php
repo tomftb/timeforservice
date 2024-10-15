@@ -12,6 +12,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use App\Service\ClientExcelService;
+use function symfony\component\string\u;
 
 /**
  * Description of ClientController
@@ -131,5 +134,20 @@ class ClientController extends AbstractController{
             'client' => $client,
             'services' => $serviceRepository->findByClientId($client->getId(),'DESC')
         ]);
+    }
+    #[Route('/{id}/export_services', name: 'app_client_export_services', methods: ['GET'])]
+    public function exportServices(Client $client,ServiceRepository $serviceRepository,ClientExcelService $clientExcelService): Response
+    {
+        $fileContent = $clientExcelService->getExcel($client,$serviceRepository);
+        $response = new Response($fileContent);
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
+        $response->headers->set('max-age', '0');
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $client->getName().' (services).xlsx',
+            u($client->getName())->ascii()   
+        );
+        $response->headers->set('Content-Disposition', $disposition);
+        return $response;
     }
 }
