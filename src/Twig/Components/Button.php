@@ -17,6 +17,7 @@ final class Button
             'success'=>'text-white bg-green-600 hover:bg-green-700',
             'danger'=>'text-white bg-red-600 hover:bg-red-700 focus:ring-red-300 focus:outline-none',
             'link'=>'text-white',
+            'export'=>'text-white, bg-indigo-400 hover:bg-indigo-600',
             default=>throw new \LogicException(sprintf('Unknown button type "%s"',$this->variant))    
         };
     }
