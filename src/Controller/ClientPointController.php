@@ -13,9 +13,9 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Form\FormInterface;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
-
-
+use Symfony\Component\HttpFoundation\HeaderUtils;
+use App\Service\ClientPointExcelService;
+use function symfony\component\string\u;
 /**
  * Description of ClientPointController
  *
@@ -23,11 +23,6 @@ use Symfony\Component\HttpFoundation\BinaryFileResponse;
  */
 #[Route('/clientpoint')]
 class ClientPointController extends AbstractController{
-    
-    public function __construct(
-        private string $appTmp
-    ){
-    }
     
     #[Route('/', name: 'app_clientpoint_index', methods: ['GET'])]
     public function index(ClientPointRepository $clientPointRepository): Response
@@ -139,10 +134,18 @@ class ClientPointController extends AbstractController{
         ]);
     }
     #[Route('/{id}/export_services', name: 'app_clientpoint_export_services', methods: ['GET'])]
-    public function exportServices(ClientPoint $clientPoint,ServiceRepository $serviceRepository): Response
+    public function exportServices(ClientPoint $clientPoint,ServiceRepository $serviceRepository,ClientPointExcelService $clientPointExcelService): Response
     {
-        //dd($this->getParameter('%APP_TMP%'));
-        //dd($this->appTmp);
-        return $this->file($this->appTmp."farmline_logo.png");
+        $fileContent = $clientPointExcelService->getExcel($clientPoint,$serviceRepository);
+        $response = new Response($fileContent);
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
+        $response->headers->set('max-age', '0');
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $clientPoint->getName().' (services).xlsx',
+            u($clientPoint->getName())->ascii()   
+        );
+        $response->headers->set('Content-Disposition', $disposition);
+        return $response;
     }
 }
