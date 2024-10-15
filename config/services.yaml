@@ -25,3 +25,6 @@ services:
     App\Service\ClientPointExcelService:
         bind:
             string $appTmp: '%env(resolve:APP_TMP)%'
+    App\Service\ClientExcelService:
+        bind:
+            string $appTmp: '%env(resolve:APP_TMP)%'
