@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Form\FormInterface;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
+
 
 /**
  * Description of ClientPointController
@@ -22,7 +24,12 @@ use Symfony\Component\Form\FormInterface;
 #[Route('/clientpoint')]
 class ClientPointController extends AbstractController{
     
-   #[Route('/', name: 'app_clientpoint_index', methods: ['GET'])]
+    public function __construct(
+        private string $appTmp
+    ){
+    }
+    
+    #[Route('/', name: 'app_clientpoint_index', methods: ['GET'])]
     public function index(ClientPointRepository $clientPointRepository): Response
     {
         return $this->render('clientpoint/index.html.twig', [
@@ -130,5 +137,12 @@ class ClientPointController extends AbstractController{
             'clientPoint' => $clientPoint,
             'services' => $serviceRepository->findByClientPointId($clientPoint->getId(),'DESC')
         ]);
+    }
+    #[Route('/{id}/export_services', name: 'app_clientpoint_export_services', methods: ['GET'])]
+    public function exportServices(ClientPoint $clientPoint,ServiceRepository $serviceRepository): Response
+    {
+        //dd($this->getParameter('%APP_TMP%'));
+        //dd($this->appTmp);
+        return $this->file($this->appTmp."farmline_logo.png");
     }
 }
