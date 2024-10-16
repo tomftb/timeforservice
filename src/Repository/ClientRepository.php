@@ -15,7 +15,14 @@ class ClientRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Client::class);
     }
-
+    public function findByIds(array $searchClients=[]): array
+    {
+        return $this->createQueryBuilder('client')
+                ->andWhere('client.id IN (:id)')
+                ->setParameter('id', $searchClients)
+                ->getQuery()
+                ->getResult();
+    }
     //    /**
     //     * @return Client[] Returns an array of Client objects
     //     */
