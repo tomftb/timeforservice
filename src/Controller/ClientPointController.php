@@ -14,7 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\HeaderUtils;
-use App\Service\ClientPointExcelService;
+use App\Service\Excel\ClientPoint as ClientPointExcel;
 use function symfony\component\string\u;
 /**
  * Description of ClientPointController
@@ -134,9 +134,10 @@ class ClientPointController extends AbstractController{
         ]);
     }
     #[Route('/{id}/export_services', name: 'app_clientpoint_export_services', methods: ['GET'])]
-    public function exportServices(ClientPoint $clientPoint,ServiceRepository $serviceRepository,ClientPointExcelService $clientPointExcelService): Response
+    public function exportServices(ClientPoint $clientPoint,ServiceRepository $serviceRepository,ClientPointExcel $clientPointExcel): Response
     {
-        $fileContent = $clientPointExcelService->getExcel($clientPoint,$serviceRepository);
+        $clientPointExcel->set($clientPoint,$serviceRepository->findByClientPointId($clientPoint->getId(),'ASC'));
+        $fileContent = $clientPointExcel->get();
         $response = new Response($fileContent);
         $response->headers->set('Content-Type', 'application/vnd.ms-excel');
         $response->headers->set('max-age', '0');
