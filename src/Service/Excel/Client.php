@@ -1,67 +1,64 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Excel;
 
-use App\Entity\Client;
-use App\Repository\ServiceRepository ;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use App\Entity\Client as ClientEntity;
 
-
-class ClientExcelService
+class Client extends _Main
 {
     public function __construct(
         private string $appTmp
         )
-    {}
-    public function getExcel(?Client $client,ServiceRepository $serviceRepository)
+    {
+        /*
+         * CALL PARENT CONSTRUCT
+         */
+        parent::__construct($appTmp);
+        /*
+         * SET COLUMNS DIMENSIONS
+         */
+        self::setColumnsDimensions([
+            'A'=>5,
+            'B'=>10,
+            'C'=>35,
+            'D'=>8,
+            'E'=>40
+        ]);
+    }
+    public function set(?ClientEntity $client,array $serviceRepository):void
     {
         if(is_null($client)){
-            throw new Exception('Client data missing');
+            return;
         }
-        $fileName = $this->appTmp.uniqid($client->getName()).'.xlsx';
-        $spreadsheet = new Spreadsheet();
-        $spreadsheet->getActiveSheet()->getColumnDimension('A')->setWidth(5);
-        $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(10);
-        $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(35);
-        $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(8);
-        $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(40);
-        $activeWorksheet = $spreadsheet->getActiveSheet();
-        $i=1;
         /*
-         * SET EXCEL HEAD - Client Point name
+         * SET ROW TITLE - Client Point name
          */
-        $activeWorksheet->setCellValue('A'.$i, $client->getName()." (".$client->getNin().")");
-        $activeWorksheet->MergeCells('A1:E1');
-        $i++;
+        parent::setTitle($client->getName()." (".$client->getNin().")",['A','E']);
         /*
-         * SET EXCEL HEAD - table title
+         * SET ROW OF COLUMNS DESCRIPTION 
          */
-        $activeWorksheet->setCellValue('A'.$i, "Lp:");
-        $activeWorksheet->setCellValue('B'.$i, "Data:");
-        $activeWorksheet->setCellValue('C'.$i, "Punkt:");
-        $activeWorksheet->setCellValue('D'.$i, "Czas(h):");
-        $activeWorksheet->setCellValue('E'.$i, "Opis:");
+        parent::setDescription([
+            'A'=>"Lp:",
+            'B'=>"Data:",
+            'C'=>"Punkt:",
+            'D'=>"Czas(h):",
+            'E'=>"Opis:"
+        ]);
         /*
-         * SET EXCEL BODY
+         * SET ROWS WITH DATA
          */
-        $i++;
+        self::setData($serviceRepository);     
+    }
+    private function setData(array $serviceRepository=[]):void
+    {
         $lp=1;
-        foreach($serviceRepository->findByClientId($client->getId(),'ASC') as $value){
-            //dd($value);
-            //$value->getEndedAt()
-            $activeWorksheet->setCellValue('A'.$i, $lp++);
-            $activeWorksheet->setCellValue('B'.$i, $value->getEndedAt()->format('Y-m-d'));
-            $activeWorksheet->setCellValue('C'.$i, $value->getClientPoint()->getName());
-            $activeWorksheet->setCellValue('D'.$i, $value->getTime());
-            $activeWorksheet->setCellValue('E'.$i, $value->getDescription());
-            $i++;
+        foreach($serviceRepository as $value){
+            $this->activeWorksheet->setCellValue('A'.$this->row, $lp++);
+            $this->activeWorksheet->setCellValue('B'.$this->row, $value->getEndedAt()->format('Y-m-d'));
+            $this->activeWorksheet->setCellValue('C'.$this->row, $value->getClientPoint()->getName());
+            $this->activeWorksheet->setCellValue('D'.$this->row, $value->getTime());
+            $this->activeWorksheet->setCellValue('E'.$this->row, $value->getDescription());
+            $this->row++;
         }
-        
-        $writer = new Xlsx($spreadsheet);
-        $writer->save($fileName);
-        $fileContent = file_get_contents($fileName);
-        unlink($fileName);
-        return $fileContent;
     }
 }
