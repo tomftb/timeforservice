@@ -13,7 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\HeaderUtils;
-use App\Service\ClientExcelService;
+use App\Service\Excel\Client as ClientExcel;
 use function symfony\component\string\u;
 
 /**
@@ -59,7 +59,35 @@ class ClientController extends AbstractController{
             'form' => $form,
         ]);
     }
-
+    /*
+     * ORDER IS IMPORTANT
+     */
+    #[Route('/multi_export_services', name: 'app_client_multi_export_services', methods: ['GET'])]
+    public function multiExportServices(Request $request,ClientRepository $clientRepository,ServiceRepository $serviceRepository,ClientExcel $clientExcel): Response
+    {
+        $clientIds = explode(",",$request->query->get('id'));
+        
+        //dd($request->query->get('id'));
+        $clients = $clientRepository->findByIds($clientIds);
+        /*
+         * TO DO NAME OF FILE
+         */
+        $fileName = 'all (services).xlsx';
+        foreach($clients as $client){
+            $clientExcel->set($client,$serviceRepository->findByClientId($client->getId(),'ASC'));
+        }
+        $fileContent = $clientExcel->get();
+        $response = new Response($fileContent);
+        $response->headers->set('Content-Type', 'application/vnd.ms-excel');
+        $response->headers->set('max-age', '0');
+        $disposition = HeaderUtils::makeDisposition(
+            HeaderUtils::DISPOSITION_ATTACHMENT,
+            $fileName,
+            u($fileName)->ascii()   
+        );
+        $response->headers->set('Content-Disposition', $disposition);
+        return $response;
+    }
     #[Route('/{id}', name: 'app_client_show', methods: ['GET'])]
     public function show(Client $client): Response
     {
@@ -136,9 +164,10 @@ class ClientController extends AbstractController{
         ]);
     }
     #[Route('/{id}/export_services', name: 'app_client_export_services', methods: ['GET'])]
-    public function exportServices(Client $client,ServiceRepository $serviceRepository,ClientExcelService $clientExcelService): Response
+    public function exportServices(Client $client,ServiceRepository $serviceRepository,ClientExcel $clientExcel): Response
     {
-        $fileContent = $clientExcelService->getExcel($client,$serviceRepository);
+        $clientExcel->set($client,$serviceRepository->findByClientId($client->getId(),'ASC'));
+        $fileContent = $clientExcel->get();
         $response = new Response($fileContent);
         $response->headers->set('Content-Type', 'application/vnd.ms-excel');
         $response->headers->set('max-age', '0');
