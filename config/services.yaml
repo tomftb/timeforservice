@@ -22,9 +22,9 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
-    App\Service\ClientPointExcelService:
+    App\Service\Excel\ClientPoint:
         bind:
             string $appTmp: '%env(resolve:APP_TMP)%'
-    App\Service\ClientExcelService:
+    App\Service\Excel\Client:
         bind:
             string $appTmp: '%env(resolve:APP_TMP)%'
