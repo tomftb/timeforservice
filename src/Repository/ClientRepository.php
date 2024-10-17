@@ -23,6 +23,12 @@ class ClientRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();
     }
+    public function all(): array
+    {
+        return $this->createQueryBuilder('client')
+                ->getQuery()
+                ->getResult();
+    }
     //    /**
     //     * @return Client[] Returns an array of Client objects
     //     */
