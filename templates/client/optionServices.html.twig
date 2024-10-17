@@ -1,0 +1,39 @@
+{% set backPath=path('app_client_index') %}
+{% extends 'modalBase.html.twig' %}
+{% block title %}{{ parent() }} - Services {% endblock %}
+{% block body %}
+    <div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg" data-controller="option" data-option-url-value="{{ app.request.getSchemeAndHttpHost() }}:{{ app.request.getPort() }}{{ path('app_client_multi_export_services') }}">
+    <div class="flex justify-between">
+        <h1 class="text-xl font-semibold text-white mb-4">Select the clients to be included in the export list:</h1>
+        <div class="mr-0">
+            {# CLOSE ACTION - DEPENDS OF WINDOWS TYPE #}
+            {{ loadFrame.closeAction | raw }}
+            {# END CLOSE ACTION #}
+        </div>
+    </div>
+
+
+        <hr class="mb-4">
+        {# CLIENTS LOOP #}
+        {% for client in clients %}
+            <div class="flex items-left mb-4">
+                <input type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" name="clients[]" value="{{ client.id }}" id="client-{{ client.id }} "  data-action="input->option#set" >
+                <label for="client- {{ client.id }} " class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                {{ client.name }}
+                </label>
+            </div>
+        {% endfor %}
+        {# END OF CLIENTS LOOP #}
+        <div class="flex justify-end" >
+            <a 
+                href="{{ path('app_client_multi_export_services') }}" 
+                class="px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-400 hover:bg-indigo-600 flex items-center space-x-1 font-bold"
+                target="_blank"
+                data-option-target="href"
+            >Excel</a>
+            
+        </twig:Button>
+        </div>
+
+</div>
+{% endblock %}
