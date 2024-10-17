@@ -1,14 +1,22 @@
 {% extends 'base.html.twig' %}
-
-{% block title %}Manage Clients{% endblock %}
-
+{% block title %}{{ parent() }} - Clients{% endblock %}
 {% block body %}
 <div class="m-4 p-4 bg-gray-800 rounded-lg">
     <div
-        class="flex justify-between"
+        class="flex"
     >
-    <h1 class="text-xl font-semibold text-white mb-4">Clients</h1>
+        <div class="flex w-1/3">
+            <h1 class="text-xl font-semibold text-white mb-4">Clients</h1>
+            {# OPTION SERVICES #}
+             <a
+                href="{{ path('app_client_multi_services') }}"
+                class="text-indigo-400 hover:text-indigo-600 ml-2 mt-1"
+                data-turbo-frame="modal"
+            >services</a>
+            {# END OPTION SERVICES #}
+        </div>
     {# Create new #}
+    <div class="flex w-2/3 justify-end">
     <twig:Button
         tag="a"
         href="{{ path('app_client_new') }}"
@@ -23,6 +31,7 @@
             <path d="M12 9v6"/>
         </svg>
     </twig:Button>
+    </div>
     {# END Create New #}
     </div>
     <table class="min-w-full bg-gray-800 text-white" id="client-list">
