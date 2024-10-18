@@ -3,8 +3,8 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
     
     idList = new Array();
-    startedAt='';
-    endedAt='';
+    endedFrom='';
+    endedTo='';
     
     static values = {
         url: String
@@ -25,14 +25,14 @@ export default class extends Controller {
         console.log('setId',this.id);
         this.updateUrl();
     }
-    setStartedAt(t){
-        console.log("setStartedAt",t.srcElement.value);
-        this.startedAt=t.srcElement.value;
+    setEndedFrom(t){
+        console.log("setEndedFrom",t.srcElement.value);
+        this.endedFrom=t.srcElement.value;
         this.updateUrl();
     }
-    setEndedAt(t){
-        console.log("setEndedAt",t.srcElement.value);
-        this.endedAt=t.srcElement.value;
+    setEndedTo(t){
+        console.log("setEndedTo",t.srcElement.value);
+        this.endedTo=t.srcElement.value;
         this.updateUrl();
     }
     updateUrl(){
@@ -41,7 +41,7 @@ export default class extends Controller {
         /*
          * SET CLEAR
          */
-        this.hrefTarget.href = url
+        this.hrefTarget.href = url;
         /*
          * UPDATE WITH ARRAY LIST
          */
@@ -52,17 +52,17 @@ export default class extends Controller {
             and='&';
         }
         /*
-         * UPDATE WITH STARTED AT
+         * UPDATE WITH ENDED FROM
          */
-        if(this.startedAt!==''){
-            this.hrefTarget.href+=and+"startedat="+this.startedAt;
+        if(this.endedFrom!==''){
+            this.hrefTarget.href+=and+"endedfrom="+this.endedFrom;
             and='&';
         }
         /*
-         * UPDATE WITH ENDED AT
+         * UPDATE WITH ENDED TO
          */
-        if(this.endedAt!==''){
-            this.hrefTarget.href+=and+"endedat="+this.endedAt;
+        if(this.endedTo!==''){
+            this.hrefTarget.href+=and+"endedto="+this.endedTo;
         }
         console.log("url - ",this.hrefTarget.href);
     }
