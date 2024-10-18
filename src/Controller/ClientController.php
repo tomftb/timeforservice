@@ -71,14 +71,50 @@ class ClientController extends AbstractController{
     #[Route('/multi_export_services', name: 'app_client_multi_export_services', methods: ['GET'])]
     public function multiExportServices(Request $request,ClientRepository $clientRepository,ServiceRepository $serviceRepository,ClientExcel $clientExcel): Response
     {
+        /*
+         * SET QUERY TO EXECUTE
+         */
+        $findBy = 'findByClientId';
+        /*
+         * SET STARTING VARIABLES
+         */
+        $endedFrom = null;
+        $endedTo = null;
+        $fileLabel = '';
+        /*
+         * CHECK DATE FROM
+         */
+        if(!is_null($request->query->get('endedfrom'))){
+            $endedFrom = str_replace("T"," ",$request->query->get('endedfrom'));
+            $findBy = 'findByClientIdWithEndedFrom';
+            $fileLabel = 'from '.str_replace(":","_",$endedFrom);
+        }
+        /*
+         * CHECK DATE TO
+         */
+        if(!is_null($request->query->get('endedto'))){
+            $endedTo = str_replace("T"," ",$request->query->get('endedto'));
+            $findBy = 'findByClientIdWithEndedTo';
+            $fileLabel = 'to '.str_replace(":","_",$endedTo);
+        }
+        /*
+         * CHECK DATE FROM AND TO
+         */
+        if($endedFrom!==null && $endedTo!==null){
+            $findBy = 'findByClientIdWithEndedIn';
+            $fileLabel = 'from '.$endedFrom.' to '.$endedTo;
+        }
+        /*
+         * SET CLIENTS IDS
+         */
         $clientIds = explode(",",$request->query->get('id'));
         $clients = $clientRepository->findByIds($clientIds);
         /*
          * TO DO NAME OF FILE
          */
-        $fileName = 'all (services).xlsx';
+        $fileName = 'all (services '.$fileLabel.').xlsx';
         foreach($clients as $client){
-            $clientExcel->set($client,$serviceRepository->findByClientId($client->getId(),'ASC'));
+            $clientExcel->set($client,$serviceRepository->{$findBy}($client->getId(),'ASC',$endedFrom,$endedTo));
         }
         $fileContent = $clientExcel->get();
         $response = new Response($fileContent);
