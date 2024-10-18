@@ -33,7 +33,24 @@
                 <td class="px-2 py-4 whitespace-nowrap">{{ client.street }}</td>
             </tr>
             <tr>
-                <td class="px-2 py-4" colspan="2">{{ client.town }}</td>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">ZIP-CODE</th>
+                <td class="px-2 py-4" >{{ client.zipCode }}</td>
+            </tr>
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Town</th>
+                <td class="px-2 py-4" >{{ client.town }}</td>
+            </tr>
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">NIN</th>
+                <td class="px-2 py-4" >{{ client.nin }}</td>
+            </tr>
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Hourly rate</th>
+                <td class="px-2 py-4" >{{ client.getHourlyRate() }}</td>
+            </tr>
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Kilometer rate</th>
+                <td class="px-2 py-4" >{{ client.getKilometerRate() }}</td>
             </tr>
         </tbody>
     </table>
