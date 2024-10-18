@@ -10,11 +10,6 @@
                 {# CLOSE ACTION - DEPENDS OF WINDOWS TYPE #}
                 {{ loadFrame.closeAction | raw }}
                 {# END CLOSE ACTION #}
-                <div class="inline-block">
-                    {% if form.vars.data.id|default %}
-                        {{ include('user/_delete_form.html.twig') }}
-                    {% endif %}
-                </div>
             </div>
         </div>
         {{ include('client/_form.html.twig') }}
