@@ -22,12 +22,16 @@ class ServiceType extends AbstractType
             ])
             ->add('time')  
             ->add('clientPoint', null, [
-                'choice_label' => 'name',
+                'choice_label' =>  function ($client) {
+                        return $client->getName() . ' (' .$client->getStreet().",". $client->getTown().")";
+                    },
                 'placeholder' => 'Choose a client point',
                 'autocomplete'=> true
             ])
             ->add('user', null, [
-                'choice_label' => 'name',
+                'choice_label' => function ($user) {
+                        return $user->getFirstName() ." ".$user->getLastName(). ' (' .$user->getName().")";
+                    },
                 'placeholder' => 'Choose a user',
                 'autocomplete'=> true
             ])
