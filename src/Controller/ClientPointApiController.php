@@ -1,19 +1,29 @@
 <?php
 
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/PHPClass.php to edit this template
- */
-
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\Response;
+use App\Entity\ClientPoint;
+use App\Repository\ServiceRepository;
+use App\Service\Excel\ClientPoint as ClientPointExcel;
+use App\Service\Excel\Api;
 
 /**
  * Description of ClientPointApiController
  *
  * @author Tomasz Borczynski
  */
+ #[Route('/api/clientpoint')]
 class ClientPointApiController extends AbstractController {
-    //put your code here
+    
+    use Api;
+     
+    #[Route('/{id}/export_services', name: 'app_clientpoint_export_services', methods: ['GET'])]
+    public function exportServices(ClientPoint $clientPoint,ServiceRepository $serviceRepository,ClientPointExcel $clientPointExcel): Response
+    {
+        $clientPointExcel->set($clientPoint,$serviceRepository->findByClientPointId($clientPoint->getId(),'ASC'));
+        return $this->returnExcel($clientPoint->getName(),$clientPointExcel->get()); 
+    }
 }
