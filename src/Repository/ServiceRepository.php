@@ -62,12 +62,41 @@ class ServiceRepository extends ServiceEntityRepository
     }
     public function findByClientId(int $clientId = 0,string $direction = 'DESC'):array
     {
+        $qb = self::findByClientIdQueryBuilder($clientId,$direction);
+        return $qb->getQuery()->getResult();
+    }
+    public function findByClientIdQueryBuilder(int $clientId = 0,string $direction = 'DESC'): QueryBuilder
+    {
         return $this->createQueryBuilder('service')
                 ->leftJoin('service.clientPoint','clientPoint')
                 ->leftJoin('clientPoint.client','client')
                 ->andWhere('client.id=:clientId')
                 ->setParameter('clientId', $clientId)
-                ->orderBy('service.id',$direction)
+                ->orderBy('service.id',$direction);
+    }
+    public function findByClientIdWithEndedIn(int $clientId = 0,string $direction = 'DESC',string $endedFrom="",string $endedTo=""):array
+    {
+        $qb = self::findByClientIdQueryBuilder($clientId,$direction);
+        return $qb->andWhere('service.endedAt>=:endedFrom')
+            ->andWhere('service.endedAt<=:endedTo')
+            ->setParameter('endedFrom', $endedFrom)
+            ->setParameter('endedTo', $endedTo)
+            ->getQuery()
+            ->getResult();
+    }
+    public function findByClientIdWithEndedFrom(int $clientId = 0,string $direction = 'DESC',string $endedFrom="",?string $endedTo=""):array
+    {
+        $qb = self::findByClientIdQueryBuilder($clientId,$direction);
+        return $qb->andWhere('service.endedAt>=:endedFrom')
+                ->setParameter('endedFrom', $endedFrom)
+                ->getQuery()
+                ->getResult();
+        }
+    public function findByClientIdWithEndedTo(int $clientId = 0,string $direction = 'DESC',?string $endedFrom="",string $endedTo=""):array
+    {
+        $qb = self::findByClientIdQueryBuilder($clientId,$direction);
+        return $qb->andWhere('service.endedAt<=:endedTo')
+                ->setParameter('endedTo', $endedTo)
                 ->getQuery()
                 ->getResult();
     }
