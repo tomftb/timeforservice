@@ -10,6 +10,12 @@ App\Entity\Client:
             - NotBlank: ~
         nin:
             - NotBlank: ~
+        hourlyRate:
+            - NotBlank: ~
+            - Positive: ~
+        kilometerRate:
+            - NotBlank: ~
+            - PositiveOrZero: ~
 
 App\Entity\ClientPoint:
     properties:
