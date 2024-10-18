@@ -37,6 +37,12 @@ class Client
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $imageFilename = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $hourly_rate = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $kilometer_rate = null;
     
     public function __construct()
     {
@@ -130,6 +136,30 @@ class Client
     public function setImageFilename(?string $imageFilename): static
     {
         $this->imageFilename = $imageFilename;
+
+        return $this;
+    }
+
+    public function getHourlyRate(): ?float
+    {
+        return $this->hourly_rate;
+    }
+
+    public function setHourlyRate(?float $hourly_rate): static
+    {
+        $this->hourly_rate = $hourly_rate;
+
+        return $this;
+    }
+
+    public function getKilometerRate(): ?float
+    {
+        return $this->kilometer_rate;
+    }
+
+    public function setKilometerRate(?float $kilometer_rate): static
+    {
+        $this->kilometer_rate = $kilometer_rate;
 
         return $this;
     }
