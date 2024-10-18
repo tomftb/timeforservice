@@ -7,6 +7,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Validator\Constraints\Length;
 
 class ClientType extends AbstractType
@@ -33,6 +34,14 @@ class ClientType extends AbstractType
             ->add('nin',TextType::class,[
                 'required' => true,
                 'constraints' => [new Length(['min' => 10])],
+            ])
+            ->add('hourlyRate',NumberType::class,[
+                'required' => true,
+                'constraints' => [new Length(['min' => 1])],
+            ])
+            ->add('kilometerRate',NumberType::class,[
+                'required' => true,
+                'constraints' => [new Length(['min' => 1])],
             ])
         ;
     }
