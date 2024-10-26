@@ -20,9 +20,8 @@ class Client extends _Main
         self::setColumnsDimensions([
             'A'=>5,
             'B'=>10,
-            'C'=>35,
-            'D'=>8,
-            'E'=>40
+            'C'=>45,
+            'D'=>8
         ]);
     }
     public function set(?ClientEntity $client,array $serviceRepository):void
@@ -33,7 +32,7 @@ class Client extends _Main
         /*
          * SET ROW TITLE - Client Point name
          */
-        parent::setTitle($client->getName()." (".$client->getNin().")",['A','E']);
+        parent::setTitle($client->getName()." (".$client->getNin().")",['A','D']);
         /*
          * SET ROW OF COLUMNS DESCRIPTION 
          */
@@ -41,8 +40,7 @@ class Client extends _Main
             'A'=>"Lp:",
             'B'=>"Data:",
             'C'=>"Punkt:",
-            'D'=>"Czas(h):",
-            'E'=>"Opis:"
+            'D'=>"Czas(h):"
         ]);
         /*
          * SET ROWS WITH DATA
@@ -57,7 +55,6 @@ class Client extends _Main
             $this->activeWorksheet->setCellValue('B'.$this->row, $value->getEndedAt()->format('Y-m-d'));
             $this->activeWorksheet->setCellValue('C'.$this->row, $value->getClientPoint()->getName());
             $this->activeWorksheet->setCellValue('D'.$this->row, $value->getTime());
-            $this->activeWorksheet->setCellValue('E'.$this->row, $value->getDescription());
             $this->row++;
         }
     }
