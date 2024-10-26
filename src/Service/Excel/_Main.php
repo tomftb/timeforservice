@@ -4,7 +4,6 @@ namespace App\Service\Excel;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
-use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Sum as Sum;
 /**
  * Description of _Main
  *
