@@ -3,6 +3,8 @@
 namespace App\Service\Excel;
 
 use App\Entity\Client as ClientEntity;
+use App\Service\Excel\Time;
+use App\Service\Excel\TimeSum;
 
 class Client extends _Main
 {
@@ -62,9 +64,12 @@ class Client extends _Main
     private function setData(array $serviceRepository=[]):void
     {
         $lp=1;
-        $timeInH = 0;
-        foreach($serviceRepository as $value){
-            $timeInH = parent::getTimeInH(intval($value->getTime(),10));
+        $time=[];
+        $sum = new TimeSum(); 
+        foreach($serviceRepository as $k => $value){
+            $time[$k] = new Time(); 
+            $time[$k]->add($value->getTime());
+            $sum->add($time[$k]->get());
             /*
              * SET FIRST DATA SET ROW
              */
@@ -75,11 +80,7 @@ class Client extends _Main
             $this->activeWorksheet->setCellValue('B'.$this->row, $value->getEndedAt()->format('Y-m-d'));
             $this->spreadsheet->getActiveSheet()->getCell('C'.$this->row)->setValue($value->getClientPoint()->getName()."\n".$value->getClientPoint()->getStreet().", ".$value->getClientPoint()->getTown());
             $this->spreadsheet->getActiveSheet()->getStyle('C'.$this->row)->getAlignment()->setWrapText(true);
-            $this->activeWorksheet->setCellValue('D'.$this->row, $timeInH);
-            /*
-             * SUM TIME
-             */
-            $this->sumTime+=$timeInH;
+            $this->activeWorksheet->setCellValue('D'.$this->row, $time[$k]->get());
             /*
              * SET LAST DATA SET ROW
              */
@@ -88,11 +89,8 @@ class Client extends _Main
              * UPDATE ROW
              */
             $this->row++;
-        }
-        /*
-         * SUM
-         */
-        parent::sumDataSetRow();
+        }       
+        parent::sumDataSetRow($sum->get());
         /*
          * SET DEFAULTS
          */

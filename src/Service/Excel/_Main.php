@@ -21,7 +21,6 @@ abstract class _Main {
     private ?string $dataSetColumnToSum = null;
     private ?string $dataSetSumColumnLabel = null;
     private ?string $dataSetSumColumnLabelValue = null;
-    protected ?float $sumTime = null;
     
     public function __construct(
         private string $appTmp,
@@ -79,12 +78,12 @@ abstract class _Main {
     {
         $this->dataSetColumnToSum = $column;
     }
-    protected function sumDataSetRow():void
+    protected function sumDataSetRow(?float $sumTime=null):void
     {
         /*
          * CHECK IS THERE SOMETHING TO SUM
          */
-        if($this->firstDataSetRow === null || $this->sumTime===null){
+        if($this->firstDataSetRow === null || $sumTime===null){
             return ;
         }
         self::checkDataSetRowProperties();
@@ -95,7 +94,7 @@ abstract class _Main {
         /*
          * SET SUM VALUE
          */
-        $this->activeWorksheet->setCellValue($this->dataSetSumColumn.$this->dataSetSumRow,$this->sumTime);
+        $this->activeWorksheet->setCellValue($this->dataSetSumColumn.$this->dataSetSumRow,$sumTime);
     }
     private function checkDataSetRowProperties()
     {
@@ -123,42 +122,5 @@ abstract class _Main {
         if($this->dataSetSumColumnLabel === null || $this->dataSetSumColumnLabelValue === null){
             Throw New \Exception("SET COLUMN SUM LABEL");
         }
-    }
-    protected function getTimeInH(int $time=0):float
-    {
-        if($time === 0){
-            return 0;
-        }
-        $halfAnHour = 0;
-        $halfAnHourDiv = 0;
-        $hour = 0;
-        /*
-         * modulo
-         */
-        $modulo = $time % 30;
-        if($modulo>0){
-            $halfAnHour = 0.5;
-            $time = $time - $modulo;
-        }
-        if($time === 0){
-            return $halfAnHour;
-        }
-        /*
-         * GET HOUR
-         */
-        $hour =  $time / 60;
-        if($hour>0){
-            $time = $time - ($hour * 60);
-        }
-        if($time === 0){
-            return $halfAnHour+$hour;
-        }
-        /*
-         * GET HALF AN HOUR
-         */
-        if(($time / 30)>0){
-            return $halfAnHour+$hour+0.5;
-        }
-        return $halfAnHour+$hour;
     }
 }
