@@ -19,7 +19,7 @@ class Client extends _Main
          */
         self::setColumnsDimensions([
             'A'=>5,
-            'B'=>10,
+            'B'=>11,
             'C'=>45,
             'D'=>8
         ]);
@@ -53,7 +53,8 @@ class Client extends _Main
         foreach($serviceRepository as $value){
             $this->activeWorksheet->setCellValue('A'.$this->row, $lp++);
             $this->activeWorksheet->setCellValue('B'.$this->row, $value->getEndedAt()->format('Y-m-d'));
-            $this->activeWorksheet->setCellValue('C'.$this->row, $value->getClientPoint()->getName());
+            $this->spreadsheet->getActiveSheet()->getCell('C'.$this->row)->setValue($value->getClientPoint()->getName()."\n".$value->getClientPoint()->getStreet().", ".$value->getClientPoint()->getTown());
+            $this->spreadsheet->getActiveSheet()->getStyle('C'.$this->row)->getAlignment()->setWrapText(true);
             $this->activeWorksheet->setCellValue('D'.$this->row, $value->getTime());
             $this->row++;
         }
