@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ClassificationOfActivitiesRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ClassificationOfActivitiesRepository::class)]
@@ -27,6 +29,17 @@ class ClassificationOfActivities
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
+
+    /**
+     * @var Collection<int, ClientClassificationOfActivities>
+     */
+    #[ORM\OneToMany(targetEntity: ClientClassificationOfActivities::class, mappedBy: 'classification')]
+    private Collection $clientClassificationOfActivities;
+
+    public function __construct()
+    {
+        $this->clientClassificationOfActivities = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -89,6 +102,36 @@ class ClassificationOfActivities
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ClientClassificationOfActivities>
+     */
+    public function getClientClassificationOfActivities(): Collection
+    {
+        return $this->clientClassificationOfActivities;
+    }
+
+    public function addClientClassificationOfActivity(ClientClassificationOfActivities $clientClassificationOfActivity): static
+    {
+        if (!$this->clientClassificationOfActivities->contains($clientClassificationOfActivity)) {
+            $this->clientClassificationOfActivities->add($clientClassificationOfActivity);
+            $clientClassificationOfActivity->setClassification($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClientClassificationOfActivity(ClientClassificationOfActivities $clientClassificationOfActivity): static
+    {
+        if ($this->clientClassificationOfActivities->removeElement($clientClassificationOfActivity)) {
+            // set the owning side to null (unless already changed)
+            if ($clientClassificationOfActivity->getClassification() === $this) {
+                $clientClassificationOfActivity->setClassification(null);
+            }
+        }
 
         return $this;
     }

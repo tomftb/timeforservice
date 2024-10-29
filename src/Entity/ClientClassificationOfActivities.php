@@ -19,6 +19,14 @@ class ClientClassificationOfActivities
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'clientClassificationOfActivities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Client $client = null;
+
+    #[ORM\ManyToOne(inversedBy: 'clientClassificationOfActivities')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?ClassificationOfActivities $classification = null;
+
     public function __construct()
     {
     }
@@ -48,6 +56,30 @@ class ClientClassificationOfActivities
     public function setUpdatedAt(\DateTimeImmutable $updatedAt): static
     {
         $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function getClient(): ?Client
+    {
+        return $this->Client;
+    }
+
+    public function setClient(?Client $client): static
+    {
+        $this->client = $client;
+
+        return $this;
+    }
+
+    public function getClassification(): ?ClassificationOfActivities
+    {
+        return $this->classification;
+    }
+
+    public function setClassification(?ClassificationOfActivities $classification): static
+    {
+        $this->classification = $classification;
 
         return $this;
     }

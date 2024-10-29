@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ClientRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 
@@ -43,10 +45,17 @@ class Client
 
     #[ORM\Column(nullable: true)]
     private ?float $kilometerRate = null;
+
+    /**
+     * @var Collection<int, ClientClassificationOfActivities>
+     */
+    #[ORM\OneToMany(targetEntity: ClientClassificationOfActivities::class, mappedBy: 'Client')]
+    private Collection $clientClassificationOfActivities;
     
     public function __construct()
     {
         $this->status='NEW';
+        $this->clientClassificationOfActivities = new ArrayCollection();
     }
     
     public function getId(): ?int
@@ -159,6 +168,36 @@ class Client
     public function setKilometerRate(?float $kilometerRate): static
     {
         $this->kilometerRate = $kilometerRate;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ClientClassificationOfActivities>
+     */
+    public function getClientClassificationOfActivities(): Collection
+    {
+        return $this->clientClassificationOfActivities;
+    }
+
+    public function addClientClassificationOfActivity(ClientClassificationOfActivities $clientClassificationOfActivity): static
+    {
+        if (!$this->clientClassificationOfActivities->contains($clientClassificationOfActivity)) {
+            $this->clientClassificationOfActivities->add($clientClassificationOfActivity);
+            $clientClassificationOfActivity->setClient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeClientClassificationOfActivity(ClientClassificationOfActivities $clientClassificationOfActivity): static
+    {
+        if ($this->clientClassificationOfActivities->removeElement($clientClassificationOfActivity)) {
+            // set the owning side to null (unless already changed)
+            if ($clientClassificationOfActivity->getClient() === $this) {
+                $clientClassificationOfActivity->setClient(null);
+            }
+        }
+
         return $this;
     }
 }
