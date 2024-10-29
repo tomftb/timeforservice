@@ -27,6 +27,8 @@ final class Version20241029153752 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_9A51741919EB6921 ON client_classification_of_activities (client_id)');
         $this->addSql('CREATE INDEX IDX_9A5174192A86559F ON client_classification_of_activities (classification_id)');
         $this->addSql('ALTER TABLE client_classification_of_activities ADD CONSTRAINT UC_client_classification UNIQUE (client_id,classification_id)');
+        $this->addSql('ALTER TABLE classification_of_activities ADD CONSTRAINT UC_classification_of_activities_code UNIQUE (code)');
+        $this->addSql('ALTER TABLE classification_of_activities ADD CONSTRAINT UC_classification_of_activities_name UNIQUE (name);');
     }
 
     public function down(Schema $schema): void
@@ -38,6 +40,8 @@ final class Version20241029153752 extends AbstractMigration
         $this->addSql('DROP INDEX IDX_9A51741919EB6921 ON client_classification_of_activities');
         $this->addSql('DROP INDEX IDX_9A5174192A86559F ON client_classification_of_activities');
         $this->addSql('ALTER TABLE client_classification_of_activities DROP INDEX UC_client_classification');
+        $this->addSql('ALTER TABLE classification_of_activities DROP INDEX UC_classification_of_activities_code');
+        $this->addSql('ALTER TABLE classification_of_activities DROP INDEX UC_classification_of_activities_name');
         $this->addSql('ALTER TABLE client_classification_of_activities DROP client_id, DROP classification_id');
         
     }
