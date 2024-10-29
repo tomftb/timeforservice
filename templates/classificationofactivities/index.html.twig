@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }} - Clients Points{% endblock %}
+{% block title %}{{ parent() }} - Classification of activities{% endblock %}
 
 {% block body %}
 <div class="m-4 p-4 bg-gray-800 rounded-lg">
@@ -8,39 +8,22 @@
     <div
         class="flex justify-between"
     >
-        <h1 class="text-xl font-semibold text-white mb-4">Clients Points</h1>
-        <twig:Button
-            tag="a"
-            href="{{ path('app_clientpoint_new') }}"
-            data-turbo-frame="modal"
-            class="flex items-center space-x-1 font-bold"
-        >
-            <span>Create new</span>
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 inline" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/>
-                <path d="M9 12h6"/>
-                <path d="M12 9v6"/>
-            </svg>
-        </twig:Button>
+        <h1 class="text-xl font-semibold text-white mb-4">Classification of activities:</h1>
     </div>
     {# END Create New #}
     <table class="min-w-full bg-gray-800 text-white" id="clientpoint-list">
         <thead class="border-b border-gray-700">
             <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Id</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Code</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Street</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">ZIP-Code</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Town</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">e-mail</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Phone number</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Unit</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Updated at:</th>
             </tr>
         </thead>
         <tbody class="divide-y divide-gray-600">
-        {% for clientPoint in clientsPoints %}
-            {% include('clientpoint/_row.html.twig') %}
+        {% for classificationOfActivities in classificationsOfActivities %}
+            {% include('classificationofactivities/_row.html.twig') %}
         {% else %}
             <tr>
                 <td colspan="5" class="px-6 py-4 whitespace-nowrap text-center text-gray-400">No records found</td>
