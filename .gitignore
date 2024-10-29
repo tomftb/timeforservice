@@ -21,4 +21,5 @@
 /public/assets/
 /assets/vendor/
 /tmp/*
+/tmp/
 ###< symfony/asset-mapper ###
