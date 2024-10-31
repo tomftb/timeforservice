@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\ClientClassificationOfActivitiesRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: ClientClassificationOfActivitiesRepository::class)]
 class ClientClassificationOfActivities
@@ -27,8 +29,11 @@ class ClientClassificationOfActivities
     #[ORM\JoinColumn(nullable: false)]
     private ?ClassificationOfActivities $classification = null;
 
+    protected Collection $classificationOfActivities;
+    
     public function __construct()
     {
+        $this->classificationOfActivities = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -82,5 +87,9 @@ class ClientClassificationOfActivities
         $this->classification = $classification;
 
         return $this;
+    }
+    public function getClassificationOfActivities(): Collection
+    {
+        return $this->classificationOfActivities;
     }
 }
