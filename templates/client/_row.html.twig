@@ -20,6 +20,12 @@
             class="ml-4 text-yellow-400 hover:text-yellow-600"
             data-turbo-frame="modal"
         >edit</a>
+        <a 
+            href="{{ path('app_client_cooperation', {'id': client.id}) }}" 
+            class="ml-4 text-green-400 hover:text-green-600"
+            data-turbo-frame="modal"
+            title="Coopeartion terms"
+        >cooperation</a>
             {# use :allowSmallWidth with : at the beginning of the variable name to send a boolean value, oposite it will send a string value #}
         <twig:Modal :allowSmallWidth="true">
             <twig:block name="trigger">
