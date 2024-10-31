@@ -3,9 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\Client;
+//use App\Entity\ClassificationOfActivities;
+use App\Entity\ClientClassificationOfActivities;
 use App\Form\ClientType;
+use App\Form\ClientClassificationOfActivitiesType;
 use App\Repository\ClientRepository;
 use App\Repository\ServiceRepository;
+use App\Repository\ClassificationOfActivitiesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -133,6 +137,45 @@ class ClientController extends AbstractController{
         return $this->render('client/services.html.twig', [
             'client' => $client,
             'services' => $serviceRepository->findByClientId($client->getId(),'DESC')
+        ]);
+    }
+    #[Route('/{id}/cooperation', name: 'app_client_cooperation', methods: ['GET', 'POST'])]
+    public function cooperation(Request $request, Client $client,ClassificationOfActivitiesRepository $classificationOfActivitiesRepository,EntityManagerInterface $entityManager): Response
+    {
+        $clientClassificationOfActivities = new ClientClassificationOfActivities ();
+        
+        //dd($classificationOfActivitiesRepository->findAll());
+        $classificationOfActivities = $classificationOfActivitiesRepository->findAll();
+        foreach($classificationOfActivities as $classification ){
+            $clientClassificationOfActivities->getClassificationOfActivities()->add($classification);
+        }
+        //dd($clientClassificationOfActivities);
+        $form = $this->createForm(ClientClassificationOfActivitiesType::class,$clientClassificationOfActivities ,[
+            'action' => $this->generateUrl('app_client_cooperation',['id'=>$client->getId()]), 
+        ]);
+        
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager->flush();
+            $this->addFlash('success', 'Client updated');
+            /*
+             * CHECK REQUEST HEADER
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('client/cooperation.html.twig','stream_success',[
+                    'cooperation' => $clientClassificationOfActivities,
+                    'initialClientFormData' => $client,
+                ]);
+                $this->addFlash('stream',$stream);
+            }
+            return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
+        }
+        
+        return $this->render('client/cooperation.html.twig', [
+            'cooperation' => $clientClassificationOfActivities,
+            'client' => $client,
+            'form' => $form,
         ]);
     }
 }
