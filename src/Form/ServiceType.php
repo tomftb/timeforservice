@@ -20,8 +20,12 @@ class ServiceType extends AbstractType
             ->add('endedAt', DateTimeType::class, [
                 'date_label' => 'Starts On',
             ])
-            ->add('time') 
-            ->add('route') 
+            ->add('time',null,[
+                'label'=>'Time (in minutes)'
+            ]) 
+            ->add('route',null,[
+                'label'=>'Route (in kilometers)'
+            ]) 
             ->add('clientPoint', null, [
                 'choice_label' =>  function ($client) {
                         return $client->getName() . ' (' .$client->getStreet().",". $client->getTown().")";
