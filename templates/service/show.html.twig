@@ -18,6 +18,10 @@
                 <td class="px-6 py-4 whitespace-nowrap">{{ service.id }}</td>
             </tr>
             <tr>
+                <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Client point</th>
+                <td class="px-6 py-4 whitespace-nowrap">{{ service.clientPoint.name }}<br/>{{ service.clientPoint.street  }}<br/>{{ service.clientPoint.town  }}</td>
+            </tr>
+            <tr>
                 <th class="px-6 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Description:</th>
                 <td class="px-6 py-4">{{ service.description }}</td>
             </tr>
