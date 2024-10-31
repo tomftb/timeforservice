@@ -7,7 +7,8 @@ use Symfony\UX\LiveComponent\DefaultActionTrait;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\Component\Form\FormInterface;
 use App\Entity\Client;
-use App\Form\ClientType;
+use App\Entity\ClientClassificationOfActivities;
+use App\Form\ClientCooperationType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 
@@ -18,22 +19,23 @@ use Symfony\UX\LiveComponent\Attribute\LiveProp;
  * @author Tomasz
  */
 #[AsLiveComponent]
-class ClientForm extends AbstractController{
+class ClientClassificationOfActivitiesForm extends AbstractController{
     
     use DefaultActionTrait;
     use ComponentWithFormTrait;
 
     #[LiveProp]
-    public ?Client $initialFormData = null;
+    public ?ClientClassificationOfActivities $initialCooperationFormData = null;
+    public ?Client $initialClientFormData = null;
     
     #[\Override]
     protected function instantiateForm(): FormInterface
     {
-        //dd($this->initialFormData);
-        $client=$this->initialFormData ?? new Client();
+        $clientClassificationOfActivities=$this->initialFormData ?? new ClientClassificationOfActivities();
+        $client=$this->initialClientFormData ?? new Client();
         
-        return $this->createForm(ClientType::class,$client ,[
-            'action' => $client->getId() ? $this->generateUrl('app_client_edit',['id'=>$client->getId()]) : $this->generateUrl( 'app_client_new' ), 
+        return $this->createForm(ClientClassificationOfActivitiesType::class,$clientClassificationOfActivities ,[
+            'action' => $this->generateUrl('app_client_cooperation',['id'=>$client->getId()]), 
         ]);
     }
 }
