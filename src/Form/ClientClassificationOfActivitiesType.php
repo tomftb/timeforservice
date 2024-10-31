@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\Client;
+use App\Entity\ClientClassificationOfActivities;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -10,46 +10,51 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Validator\Constraints\Length;
 
-class ClientType extends AbstractType
+use Symfony\Component\Form\Extension\Core\Type\CollectionType;
+
+//use App\Repository\ClassificationOfActivitiesRepository;
+
+class ClientClassificationOfActivitiesType extends AbstractType
 {
+    //private array $classificationOfActivities = [];
+    public function __construct()//ClassificationOfActivitiesRepository $classificationOfActivitiesRepository
+    {
+        //$this->classificationOfActivities = $classificationOfActivitiesRepository->findAll();
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('name',TextType::class,[
-                'required' => true,
-                'constraints' => [new Length(['min' => 3])],
-            ])
-            ->add('street',TextType::class,[
-                'required' => true,
-                'constraints' => [new Length(['min' => 3])],
-            ])
-            ->add('zipCode',TextType::class,[
-                'required' => true,
-                'constraints' => [new Length(['min' => 5])],
-            ])
-            ->add('town',TextType::class,[
-                'required' => true,
-                'constraints' => [new Length(['min' => 3])],
-            ])
-            ->add('nin',TextType::class,[
-                'required' => true,
-                'constraints' => [new Length(['min' => 10])],
-            ])
-            ->add('hourlyRate',NumberType::class,[
-                'required' => true,
-                'constraints' => [new Length(['min' => 1])],
-            ])
-            ->add('kilometerRate',NumberType::class,[
-                'required' => true,
-                'constraints' => [new Length(['min' => 1])],
-            ])
-        ;
+         $builder->add('classificationOfActivities', CollectionType::class, [
+            'entry_type' => ClassificationOfActivitiesType::class,
+            'entry_options' => ['label' => false],
+        ]);
+         
+        //dd($this->classificationOfActivities);
+        //$builder->add('classificationOfActivities', CollectionType::class);
+       //$builder->add('classificationOfActivities', CollectionType::class, [
+       //     'entry_type' => ClassificationOfActivitiesType::class,
+        //    'entry_options' => ['label' => false],
+        //]);
+        
+        //foreach($this->classificationOfActivities as $key =>$value){
+            //dd($value);
+            //$builder->get('classificationOfActivities')->add('classification_'.$key, ClassificationOfActivitiesType::class,[
+            //    'code'=>$value->getCode(),
+            //    'name'=>$value->getName(),
+            //]);
+            //$builder
+           // ->add('classificationOfActivities',TextType::class,[
+            //    'required' => true,
+            //    'constraints' => [new Length(['min' => 3])],
+            //]);
+            //$builder->get('clientClassificationOfActivities')->add('classification_'.$key);
+        //}
+       //dd($builder->get('classificationOfActivities'));
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Client::class,
+            'data_class' => ClientClassificationOfActivities::class,
         ]);
     }
 }
