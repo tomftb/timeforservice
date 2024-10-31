@@ -38,6 +38,27 @@ class Service
     #[ORM\ManyToOne()]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $route = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $rate = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $cost = null;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $code = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $name = null;
+
+    #[ORM\Column(length: 10, nullable: true)]
+    private ?string $unit = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $routePrice = null;
     
     public function __construct()
     {
@@ -118,6 +139,90 @@ class Service
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getRoute(): ?float
+    {
+        return $this->route;
+    }
+
+    public function setRoute(?float $route): static
+    {
+        $this->route = $route;
+
+        return $this;
+    }
+
+    public function getRate(): ?float
+    {
+        return $this->rate;
+    }
+
+    public function setRate(?float $rate): static
+    {
+        $this->rate = $rate;
+
+        return $this;
+    }
+
+    public function getCost(): ?float
+    {
+        return $this->cost;
+    }
+
+    public function setCost(?float $cost): static
+    {
+        $this->cost = $cost;
+
+        return $this;
+    }
+
+    public function getCode(): ?string
+    {
+        return $this->code;
+    }
+
+    public function setCode(?string $code): static
+    {
+        $this->code = $code;
+
+        return $this;
+    }
+
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    public function setName(?string $name): static
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    public function getUnit(): ?string
+    {
+        return $this->unit;
+    }
+
+    public function setUnit(?string $unit): static
+    {
+        $this->unit = $unit;
+
+        return $this;
+    }
+
+    public function getRoutePrice(): ?float
+    {
+        return $this->routePrice;
+    }
+
+    public function setRoutePrice(?float $routePrice): static
+    {
+        $this->routePrice = $routePrice;
 
         return $this;
     }
