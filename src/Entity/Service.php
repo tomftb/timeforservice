@@ -62,9 +62,14 @@ class Service
 
     #[ORM\ManyToOne(inversedBy: 'services')]
     private ?ClassificationOfActivities $classificationOfActivities = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $routeCost = null;
     
     public function __construct()
     {
+        $this->route=0;
+        $this->routeCost=0;
     }
     
     public function getId(): ?int
@@ -236,6 +241,18 @@ class Service
     public function setClassificationOfActivities(?ClassificationOfActivities $classificationOfActivities): static
     {
         $this->classificationOfActivities = $classificationOfActivities;
+
+        return $this;
+    }
+
+    public function getRouteCost(): ?float
+    {
+        return $this->routeCost;
+    }
+
+    public function setRouteCost(?float $routeCost): static
+    {
+        $this->routeCost = $routeCost;
 
         return $this;
     }
