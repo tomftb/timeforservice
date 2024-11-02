@@ -67,7 +67,7 @@ class ClientClassificationOfActivities
 
     public function getClient(): ?Client
     {
-        return $this->Client;
+        return $this->client;
     }
 
     public function setClient(?Client $client): static
