@@ -16,10 +16,6 @@ abstract class _Main {
     protected ?int $dataSetSumRow = null;
     protected ?int $firstDataSetRow = null;
     protected ?int $lastDataSetRow = null;
-    private ?string $dataSetSumColumn = null;
-    private ?string $dataSetColumnToSum = null;
-    private ?string $dataSetSumColumnLabel = null;
-    private ?string $dataSetSumColumnLabelValue = null;
     
     protected ?float $rate=null;
     protected ?float $mileage=null;
@@ -80,64 +76,6 @@ abstract class _Main {
         $fileContent = file_get_contents($fileName);
         unlink($fileName);
         return $fileContent;
-    }
-    protected function setDataSumColumn(string $column='A')
-    {
-        $this->dataSetSumColumn = $column;
-    }
-    protected function setDataSumColumnLabel(string $column='A',string $label='')
-    {
-        $this->dataSetSumColumnLabel = $column;
-        $this->dataSetSumColumnLabelValue = $label;
-    }
-    protected function setDataColumnToSum(string $column='A')
-    {
-        $this->dataSetColumnToSum = $column;
-    }
-    protected function sumDataSetRow(?float $sumTime=null):void
-    {
-        /*
-         * CHECK IS THERE SOMETHING TO SUM
-         */
-        if($this->firstDataSetRow === null || $sumTime===null){
-            return ;
-        }
-        self::checkDataSetRowProperties();
-        /*
-         * SET SUM LABEL
-         */
-        $this->activeWorksheet->setCellValue($this->dataSetSumColumnLabel.$this->dataSetSumRow,$this->dataSetSumColumnLabelValue);
-        /*
-         * SET SUM VALUE
-         */
-        $this->activeWorksheet->setCellValue($this->dataSetSumColumn.$this->dataSetSumRow,$sumTime);
-    }
-    private function checkDataSetRowProperties()
-    {
-        /*
-         * CHECK SUM COLUMN
-         */
-        if($this->dataSetSumColumn === null){
-            Throw New \Exception("SET SUM COLUMN");
-        }
-        /*
-         * CHECK COLUMN TO SUM
-         */
-        if($this->dataSetColumnToSum === null){
-            Throw New \Exception("SET COLUMN TO SUM");
-        }
-        /*
-         * CHECK DATA SET SUM ROW
-         */
-        if($this->dataSetSumRow === null){
-            Throw New \Exception("SET COLUMN ROW TO SUM");
-        }
-        /*
-         * CHECK SUM COLUMN LABEL
-         */
-        if($this->dataSetSumColumnLabel === null || $this->dataSetSumColumnLabelValue === null){
-            Throw New \Exception("SET COLUMN SUM LABEL");
-        }
     }
     protected function setSum($time,$distance,$timeCost,$distanceCost)
     {

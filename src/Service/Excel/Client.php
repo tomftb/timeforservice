@@ -43,7 +43,7 @@ class Client extends _Main
         /*
          * SET ROW TITLE - Client Point name
          */
-        parent::setTitle($client->getName()." (".$client->getNin().")",['A','C']);
+        parent::setTitle($client->getName()." (".$client->getNin().")",['A','E']);
         /*
          * SET ROW OF COLUMNS DESCRIPTION 
          */
@@ -54,18 +54,6 @@ class Client extends _Main
             'D'=>"Czas(h):",
             'E'=>'Trasa(km):'
         ]);
-        /*
-         * SET DATA SET SUM TIME COLUMN WITH LABEL
-         */
-        parent::setDataSumColumnLabel('D',"Suma(h)");
-        /*
-         * SET DATA SET SUM COLUMN
-         */
-        parent::setDataSumColumn('E');
-        /*
-         * SET COLUMN TO WRITE A SUM
-         */
-        parent::setDataColumnToSum('F');
         /*
          * SET ROWS WITH DATA
          */
@@ -111,14 +99,11 @@ class Client extends _Main
              * UPDATE ROW
              */
             $this->row++;
-        }  
-        parent::sumDataSetRow($timeSum->get());
+        }
         array_push($this->time,$timeSum->get());
         array_push($this->distance,$distanceSum->get());
         array_push($this->timeCost,$timeSum->get()*90);
         array_push($this->distanceCost,$distanceSum->get()*1.85);
-        //$timeCost = $timeSum->get()*90;
-        //$distanceCost = $distanceSum->get()*1.85;
         parent::setSum($timeSum->get(),$distanceSum->get(),end($this->timeCost),end($this->distanceCost));
        
         /*
