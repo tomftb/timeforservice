@@ -21,6 +21,9 @@ abstract class _Main {
     private ?string $dataSetSumColumnLabel = null;
     private ?string $dataSetSumColumnLabelValue = null;
     
+    protected ?float $rate=null;
+    protected ?float $mileage=null;
+    
     public function __construct(
         private string $appTmp,
         protected int $row=1
@@ -34,6 +37,20 @@ abstract class _Main {
          * SET ACTIVE SHEET
          */
         $this->activeWorksheet = $this->spreadsheet->getActiveSheet();
+    }
+    public function setRate(?float $rate=null):void
+    {
+        if($rate===null){
+            return;
+        }
+        $this->rate=$rate;
+    }
+    public function setMileage(?float $mileage=null):void
+    {
+        if($mileage===null){
+            return;
+        }
+        $this->mileage=$mileage;
     }
     protected function setColumnsDimensions(array $dimensions=[]):void
     {
@@ -121,5 +138,48 @@ abstract class _Main {
         if($this->dataSetSumColumnLabel === null || $this->dataSetSumColumnLabelValue === null){
             Throw New \Exception("SET COLUMN SUM LABEL");
         }
+    }
+    protected function setSum($time,$distance,$timeCost,$distanceCost)
+    {
+        /*
+         * SET SUM LABEL
+         */
+        $this->activeWorksheet->setCellValue("C".$this->row,"Suma:");
+        /*
+         * SET TIME SUM VALUE
+         */
+        $this->activeWorksheet->setCellValue("D".$this->row,$time);
+        /*
+         * SET DISTANCE SUM VALUE
+         */
+        $this->activeWorksheet->setCellValue("E".$this->row,$distance);
+        /*
+         * INCREMENT ROW
+         */
+        $this->row++;
+        /*
+         * SET SUM COST LABEL
+         */
+        $this->activeWorksheet->setCellValue("C".$this->row,"Koszt:");
+        /*
+         * SET TIME SUM COST VALUE
+         */
+       
+        $this->activeWorksheet->setCellValue("D".$this->row,$timeCost);
+        /*
+         * SET DISTANCE SUM COST VALUE
+         */
+        
+        $this->activeWorksheet->setCellValue("E".$this->row,$distanceCost);
+        $this->row++;
+        /*
+         * SET THE WHOLE COST
+         */
+        $this->activeWorksheet->setCellValue("C".$this->row,"Razem:");
+         /*
+         * SET TIME AND DISTNACE COST SUM VALUE
+         */
+        $this->activeWorksheet->setCellValue("D".$this->row,$timeCost+$distanceCost);
+        $this->row++;
     }
 }
