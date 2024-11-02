@@ -3,7 +3,7 @@
 namespace App\Service\Excel;
 
 use App\Entity\Client as ClientEntity;
-use App\Service\Excel\Time;
+use App\Service\ConvertTime as Time;
 use App\Service\Excel\TimeSum;
 use App\Service\Excel\Distance;
 use App\Service\Excel\DistanceSum;
@@ -102,8 +102,8 @@ class Client extends _Main
         }
         array_push($this->time,$timeSum->get());
         array_push($this->distance,$distanceSum->get());
-        array_push($this->timeCost,$timeSum->get()*90);
-        array_push($this->distanceCost,$distanceSum->get()*1.85);
+        array_push($this->timeCost,$timeSum->get()*$this->rate);
+        array_push($this->distanceCost,$distanceSum->get()*$this->mileage);
         parent::setSum($timeSum->get(),$distanceSum->get(),end($this->timeCost),end($this->distanceCost));
        
         /*
