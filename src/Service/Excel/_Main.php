@@ -65,7 +65,7 @@ abstract class _Main {
         $customRichText->getFont()->setColor( new Color( \PhpOffice\PhpSpreadsheet\Style\Color::COLOR_BLACK));
         $this->spreadsheet->getActiveSheet()->getCell('A'.$this->row)->setValue($richText);
         $this->activeWorksheet->MergeCells($columnsMergeStarts.strval($this->row).':'.$columnMergeEnds.strval($this->row));
-        $this->activeWorksheet->getStyle($columnsMergeStarts.':'.$columnMergeEnds)->getAlignment()->setHorizontal('center');
+        $this->activeWorksheet->getStyle($columnsMergeStarts.strval($this->row).':'.$columnMergeEnds.strval($this->row))->getAlignment()->setHorizontal('center');
         $this->dataSetSumRow=$this->row;
         $this->row++;
     }
