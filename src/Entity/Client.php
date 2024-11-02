@@ -49,7 +49,7 @@ class Client
     /**
      * @var Collection<int, ClientClassificationOfActivities>
      */
-    #[ORM\OneToMany(targetEntity: ClientClassificationOfActivities::class, mappedBy: 'Client')]
+    #[ORM\OneToMany(targetEntity: ClientClassificationOfActivities::class, mappedBy: 'client')]
     private Collection $clientClassificationOfActivities;
     
     public function __construct()
