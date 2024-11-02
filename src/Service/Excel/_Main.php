@@ -4,6 +4,8 @@ namespace App\Service\Excel;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\RichText\RichText;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 /**
  * Description of _Main
  *
@@ -54,10 +56,16 @@ abstract class _Main {
             $this->spreadsheet->getActiveSheet()->getColumnDimension($column)->setWidth($dimension);
         }
     }
-    protected function setTitle(string $title='',array $columnsMerge=['A1','A1']):void
+    protected function setTitle(string $title='',string $columnsMergeStarts='A', string $columnMergeEnds='A'):void
     {
-        $this->activeWorksheet->setCellValue('A'.$this->row, $title);
-        $this->activeWorksheet->MergeCells($columnsMerge[0].strval($this->row).':'.$columnsMerge[1].strval($this->row));
+        $richText = new RichText();
+        $customRichText = $richText->createTextRun($title);
+        $customRichText->getFont()->setBold(true);
+        $customRichText->getFont()->setItalic(false);
+        $customRichText->getFont()->setColor( new Color( \PhpOffice\PhpSpreadsheet\Style\Color::COLOR_BLACK));
+        $this->spreadsheet->getActiveSheet()->getCell('A'.$this->row)->setValue($richText);
+        $this->activeWorksheet->MergeCells($columnsMergeStarts.strval($this->row).':'.$columnMergeEnds.strval($this->row));
+        $this->activeWorksheet->getStyle($columnsMergeStarts.':'.$columnMergeEnds)->getAlignment()->setHorizontal('center');
         $this->dataSetSumRow=$this->row;
         $this->row++;
     }

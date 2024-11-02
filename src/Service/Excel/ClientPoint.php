@@ -33,7 +33,7 @@ class ClientPoint extends _Main
         /*
          * SET ROW TITLE - Client Point name
          */
-        parent::setTitle($clientPoint->getName(),['A','D']);
+        parent::setTitle($clientPoint->getName(),'A','D');
         /*
          * SET ROW OF COLUMNS DESCRIPTION 
          */

@@ -43,7 +43,7 @@ class Client extends _Main
         /*
          * SET ROW TITLE - Client Point name
          */
-        parent::setTitle($client->getName()." (".$client->getNin().")",['A','E']);
+        parent::setTitle($client->getName()." (".$client->getNin().")","A","E");
         /*
          * SET ROW OF COLUMNS DESCRIPTION 
          */
