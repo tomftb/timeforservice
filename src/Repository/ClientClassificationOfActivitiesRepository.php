@@ -15,7 +15,16 @@ class ClientClassificationOfActivitiesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ClientClassificationOfActivities::class);
     }
-
+    public function findByIds(int $clientId=0, int $classificationId=0 ): array
+    {
+        return $this->createQueryBuilder('c')
+                ->andWhere('c.client_id = :clientId')
+                ->andWhere('`c`.`classification_id` = :classificationId')
+                ->setParameter('clientId', $clientId)
+                ->setParameter('classificationId', $classificationId)
+                ->getQuery()
+                ->getResult();
+    }
     //    /**
     //     * @return ClientClassificationOfActivities[] Returns an array of ClientClassificationOfActivities objects
     //     */
