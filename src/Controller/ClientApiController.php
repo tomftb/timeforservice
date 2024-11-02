@@ -84,13 +84,18 @@ class ClientApiController extends AbstractController{
          */
         $fileName = 'all (services '.$fileLabel.').xlsx';
         foreach($clients as $client){
+            $clientExcel->setRate($client->getHourlyRate());
+            $clientExcel->setMileage($client->getKilometerRate());
             $clientExcel->set($client,$serviceRepository->{$findBy}($client->getId(),'ASC',$endedFrom,$endedTo));
         }
+        $clientExcel->setWholeCost();
         return $this->returnExcel($fileName,$clientExcel->get()); 
     }
     #[Route('/{id}/export_services', name: 'app_client_export_services', methods: ['GET'])]
     public function exportServices(Client $client,ServiceRepository $serviceRepository,ClientExcel $clientExcel): Response
     {   
+        $clientExcel->setRate($client->getHourlyRate());
+        $clientExcel->setMileage($client->getKilometerRate());
         $clientExcel->set($client,$serviceRepository->findByClientId($client->getId(),'ASC'));
         return $this->returnExcel($client->getName(),$clientExcel->get()); 
     }
