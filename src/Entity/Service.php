@@ -61,12 +61,10 @@ class Service
     private ?float $routePrice = null;
 
     #[ORM\ManyToOne(inversedBy: 'services')]
-    private ?classificationOfActivities $classificationOfActivities = null;
+    private ?ClassificationOfActivities $classificationOfActivities = null;
     
     public function __construct()
     {
-        //$this->startedAt = new \DateTimeImmutable("NOW");
-        //$this->endedAt = new \DateTimeImmutable("NOW");
     }
     
     public function getId(): ?int
@@ -229,13 +227,13 @@ class Service
 
         return $this;
     }
-
-    public function getClassificationOfActivities(): ?classificationOfActivities
+    
+    public function getClassificationOfActivities(): ?ClassificationOfActivities
     {
         return $this->classificationOfActivities;
     }
-
-    public function setClassificationOfActivities(?classificationOfActivities $classificationOfActivities): static
+    
+    public function setClassificationOfActivities(?ClassificationOfActivities $classificationOfActivities): static
     {
         $this->classificationOfActivities = $classificationOfActivities;
 
