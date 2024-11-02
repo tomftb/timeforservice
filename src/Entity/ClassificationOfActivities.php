@@ -36,9 +36,16 @@ class ClassificationOfActivities
     #[ORM\OneToMany(targetEntity: ClientClassificationOfActivities::class, mappedBy: 'classification')]
     private Collection $clientClassificationOfActivities;
 
+    /**
+     * @var Collection<int, Service>
+     */
+    #[ORM\OneToMany(targetEntity: Service::class, mappedBy: 'classificationOfActivities')]
+    private Collection $services;
+
     public function __construct()
     {
         $this->clientClassificationOfActivities = new ArrayCollection();
+        $this->services = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -130,6 +137,36 @@ class ClassificationOfActivities
             // set the owning side to null (unless already changed)
             if ($clientClassificationOfActivity->getClassification() === $this) {
                 $clientClassificationOfActivity->setClassification(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Service>
+     */
+    public function getServices(): Collection
+    {
+        return $this->services;
+    }
+
+    public function addService(Service $service): static
+    {
+        if (!$this->services->contains($service)) {
+            $this->services->add($service);
+            $service->setClassificationOfActivities($this);
+        }
+
+        return $this;
+    }
+
+    public function removeService(Service $service): static
+    {
+        if ($this->services->removeElement($service)) {
+            // set the owning side to null (unless already changed)
+            if ($service->getClassificationOfActivities() === $this) {
+                $service->setClassificationOfActivities(null);
             }
         }
 
