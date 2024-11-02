@@ -29,6 +29,17 @@ class ServiceController extends AbstractController
         $form = $this->createServiceForm($service);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /*
+             * SET ClassificationOfActivities
+             */
+            $service->setUnit($service->getClassificationOfActivities()->getUnit());
+            $service->setCode($service->getClassificationOfActivities()->getCode());
+            $service->setName($service->getClassificationOfActivities()->getName());
+            $service->setRate(self::getClientClassificationOfActivitiesPrice($service));
+            /*
+             * SET Client
+             */
+            $service->setRoutePrice($service->getClientPoint()->getClient()->getKilometerRate());
             $entityManager->persist($service);
             $entityManager->flush();
             $this->addFlash('success', 'Saved');
@@ -61,9 +72,20 @@ class ServiceController extends AbstractController
         $form = $this->createServiceForm($service);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /*
+             * SET ClassificationOfActivities
+             */
+            $service->setRate(self::getClientClassificationOfActivitiesPrice($service));
+            $service->setUnit($service->getClassificationOfActivities()->getUnit());
+            $service->setCode($service->getClassificationOfActivities()->getCode());
+            $service->setName($service->getClassificationOfActivities()->getName());
+            $service->setRate($service->getClassificationOfActivities()->getClientClassificationOfActivities()->current()->getPrice());
+            /*
+             * SET Client
+             */
+            $service->setRoutePrice($service->getClientPoint()->getClient()->getKilometerRate());
             $entityManager->flush();
             $this->addFlash('success', 'Service updated!');
-            
             /*
              * ADD CHECK HEADER FOR MODAL
              */
@@ -108,5 +130,27 @@ class ServiceController extends AbstractController
         return $this->createForm(ServiceType::class,$service ,[
             'action' => $service->getId() ? $this->generateUrl('app_service_edit',['id'=>$service->getId()]) : $this->generateUrl( 'app_service_new' ), 
         ]);
+    }
+    private function getClientClassificationOfActivitiesPrice(Service $service):?float
+    {
+        if($service->getClassificationOfActivities() === null)
+        {
+            /* TO DO */
+            //dd('chose service');
+        }
+        //dd($service);
+        $classificationId = $service->getClassificationOfActivities()->getId();
+        $clientClassificationOfActivities = $service->getClientPoint()->getClient()->getClientClassificationOfActivities()->getValues();
+        if(empty($clientClassificationOfActivities))
+        {
+            /* TO DO */
+            //dd('set service list');
+        }
+        foreach($clientClassificationOfActivities as $clientClassification ){
+            if($clientClassification->getId() === $classificationId){
+                return $clientClassification->getPrice();
+            }
+        }
+        return null;
     }
 }
