@@ -93,7 +93,7 @@ class ClientApiController extends AbstractController{
     }
     #[Route('/{id}/export_services', name: 'app_client_export_services', methods: ['GET'])]
     public function exportServices(Client $client,ServiceRepository $serviceRepository,ClientExcel $clientExcel): Response
-    {   
+    {
         $clientExcel->setRate($client->getHourlyRate());
         $clientExcel->setMileage($client->getKilometerRate());
         $clientExcel->set($client,$serviceRepository->findByClientId($client->getId(),'ASC'));
