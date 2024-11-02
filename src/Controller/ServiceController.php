@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormInterface;
+use App\Service\ConvertTime;
 
 #[Route('/service')]
 class ServiceController extends AbstractController
@@ -29,17 +30,7 @@ class ServiceController extends AbstractController
         $form = $this->createServiceForm($service);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /*
-             * SET ClassificationOfActivities
-             */
-            $service->setUnit($service->getClassificationOfActivities()->getUnit());
-            $service->setCode($service->getClassificationOfActivities()->getCode());
-            $service->setName($service->getClassificationOfActivities()->getName());
-            $service->setRate(self::getClientClassificationOfActivitiesPrice($service));
-            /*
-             * SET Client
-             */
-            $service->setRoutePrice($service->getClientPoint()->getClient()->getKilometerRate());
+            self::prepare($service);
             $entityManager->persist($service);
             $entityManager->flush();
             $this->addFlash('success', 'Saved');
@@ -72,18 +63,7 @@ class ServiceController extends AbstractController
         $form = $this->createServiceForm($service);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            /*
-             * SET ClassificationOfActivities
-             */
-            $service->setRate(self::getClientClassificationOfActivitiesPrice($service));
-            $service->setUnit($service->getClassificationOfActivities()->getUnit());
-            $service->setCode($service->getClassificationOfActivities()->getCode());
-            $service->setName($service->getClassificationOfActivities()->getName());
-            $service->setRate($service->getClassificationOfActivities()->getClientClassificationOfActivities()->current()->getPrice());
-            /*
-             * SET Client
-             */
-            $service->setRoutePrice($service->getClientPoint()->getClient()->getKilometerRate());
+            self::prepare($service);
             $entityManager->flush();
             $this->addFlash('success', 'Service updated!');
             /*
@@ -131,13 +111,13 @@ class ServiceController extends AbstractController
             'action' => $service->getId() ? $this->generateUrl('app_service_edit',['id'=>$service->getId()]) : $this->generateUrl( 'app_service_new' ), 
         ]);
     }
-    private function getClientClassificationOfActivitiesPrice(Service $service):?float
+    private function getClientClassificationOfActivitiesPrice(Service $service):float
     {
         if($service->getClassificationOfActivities() === null)
         {
             /* TO DO */
             //dd('chose service');
-            return null;
+            return 0;
         }
         //dd($service);
         $classificationId = $service->getClassificationOfActivities()->getId();
@@ -146,13 +126,43 @@ class ServiceController extends AbstractController
         {
             /* TO DO */
             //dd('set service list');
-            return null;
+            return 0;
         }
         foreach($clientClassificationOfActivities as $clientClassification ){
-            if($clientClassification->getId() === $classificationId){
+            if($clientClassification->getClassification()->getId() === $classificationId){
                 return $clientClassification->getPrice();
             }
         }
-        return null;
+        //dd("NOT FOUND");
+        return 0;
+    }
+    private function prepare(Service $service):Service
+    {
+        /*
+         * SET ROUTE
+         */
+        $route = $service->getRoute();
+        if($route === null){
+            $route = 0;
+            $service->setRoute(0);
+        }
+        $kilometerRate = $service->getClientPoint()->getClient()->getKilometerRate();
+        $service->setRoutePrice($kilometerRate);
+        $service->setRouteCost($kilometerRate * $route);
+        /*
+         * SET ClassificationOfActivities
+         */
+        $service->setUnit($service->getClassificationOfActivities()->getUnit());
+        $service->setCode($service->getClassificationOfActivities()->getCode());
+        $service->setName($service->getClassificationOfActivities()->getName());
+        /*
+         * SET COST
+         */
+        $rate = self::getClientClassificationOfActivitiesPrice($service);
+        $service->setRate($rate);
+        $convertTime = new ConvertTime();
+        $convertTime->add($service->getTime());
+        $service->setCost($convertTime->get()*$rate);
+        return $service;
     }
 }
