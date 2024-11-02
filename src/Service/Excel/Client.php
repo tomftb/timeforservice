@@ -5,9 +5,17 @@ namespace App\Service\Excel;
 use App\Entity\Client as ClientEntity;
 use App\Service\Excel\Time;
 use App\Service\Excel\TimeSum;
+use App\Service\Excel\Distance;
+use App\Service\Excel\DistanceSum;
 
 class Client extends _Main
 {
+
+    private array $time=[];
+    private array $distance=[];
+    private array $timeCost=[];
+    private array $distanceCost=[];
+    
     public function __construct(
         private string $appTmp
         )
@@ -23,7 +31,8 @@ class Client extends _Main
             'A'=>5,
             'B'=>11,
             'C'=>45,
-            'D'=>8
+            'D'=>8,
+            'E'=>10
         ]);
     }
     public function set(?ClientEntity $client,array $serviceRepository):void
@@ -34,7 +43,7 @@ class Client extends _Main
         /*
          * SET ROW TITLE - Client Point name
          */
-        parent::setTitle($client->getName()." (".$client->getNin().")",['A','D']);
+        parent::setTitle($client->getName()." (".$client->getNin().")",['A','C']);
         /*
          * SET ROW OF COLUMNS DESCRIPTION 
          */
@@ -42,20 +51,21 @@ class Client extends _Main
             'A'=>"Lp:",
             'B'=>"Data:",
             'C'=>"Punkt:",
-            'D'=>"Czas(h):"
+            'D'=>"Czas(h):",
+            'E'=>'Trasa(km):'
         ]);
         /*
-         * SET DATA SET SUM COLUMN
+         * SET DATA SET SUM TIME COLUMN WITH LABEL
          */
-        parent::setDataSumColumnLabel('E',"Suma(h):");
+        parent::setDataSumColumnLabel('D',"Suma(h)");
         /*
          * SET DATA SET SUM COLUMN
          */
-        parent::setDataSumColumn('F');
+        parent::setDataSumColumn('E');
         /*
-         * SET DATA SET COLUMN TO SUM
+         * SET COLUMN TO WRITE A SUM
          */
-        parent::setDataColumnToSum('D');
+        parent::setDataColumnToSum('F');
         /*
          * SET ROWS WITH DATA
          */
@@ -65,11 +75,22 @@ class Client extends _Main
     {
         $lp=1;
         $time=[];
-        $sum = new TimeSum(); 
+        $distance=[];
+        $timeSum = new TimeSum(); 
+        $distanceSum=new DistanceSum();
         foreach($serviceRepository as $k => $value){
+            /*
+             * SET TIME
+             */
             $time[$k] = new Time(); 
             $time[$k]->add($value->getTime());
-            $sum->add($time[$k]->get());
+            $timeSum->add($time[$k]->get());
+            /*
+             * SET DISTANCE
+             */
+            $distance[$k] = new Distance();
+            $distance[$k]->add($value->getRoute());
+            $distanceSum->add($distance[$k]->get());       
             /*
              * SET FIRST DATA SET ROW
              */
@@ -78,9 +99,10 @@ class Client extends _Main
             }
             $this->activeWorksheet->setCellValue('A'.$this->row, $lp++);
             $this->activeWorksheet->setCellValue('B'.$this->row, $value->getEndedAt()->format('Y-m-d'));
-            $this->spreadsheet->getActiveSheet()->getCell('C'.$this->row)->setValue($value->getClientPoint()->getName()."\n".$value->getClientPoint()->getStreet().", ".$value->getClientPoint()->getTown());
+            $this->spreadsheet->getActiveSheet()->getCell('C'.$this->row)->setValue($value->getClientPoint()->getName()."\n".$value->getClientPoint()->getStreet()."\n".$value->getClientPoint()->getTown());
             $this->spreadsheet->getActiveSheet()->getStyle('C'.$this->row)->getAlignment()->setWrapText(true);
             $this->activeWorksheet->setCellValue('D'.$this->row, $time[$k]->get());
+            $this->activeWorksheet->setCellValue('E'.$this->row, $distance[$k]->get());
             /*
              * SET LAST DATA SET ROW
              */
@@ -89,14 +111,47 @@ class Client extends _Main
              * UPDATE ROW
              */
             $this->row++;
-        }       
-        parent::sumDataSetRow($sum->get());
+        }  
+        parent::sumDataSetRow($timeSum->get());
+        array_push($this->time,$timeSum->get());
+        array_push($this->distance,$distanceSum->get());
+        array_push($this->timeCost,$timeSum->get()*90);
+        array_push($this->distanceCost,$distanceSum->get()*1.85);
+        //$timeCost = $timeSum->get()*90;
+        //$distanceCost = $distanceSum->get()*1.85;
+        parent::setSum($timeSum->get(),$distanceSum->get(),end($this->timeCost),end($this->distanceCost));
+       
         /*
          * SET DEFAULTS
          */
         $this->firstDataSetRow = null;
         $this->lastDataSetRow = null;
-        $this->sumTime = null;
     }
-
+    public function setWholeCost():void
+    {
+        $this->activeWorksheet->setCellValue("C".$this->row,"PODSUMOWANIE:");
+        $this->row++;
+        /*
+         * SET THE WHOLE COST
+         */
+        $this->activeWorksheet->setCellValue("C".$this->row,"Łączna suma:");
+         /*
+         * SET TIME AND DISTNACE COST SUM VALUE
+         */
+        $this->activeWorksheet->setCellValue("D".$this->row,array_sum($this->time));
+        $this->activeWorksheet->setCellValue("E".$this->row,array_sum($this->distance));
+        $this->row++;
+        /*
+         * SET THE WHOLE COST
+         */
+        $this->activeWorksheet->setCellValue("C".$this->row,"Łączny koszt:");
+        $sumCost = array_sum($this->timeCost);
+        $sumDistance = array_sum($this->distanceCost);
+        $this->activeWorksheet->setCellValue("D".$this->row,$sumCost);
+        $this->activeWorksheet->setCellValue("E".$this->row,$sumDistance);
+        $this->row++;
+        $this->activeWorksheet->setCellValue("C".$this->row,"Łącznie:");
+        $this->activeWorksheet->setCellValue("D".$this->row,$sumCost + $sumDistance);
+        $this->row++;
+    }
 }
