@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Service\Excel;
+namespace App\Service;
 
 /**
  * Description of Time
  *
  * @author Tomasz Borczynski
  */
-class Time {
+class ConvertTime {
     
     private float $time;
     private float $modulo=0;
