@@ -137,6 +137,7 @@ class ServiceController extends AbstractController
         {
             /* TO DO */
             //dd('chose service');
+            return null;
         }
         //dd($service);
         $classificationId = $service->getClassificationOfActivities()->getId();
@@ -145,6 +146,7 @@ class ServiceController extends AbstractController
         {
             /* TO DO */
             //dd('set service list');
+            return null;
         }
         foreach($clientClassificationOfActivities as $clientClassification ){
             if($clientClassification->getId() === $classificationId){
