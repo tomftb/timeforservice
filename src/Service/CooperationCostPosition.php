@@ -1,28 +1,65 @@
 <?php
 
-namespace App\Service\Excel;
+namespace App\Service;
 
 /**
- * Description of TimeSum
+ * Description of CooperationCostPosition
  *
  * @author Tomasz Borczynski
  */
-class DistanceSum {
-    
+class CooperationCostPosition {
+
     public function __construct(
-        private float $sum = 0
+        private string $name='no_name',
+        private string $unit='no_unit', 
+        private float $rate=0, 
+        private float $realTime=0, 
+        private float $cost=0
     )
     {
     }
-    public function add(?float $distance=null):void
+    public function setName(string $name='no_name'):void
     {
-        if($distance!==null){
-            $this->sum+=$distance;
-        }
+        $this->name=$name;
     }
-    
-    public function get():float
+    public function setUnit(string $unit='no_unit'):void
     {
-        return $this->sum;
+        $this->unit=$unit;
+    }
+    public function setCost(float $cost=0):void
+    {
+        $this->cost+=$cost;
+    }
+    public function setRate(float $rate=0):void
+    {
+        $this->rate=$rate;
+    }
+    public function setRealTime(float $realTime=0):void
+    {
+        $this->realTime+=$realTime;
+    }
+    public function getName():string
+    {
+        return $this->name;
+    }
+    public function getUnit():string
+    {
+        return $this->unit;
+    }
+    public function getCost():float
+    {
+        return $this->cost;
+    }
+    public function getRate():float
+    {
+        return $this->rate;
+    }
+    public function getRealTime():float
+    {
+        return $this->realTime;
+    }
+    public function get():self
+    {
+        return $this;
     }
 }
