@@ -89,6 +89,7 @@ class ClientApiController extends AbstractController{
             $clientExcel->set($client,$serviceRepository->{$findBy}($client->getId(),'ASC',$endedFrom,$endedTo));
         }
         $clientExcel->setWholeCost();
+        $clientExcel->setCooperation();
         return $this->returnExcel($fileName,$clientExcel->get()); 
     }
     #[Route('/{id}/export_services', name: 'app_client_export_services', methods: ['GET'])]
