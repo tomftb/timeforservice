@@ -162,6 +162,7 @@ class ServiceController extends AbstractController
         $service->setRate($rate);
         $convertTime = new ConvertTime();
         $convertTime->add($service->getTime());
+        $service->setRealTime($convertTime->get());
         $service->setCost($convertTime->get()*$rate);
         return $service;
     }
