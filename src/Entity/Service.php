@@ -65,11 +65,16 @@ class Service
 
     #[ORM\Column(nullable: true)]
     private ?float $routeCost = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $realTime = null;
     
     public function __construct()
     {
         $this->route=0;
         $this->routeCost=0;
+        $this->realTime=0;
+        $this->time=0;
     }
     
     public function getId(): ?int
@@ -253,6 +258,18 @@ class Service
     public function setRouteCost(?float $routeCost): static
     {
         $this->routeCost = $routeCost;
+
+        return $this;
+    }
+
+    public function getRealTime(): ?float
+    {
+        return $this->realTime;
+    }
+
+    public function setRealTime(?float $realTime): static
+    {
+        $this->realTime = $realTime;
 
         return $this;
     }
