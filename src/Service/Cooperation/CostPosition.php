@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Cooperation;
 
 /**
- * Description of CooperationCostPosition
+ * Description of CostPosition
  *
  * @author Tomasz Borczynski
  */
-class CooperationCostPosition {
+class CostPosition {
 
     public function __construct(
         private string $name='no_name',

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Cooperation;
 
 /**
- * Description of CooperationSum
+ * Description of Position
  *
  * @author Tomasz Borczynski
  */
-class CooperationPosition {
+class Position {
     
     private string $code='no_code';
     private string $name='no_name';

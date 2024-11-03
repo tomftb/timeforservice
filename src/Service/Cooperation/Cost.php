@@ -1,16 +1,16 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Cooperation;
 
-use App\Service\CooperationPosition;
-use App\Service\CooperationCostPosition;
+use App\Service\Cooperation\Position;
+use App\Service\Cooperation\CostPosition;
 
 /**
- * Description of CooperationCost
+ * Description of Cost
  *
  * @author Tomasz Borczynski
  */
-class CooperationCost {
+class Cost {
     private array $cooperation=[];
     
     public function __construct()
@@ -18,7 +18,7 @@ class CooperationCost {
     }
     public function add(?string $code=null,?string $name=null,?string $unit=null, ?float $cost=null, ?float $rate=null, ?float $realTime=null):void
     {
-        $cooperationPosition = new CooperationPosition();
+        $cooperationPosition = new Position();
         $cooperationPosition->add(
             $code,
             $name,
@@ -29,7 +29,7 @@ class CooperationCost {
         );
         self::set($cooperationPosition->get());
     }
-    private function set(CooperationPosition $cooperationPosition):void
+    private function set(Position $cooperationPosition):void
     {
         $idx = $cooperationPosition->getIdx();
         if(array_key_exists($cooperationPosition->getIdx(), $this->cooperation)){
@@ -37,7 +37,7 @@ class CooperationCost {
             $this->cooperation[$idx]->setRealTime($cooperationPosition->getRealTime());   
         }
         else{
-            $this->cooperation[$idx]=new CooperationCostPosition();
+            $this->cooperation[$idx]=new CostPosition();
             $this->cooperation[$idx]->setName($cooperationPosition->getCode()." ".$cooperationPosition->getName());
             $this->cooperation[$idx]->setUnit($cooperationPosition->getUnit());
             $this->cooperation[$idx]->setCost($cooperationPosition->getCost());
