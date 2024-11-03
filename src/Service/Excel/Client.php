@@ -3,18 +3,22 @@
 namespace App\Service\Excel;
 
 use App\Entity\Client as ClientEntity;
-use App\Service\ConvertTime as Time;
 use App\Service\Excel\TimeSum;
-use App\Service\Excel\Distance;
-use App\Service\Excel\DistanceSum;
+use App\Service\Excel\RouteSum;
+use App\Service\Excel\CostSum;
+use App\Service\Excel\RouteCostSum;
+use App\Service\CooperationCost;
+use PhpOffice\PhpSpreadsheet\RichText\RichText;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 
 class Client extends _Main
 {
 
     private array $time=[];
-    private array $distance=[];
+    private array $route=[];
     private array $timeCost=[];
-    private array $distanceCost=[];
+    private array $routeCost=[];
+    private CooperationCost $cooperationCost;
     
     public function __construct(
         private string $appTmp
@@ -34,6 +38,10 @@ class Client extends _Main
             'D'=>8,
             'E'=>10
         ]);
+        /*
+         * INITIATE COOPERATION COST
+         */
+        $this->cooperationCost = new CooperationCost();
     }
     public function set(?ClientEntity $client,array $serviceRepository):void
     {
@@ -62,23 +70,28 @@ class Client extends _Main
     private function setData(array $serviceRepository=[]):void
     {
         $lp=1;
-        $time=[];
-        $distance=[];
         $timeSum = new TimeSum(); 
-        $distanceSum=new DistanceSum();
-        foreach($serviceRepository as $k => $value){
+        $distanceSum = new RouteSum();
+        $costSum = new CostSum();
+        $routeCostSum = new RouteCostSum();
+        //$cooperationCost = new CooperationCost();
+        foreach($serviceRepository as $value){
             /*
-             * SET TIME
+             * UPDATE TIME SUM
              */
-            $time[$k] = new Time(); 
-            $time[$k]->add($value->getTime());
-            $timeSum->add($time[$k]->get());
+            $timeSum->add($value->getRealTime());
             /*
-             * SET DISTANCE
+             * UPDATE DISTANCE SUM
              */
-            $distance[$k] = new Distance();
-            $distance[$k]->add($value->getRoute());
-            $distanceSum->add($distance[$k]->get());       
+            $distanceSum->add($value->getRoute());
+            /*
+             * UPDATE COST SUM
+             */
+            $costSum->add($value->getCost());
+            /*
+             * UPDATE ROUTE COST SUM
+             */
+            $routeCostSum->add($value->getRouteCost());
             /*
              * SET FIRST DATA SET ROW
              */
@@ -89,8 +102,8 @@ class Client extends _Main
             $this->activeWorksheet->setCellValue('B'.$this->row, $value->getEndedAt()->format('Y-m-d'));
             $this->spreadsheet->getActiveSheet()->getCell('C'.$this->row)->setValue($value->getClientPoint()->getName()."\n".$value->getClientPoint()->getStreet()."\n".$value->getClientPoint()->getTown());
             $this->spreadsheet->getActiveSheet()->getStyle('C'.$this->row)->getAlignment()->setWrapText(true);
-            $this->activeWorksheet->setCellValue('D'.$this->row, $time[$k]->get());
-            $this->activeWorksheet->setCellValue('E'.$this->row, $distance[$k]->get());
+            $this->activeWorksheet->setCellValue('D'.$this->row, $value->getRealTime());
+            $this->activeWorksheet->setCellValue('E'.$this->row, ($value->getRoute() > 0) ? strval($value->getRoute()) : '' );
             /*
              * SET LAST DATA SET ROW
              */
@@ -98,13 +111,24 @@ class Client extends _Main
             /*
              * UPDATE ROW
              */
+            /*
+             * UPDATE COOPERATION COST
+             */
+            $this->cooperationCost->add(
+                    $value->getCode(),
+                    $value->getName(),
+                    $value->getUnit(),
+                    $value->getCost(),
+                    $value->getRate(),
+                    $value->getRealTime()
+            );
             $this->row++;
         }
         array_push($this->time,$timeSum->get());
-        array_push($this->distance,$distanceSum->get());
-        array_push($this->timeCost,$timeSum->get()*$this->rate);
-        array_push($this->distanceCost,$distanceSum->get()*$this->mileage);
-        parent::setSum($timeSum->get(),$distanceSum->get(),end($this->timeCost),end($this->distanceCost));
+        array_push($this->route,$distanceSum->get());
+        array_push($this->timeCost,$costSum->get());
+        array_push($this->routeCost,$routeCostSum->get());
+        parent::setSum($timeSum->get(),$distanceSum->get(),$costSum->get(),$routeCostSum->get());
        
         /*
          * SET DEFAULTS
@@ -114,7 +138,15 @@ class Client extends _Main
     }
     public function setWholeCost():void
     {
-        $this->activeWorksheet->setCellValue("C".$this->row,"PODSUMOWANIE:");
+        if(empty($this->time)){
+            return;
+        }
+        $richText = new RichText();
+        $customRichText = $richText->createTextRun("PODSUMOWANIE:");
+        $customRichText->getFont()->setBold(true);
+        $customRichText->getFont()->setItalic(false);
+        $customRichText->getFont()->setColor( new Color( \PhpOffice\PhpSpreadsheet\Style\Color::COLOR_BLACK));
+        $this->spreadsheet->getActiveSheet()->getCell('C'.$this->row)->setValue($richText);
         $this->row++;
         /*
          * SET THE WHOLE COST
@@ -124,19 +156,49 @@ class Client extends _Main
          * SET TIME AND DISTNACE COST SUM VALUE
          */
         $this->activeWorksheet->setCellValue("D".$this->row,array_sum($this->time));
-        $this->activeWorksheet->setCellValue("E".$this->row,array_sum($this->distance));
+        $this->activeWorksheet->setCellValue("E".$this->row,array_sum($this->route));
         $this->row++;
         /*
          * SET THE WHOLE COST
          */
         $this->activeWorksheet->setCellValue("C".$this->row,"Łączny koszt:");
-        $sumCost = array_sum($this->timeCost);
-        $sumDistance = array_sum($this->distanceCost);
-        $this->activeWorksheet->setCellValue("D".$this->row,$sumCost);
-        $this->activeWorksheet->setCellValue("E".$this->row,$sumDistance);
+        $sumTimeCost = array_sum($this->timeCost);
+        $sumRouteCost = array_sum($this->routeCost);
+        $this->activeWorksheet->setCellValue("D".$this->row,$sumTimeCost);
+        $this->activeWorksheet->setCellValue("E".$this->row,$sumRouteCost);
         $this->row++;
         $this->activeWorksheet->setCellValue("C".$this->row,"Łącznie:");
-        $this->activeWorksheet->setCellValue("D".$this->row,$sumCost + $sumDistance);
+        $this->activeWorksheet->setCellValue("D".$this->row,$sumTimeCost + $sumRouteCost);
         $this->row++;
+    }
+    public function setCooperation():void
+    {
+        if(empty($this->cooperationCost->get())){
+            return;
+        }
+        $richText = new RichText();
+        $customRichText = $richText->createTextRun("PKD:");
+        $customRichText->getFont()->setBold(true);
+        $customRichText->getFont()->setItalic(false);
+        $customRichText->getFont()->setColor( new Color( \PhpOffice\PhpSpreadsheet\Style\Color::COLOR_BLACK));
+        $this->spreadsheet->getActiveSheet()->getCell('C'.$this->row)->setValue($richText);
+        $this->row++;
+        $this->activeWorksheet->setCellValue("B".$this->row,'L.p.');
+        $this->activeWorksheet->setCellValue("C".$this->row,'Nazwa usługi / towaru');
+        $this->activeWorksheet->setCellValue("D".$this->row,'Jm');
+        $this->activeWorksheet->setCellValue("E".$this->row,'Ilość');
+        $this->activeWorksheet->setCellValue("F".$this->row,'Cena jednostkowa');
+        $this->activeWorksheet->setCellValue("G".$this->row,'Wartość');
+        $this->row++;
+        $lp=1;
+        foreach($this->cooperationCost->get() as $cooperation){
+            $this->activeWorksheet->setCellValue("B".$this->row,strval($lp++).".");
+            $this->activeWorksheet->setCellValue("C".$this->row,$cooperation->getName());
+            $this->activeWorksheet->setCellValue("D".$this->row,$cooperation->getUnit());
+            $this->activeWorksheet->setCellValue("E".$this->row,strval($cooperation->getRealTime()));
+            $this->activeWorksheet->setCellValue("F".$this->row,strval($cooperation->getRate()));
+            $this->activeWorksheet->setCellValue("G".$this->row,$cooperation->getCost());
+            $this->row++;
+        }
     }
 }
