@@ -7,7 +7,7 @@ use App\Service\Excel\TimeSum;
 use App\Service\Excel\RouteSum;
 use App\Service\Excel\CostSum;
 use App\Service\Excel\RouteCostSum;
-use App\Service\CooperationCost;
+use App\Service\Cooperation\Cost as CooperationCost;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 
@@ -141,6 +141,7 @@ class Client extends _Main
         if(empty($this->time)){
             return;
         }
+        $this->row++;
         $richText = new RichText();
         $customRichText = $richText->createTextRun("PODSUMOWANIE:");
         $customRichText->getFont()->setBold(true);
@@ -176,6 +177,7 @@ class Client extends _Main
         if(empty($this->cooperationCost->get())){
             return;
         }
+        $this->row++;
         $richText = new RichText();
         $customRichText = $richText->createTextRun("PKD:");
         $customRichText->getFont()->setBold(true);
