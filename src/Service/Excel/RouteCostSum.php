@@ -3,21 +3,21 @@
 namespace App\Service\Excel;
 
 /**
- * Description of TimeSum
+ * Description of RouteCostSum
  *
  * @author Tomasz Borczynski
  */
-class TimeSum {
+class RouteCostSum {
     
     public function __construct(
         private float $sum = 0
     )
     {
     }
-    public function add(?float $time=null):void
+    public function add(?float $cost=null):void
     {
-        if($time!==null){
-            $this->sum+=$time;
+        if($cost!==null){
+            $this->sum+=$cost;
         }
     }
     
