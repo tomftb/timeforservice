@@ -90,6 +90,14 @@ class ClientApiController extends AbstractController{
         }
         $clientExcel->setWholeCost();
         $clientExcel->setCooperation();
+        $clientExcel->setDocumentDescription('Tomasz Borczyński',
+            'Tomasz Borczyński',
+            'Zestawienie serwisu', 
+            'Zestawienie serwisu', 
+            'Plik zawiera zestawienie wybranych zrealizowanych usług dla klientów.',
+            'serwis, klient, zestawienie',
+            'zestawienie'
+        );
         return $this->returnExcel($fileName,$clientExcel->get()); 
     }
     #[Route('/{id}/export_services', name: 'app_client_export_services', methods: ['GET'])]

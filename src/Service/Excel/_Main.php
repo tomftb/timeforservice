@@ -128,4 +128,22 @@ abstract class _Main {
         $this->activeWorksheet->setCellValue("D".$this->row,$timeCost+$distanceCost);
         $this->row++;
     }
+    public function setDocumentDescription(?string $creator=null,?string $lastModifiedBy=null,?string $title=null,?string $subject=null,?string $description=null,?string $keywords=null,?string $category=null):void
+    {
+        $creator = ($creator===null) ? 'Anonymous' : $creator;
+        $lastModifiedBy = ($lastModifiedBy===null) ? 'Anonymous' : $lastModifiedBy;
+        $title = ($title===null) ? 'No title' : $title;
+        $subject = ($subject===null) ? 'No subject' : $subject;
+        $description = ($description===null) ? 'No subject' : $description;
+        $keywords = ($keywords===null) ? 'No keywords' : $keywords;
+        $category = ($category===null) ? 'No category' : $category;
+        
+        $this->spreadsheet->getProperties()->setCreator($creator)
+            ->setLastModifiedBy($lastModifiedBy)
+            ->setTitle($title)
+            ->setSubject($subject)
+            ->setDescription($description)
+            ->setKeywords($keywords)
+            ->setCategory($category);
+    }
 }
