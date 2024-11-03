@@ -3,27 +3,27 @@
 namespace App\Service\Excel;
 
 /**
- * Description of Time
+ * Description of Route
  *
  * @author Tomasz Borczynski
  */
-class Distance {
+class Route {
     
-    private ?float $distance;
+    private ?float $route;
     
     public function __construct(){ }
-    public function add(?float $distance=null):void
+    public function add(?float $route=null):void
     {
-        if(is_null($distance)){
+        if(is_null($route)){
             return;
         }
-        $this->distance = floatval($distance);
+        $this->route = floatval($route);
     }
     public function get():float|null
     {
-        if(!isset($this->distance)){
+        if(!isset($this->route)){
             return null;
         }
-        return $this->distance;
+        return $this->route;
     }
 }
