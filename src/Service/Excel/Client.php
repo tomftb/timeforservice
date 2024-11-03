@@ -18,6 +18,9 @@ class Client extends _Main
     private array $route=[];
     private array $timeCost=[];
     private array $routeCost=[];
+    private ?float $sumTimeCost=null;
+    private ?float $sumRouteCost=null;
+    private float $properRouteCost=0;
     private CooperationCost $cooperationCost;
     
     public function __construct(
@@ -163,13 +166,13 @@ class Client extends _Main
          * SET THE WHOLE COST
          */
         $this->activeWorksheet->setCellValue("C".$this->row,"Łączny koszt:");
-        $sumTimeCost = array_sum($this->timeCost);
-        $sumRouteCost = array_sum($this->routeCost);
-        $this->activeWorksheet->setCellValue("D".$this->row,$sumTimeCost);
-        $this->activeWorksheet->setCellValue("E".$this->row,$sumRouteCost);
+        $this->sumTimeCost = array_sum($this->timeCost);
+        $this->sumRouteCost = array_sum($this->routeCost);
+        $this->activeWorksheet->setCellValue("D".$this->row,$this->sumTimeCost);
+        $this->activeWorksheet->setCellValue("E".$this->row,$this->sumRouteCost);
         $this->row++;
         $this->activeWorksheet->setCellValue("C".$this->row,"Łącznie:");
-        $this->activeWorksheet->setCellValue("D".$this->row,$sumTimeCost + $sumRouteCost);
+        $this->activeWorksheet->setCellValue("D".$this->row,$this->sumTimeCost + $this->sumRouteCost);
         $this->row++;
     }
     public function setCooperation():void
@@ -193,14 +196,40 @@ class Client extends _Main
         $this->activeWorksheet->setCellValue("G".$this->row,'Wartość');
         $this->row++;
         $lp=1;
+        $cost=0;
         foreach($this->cooperationCost->get() as $cooperation){
             $this->activeWorksheet->setCellValue("B".$this->row,strval($lp++).".");
             $this->activeWorksheet->setCellValue("C".$this->row,$cooperation->getName());
             $this->activeWorksheet->setCellValue("D".$this->row,$cooperation->getUnit());
-            $this->activeWorksheet->setCellValue("E".$this->row,strval($cooperation->getRealTime()));
-            $this->activeWorksheet->setCellValue("F".$this->row,strval($cooperation->getRate()));
+            $this->activeWorksheet->setCellValue("E".$this->row,$cooperation->getRealTime());
+            $this->activeWorksheet->setCellValue("F".$this->row,$cooperation->getRate());
             $this->activeWorksheet->setCellValue("G".$this->row,$cooperation->getCost());
             $this->row++;
+            $cost+=$cooperation->getCost();
         }
+        self::setCooperationMileage(
+            $lp,
+            '74.90.Z Pozostała działalność profesjonalna, naukowa i techniczna, gdzie indziej niesklasyfikowana',
+            'g',
+            90
+        );
+        $this->activeWorksheet->setCellValue("G".$this->row,$cost+$this->properRouteCost);
+        $this->row++;
+    }
+    private function setCooperationMileage(int $lp=1,string $name='',string $unit='',float $rate=0):void
+    {
+        if($this->sumRouteCost === null || $this->sumRouteCost===0.0 || $this->sumRouteCost===0){
+            return;
+        }
+        $routeCost = $this->sumRouteCost/$rate;
+        $roundRouteCost = round($routeCost,2, PHP_ROUND_HALF_UP);
+        $this->properRouteCost = $rate*$roundRouteCost;
+        $this->activeWorksheet->setCellValue("B".$this->row,strval($lp++).".");
+        $this->activeWorksheet->setCellValue("C".$this->row,$name);
+        $this->activeWorksheet->setCellValue("D".$this->row,$unit);
+        $this->activeWorksheet->setCellValue("E".$this->row,$roundRouteCost);
+        $this->activeWorksheet->setCellValue("F".$this->row,$rate);
+        $this->activeWorksheet->setCellValue("G".$this->row,$this->properRouteCost);
+        $this->row++;
     }
 }
