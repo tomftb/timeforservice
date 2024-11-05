@@ -19,7 +19,7 @@ class Client extends _Main
     private array $timeCost=[];
     private array $routeCost=[];
     private ?float $sumTimeCost=null;
-    private ?float $sumRouteCost=null;
+
     private float $properRouteCost=0;
     private CooperationCost $cooperationCost;
     
@@ -167,12 +167,12 @@ class Client extends _Main
          */
         $this->activeWorksheet->setCellValue("C".$this->row,"Łączny koszt:");
         $this->sumTimeCost = array_sum($this->timeCost);
-        $this->sumRouteCost = array_sum($this->routeCost);
+        $this->mileage->setSumRouteCost(array_sum($this->routeCost));
         $this->activeWorksheet->setCellValue("D".$this->row,$this->sumTimeCost);
-        $this->activeWorksheet->setCellValue("E".$this->row,$this->sumRouteCost);
+        $this->activeWorksheet->setCellValue("E".$this->row,$this->mileage->getSumRouteCost());
         $this->row++;
         $this->activeWorksheet->setCellValue("C".$this->row,"Łącznie:");
-        $this->activeWorksheet->setCellValue("D".$this->row,$this->sumTimeCost + $this->sumRouteCost);
+        $this->activeWorksheet->setCellValue("D".$this->row,$this->sumTimeCost + $this->mileage->getSumRouteCost());
         $this->row++;
     }
     public function setCooperation():void
@@ -211,25 +211,26 @@ class Client extends _Main
             $lp,
             '74.90.Z Pozostała działalność profesjonalna, naukowa i techniczna, gdzie indziej niesklasyfikowana',
             'g',
-            90
+            95
         );
         $this->activeWorksheet->setCellValue("G".$this->row,$cost+$this->properRouteCost);
         $this->row++;
     }
-    private function setCooperationMileage(int $lp=1,string $name='',string $unit='',float $rate=0):void
+
+    private function setCooperationMileage(int $lp=1):void
     {
-        if($this->sumRouteCost === null || $this->sumRouteCost===0.0 || $this->sumRouteCost===0){
+        if($this->mileage->getSumRouteCost()===0.0 || $this->mileage->getSumRouteCost()===0){
             return;
         }
-        $routeCost = $this->sumRouteCost/$rate;
-        $roundRouteCost = round($routeCost,2, PHP_ROUND_HALF_UP);
-        $this->properRouteCost = $rate*$roundRouteCost;
+        $this->mileage->setRouteCost();
+        $this->mileage->setRoundRouteCost();
+        $this->properRouteCost = $this->mileage->getProperRouteCost();
         $this->activeWorksheet->setCellValue("B".$this->row,strval($lp++).".");
-        $this->activeWorksheet->setCellValue("C".$this->row,$name);
-        $this->activeWorksheet->setCellValue("D".$this->row,$unit);
-        $this->activeWorksheet->setCellValue("E".$this->row,$roundRouteCost);
-        $this->activeWorksheet->setCellValue("F".$this->row,$rate);
-        $this->activeWorksheet->setCellValue("G".$this->row,$this->properRouteCost);
+        $this->activeWorksheet->setCellValue("C".$this->row,$this->mileage->getName());
+        $this->activeWorksheet->setCellValue("D".$this->row,$this->mileage->getUnit());
+        $this->activeWorksheet->setCellValue("E".$this->row,$this->mileage->getRoundRouteCost());
+        $this->activeWorksheet->setCellValue("F".$this->row,$this->mileage->getRate());
+        $this->activeWorksheet->setCellValue("G".$this->row,$this->mileage->getProperRouteCost());
         $this->row++;
     }
 }
