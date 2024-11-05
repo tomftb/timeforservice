@@ -6,6 +6,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
 use PhpOffice\PhpSpreadsheet\Style\Color;
+use App\Service\Cooperation\Mileage;
 /**
  * Description of _Main
  *
@@ -18,10 +19,8 @@ abstract class _Main {
     protected ?int $dataSetSumRow = null;
     protected ?int $firstDataSetRow = null;
     protected ?int $lastDataSetRow = null;
-    
-    protected ?float $rate=null;
-    protected ?float $mileage=null;
-    
+    protected Mileage $mileage;
+        
     public function __construct(
         private string $appTmp,
         protected int $row=1
@@ -35,20 +34,7 @@ abstract class _Main {
          * SET ACTIVE SHEET
          */
         $this->activeWorksheet = $this->spreadsheet->getActiveSheet();
-    }
-    public function setRate(?float $rate=null):void
-    {
-        if($rate===null){
-            return;
-        }
-        $this->rate=$rate;
-    }
-    public function setMileage(?float $mileage=null):void
-    {
-        if($mileage===null){
-            return;
-        }
-        $this->mileage=$mileage;
+        $this->mileage= new Mileage();
     }
     protected function setColumnsDimensions(array $dimensions=[]):void
     {
@@ -145,5 +131,9 @@ abstract class _Main {
             ->setDescription($description)
             ->setKeywords($keywords)
             ->setCategory($category);
+    }
+    public function setCooperationMileageProperties(string $name='',string $unit='',float $rate=0):void
+    {
+        $this->mileage->setName($name)->setUnit($unit)->setRate($rate);
     }
 }
