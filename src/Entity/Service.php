@@ -68,7 +68,7 @@ class Service
 
     #[ORM\Column(nullable: true)]
     private ?float $realTime = null;
-    
+
     public function __construct()
     {
         $this->route=0;
