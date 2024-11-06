@@ -43,6 +43,22 @@ class ClientType extends AbstractType
                 'required' => true,
                 'constraints' => [new Length(['min' => 1])],
             ])
+            ->add('mileageCode',TextType::class,[
+                'required' => true,
+                'constraints' => [new Length(['min' => 3])],
+            ])
+            ->add('mileageName',TextType::class,[
+                'required' => true,
+                'constraints' => [new Length(['min' => 3])],
+            ])
+            ->add('mileageUnit',TextType::class,[
+                'required' => true,
+                'constraints' => [new Length(['min' => 1])],
+            ])
+            ->add('mileageRate',NumberType::class,[
+                'required' => true,
+                'constraints' => [new Length(['min' => 1])],
+            ])
         ;
     }
 

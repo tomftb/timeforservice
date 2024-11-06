@@ -16,6 +16,15 @@ App\Entity\Client:
         kilometerRate:
             - NotBlank: ~
             - PositiveOrZero: ~
+        mileageCode:
+            - NotBlank: ~
+        mileageName:
+            - NotBlank: ~
+        mileageUnit:
+            - NotBlank: ~
+        mileageRate:
+            - NotBlank: ~
+            - PositiveOrZero: ~
 
 App\Entity\ClientPoint:
     properties:

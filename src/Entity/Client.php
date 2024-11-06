@@ -51,7 +51,19 @@ class Client
      */
     #[ORM\OneToMany(targetEntity: ClientClassificationOfActivities::class, mappedBy: 'client')]
     private Collection $clientClassificationOfActivities;
-    
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $mileageCode = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $mileageName = null;
+
+    #[ORM\Column(length: 3, nullable: true)]
+    private ?string $mileageUnit = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?float $mileageRate = null;
+
     public function __construct()
     {
         $this->status='NEW';
@@ -197,6 +209,54 @@ class Client
                 $clientClassificationOfActivity->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMileageCode(): ?string
+    {
+        return $this->mileageCode;
+    }
+
+    public function setMileageCode(?string $mileageCode): static
+    {
+        $this->mileageCode = $mileageCode;
+
+        return $this;
+    }
+
+    public function getMileageName(): ?string
+    {
+        return $this->mileageName;
+    }
+
+    public function setMileageName(?string $mileageName): static
+    {
+        $this->mileageName = $mileageName;
+
+        return $this;
+    }
+
+    public function getMileageUnit(): ?string
+    {
+        return $this->mileageUnit;
+    }
+
+    public function setMileageUnit(?string $mileageUnit): static
+    {
+        $this->mileageUnit = $mileageUnit;
+
+        return $this;
+    }
+
+    public function getMileageRate(): ?float
+    {
+        return $this->mileageRate;
+    }
+
+    public function setMileageRate(?float $mileageRate): static
+    {
+        $this->mileageRate = $mileageRate;
 
         return $this;
     }
