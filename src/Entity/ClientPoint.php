@@ -39,6 +39,9 @@ class ClientPoint
     #[ORM\JoinColumn(nullable: false)]
     private ?Client $client = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $distance = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -124,6 +127,18 @@ class ClientPoint
     public function setClient(?Client $client): static
     {
         $this->client = $client;
+        return $this;
+    }
+
+    public function getDistance(): ?float
+    {
+        return $this->distance;
+    }
+
+    public function setDistance(?float $distance): static
+    {
+        $this->distance = $distance;
+
         return $this;
     }
 }

@@ -44,6 +44,8 @@ App\Entity\ClientPoint:
             - NotBlank: ~
         client:
             - NotBlank: ~
+        distance:
+            - PositiveOrZero: ~
             
 App\Entity\Service:
     properties:

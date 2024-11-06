@@ -6,6 +6,8 @@ use App\Entity\ClientPoint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Validator\Constraints\Length;
 
 class ClientPointType extends AbstractType
 {
@@ -22,6 +24,11 @@ class ClientPointType extends AbstractType
                 'choice_label' => 'name',
                 'placeholder' => 'Choose a client',
                 'autocomplete'=> true
+            ])
+            ->add('distance',NumberType::class,[
+                'label'=>'Distance (km)',
+                'required' => true,
+                'constraints' => [new Length(['min' => 0])],
             ])
         ;
     }
