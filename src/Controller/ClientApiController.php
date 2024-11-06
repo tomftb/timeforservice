@@ -84,7 +84,11 @@ class ClientApiController extends AbstractController{
          */
         $fileName = 'all (services '.$fileLabel.').xlsx';
         foreach($clients as $client){
-            self::setClientMileageProperties($client);
+            $clientExcel->setCooperationMileageProperties(
+                $client->getMileageCode()." ".$client->getMileageName(),
+                $client->getMileageUnit(),
+                $client->getMileageRate()
+            );
             $clientExcel->setCooperationMileageProperties(self::getClientMileageProperties($client));
             $clientExcel->set($client,$serviceRepository->{$findBy}($client->getId(),'ASC',$endedFrom,$endedTo));
         }
@@ -103,7 +107,12 @@ class ClientApiController extends AbstractController{
     #[Route('/{id}/export_services', name: 'app_client_export_services', methods: ['GET'])]
     public function exportServices(Client $client,ServiceRepository $serviceRepository,ClientExcel $clientExcel): Response
     {
-        self::setClientMileageProperties($client,$clientExcel);
+        
+        $clientExcel->setCooperationMileageProperties(
+                $client->getMileageCode()." ".$client->getMileageName(),
+                $client->getMileageUnit(),
+                $client->getMileageRate()
+        );
         $clientExcel->set($client,$serviceRepository->findByClientId($client->getId(),'ASC'));
         $clientExcel->setWholeCost();
         $clientExcel->setCooperation();
@@ -116,22 +125,5 @@ class ClientApiController extends AbstractController{
             'zestawienie'
         );
         return $this->returnExcel($client->getName(),$clientExcel->get()); 
-    }
-    private function setClientMileageProperties(Client $client, ClientExcel $clientExcel):void
-    {
-        $mileage = [
-            'name'=>'Pozostała działalność profesjonalna, naukowa i techniczna, gdzie indziej niesklasyfikowana',
-            'code'=>'74.90.Z',
-            'unit'=>'g',
-            'rate'=>0
-        ];
-        foreach($client->getClientClassificationOfActivities()->getValues() as $classification){
-            if($classification->getClassification()->getCode() === '74.90.Z')
-            {
-                $mileage['rate'] = floatval($classification->getPrice());
-                break;
-            }
-        }
-        $clientExcel->setCooperationMileageProperties($mileage['code']." ".$mileage['name'],$mileage['unit'],$mileage['rate']);
     }
 }
