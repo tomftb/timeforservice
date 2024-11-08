@@ -2,9 +2,9 @@
 
 namespace App\Model;
 
-enum ClientStatusEnum: string
+enum TypeOfServiceEnum: string
 {
-    case NEW = 'Nowy';
-    case TO_BE_SETTLED='Do rozliczenia';
-    case SETTLED='Rozliczony';
+    case Service = 'Usługa';
+    case Dysfunction = 'Dysfunkcja';
+    case Malfunction = 'Awaria';
 }
