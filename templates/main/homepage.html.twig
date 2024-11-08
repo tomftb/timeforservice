@@ -141,7 +141,7 @@
                         <tbody>
                             {% for service in services %}
                             <tr class="border-b border-gray-700 {% if loop.index is odd %} bg-gray-800 {% else %} bg-gray-700 {% endif %}">
-                                <td class="p-4">{{ service.description }}</td>
+                                <td class="p-4">{{ service.description|nl2br }}</td>
                                 <td class="px-2 whitespace-nowrap">
                                     {# POPOVER START #}
                                     <div
