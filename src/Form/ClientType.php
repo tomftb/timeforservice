@@ -8,7 +8,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Validator\Constraints\Length;
+use App\Model\YesOrNoEnum;
 
 class ClientType extends AbstractType
 {
@@ -34,6 +36,15 @@ class ClientType extends AbstractType
             ->add('nin',TextType::class,[
                 'required' => true,
                 'constraints' => [new Length(['min' => 10])],
+            ])
+            ->add('email',TextType::class,[
+                'required' => true,
+                'constraints' => [new Length(['min' => 5])],
+            ])
+            ->add('sendNotify',EnumType::class,[
+                'class'=> YesOrNoEnum::class,
+                'required' => true,
+                'data_class'=>null,
             ])
             ->add('hourlyRate',NumberType::class,[
                 'required' => true,
