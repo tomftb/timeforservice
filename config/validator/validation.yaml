@@ -10,6 +10,10 @@ App\Entity\Client:
             - NotBlank: ~
         nin:
             - NotBlank: ~
+        email:
+            - NotBlank: ~
+            - Email:
+                 message: The email "{{ value }}" is not a valid email.
         hourlyRate:
             - NotBlank: ~
             - Positive: ~
