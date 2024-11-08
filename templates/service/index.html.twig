@@ -29,6 +29,67 @@
     {% endif %}
 {% endmacro %}
 {% block body %}
+                {# SEARCH #}
+            <form
+                method="GET"
+                action="{{ path('app_service_index') }}"
+                class="mb-6 flex justify-between ml-4"
+                {# INITIATE CONTROLLER OF AUTOSUBMIT #}
+                data-controller="autosubmit"
+                {# ADD TARGET FOR UPDATE #}
+                data-turbo-frame="service-list"
+            >
+                <div class="w-1/3 flex">
+                    <input
+                        type="search"
+                        name="query"
+                        value="{{ app.request.query.get('query') }}"
+                        aria-label="Search services"
+                        placeholder="Search services"
+                        class="px-4 py-2 rounded bg-gray-800 text-white placeholder-gray-400"
+                        {# INITIATE CONTROLLER AUTOSUBMIT METHOD #}
+                        data-action="autosubmit#debouncedSubmit"
+                        autofocus
+                    >
+                    <twig:Modal :closeButton="true">
+                        <twig:block name="trigger">
+                            <twig:Button variant="link" type="button" data-action="modal#open">
+                            Options
+                            </twig:Button>
+                        </twig:block>
+                        <h3 class="text-white text-lg font-semibold mb-2">
+                        Search Options</h3>
+                        <hr class="mb-4">
+                        {# CLIENTS POINTS LOOP #}
+                        <h4 class="text-white text-sm font-semibold mb-2">
+                            Clients Points
+                        </h4>
+                        {% for clientPoint in clientsPoints %}
+                            <div class="flex items-center mb-4">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" name="clientsPoints[]" value=" {{ clientPoint.id }} " id="clientPoint-search- {{ clientPoint.id }} " {{ clientPoint.id in searchClientsPoints ? 'checked' : '' }}>
+                            <label for="clientPoint-search- {{ clientPoint.id }} " class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                            {{ clientPoint.name }}
+                            </label>
+                            </div>
+                        {% endfor %}
+                        {# END OF CLIENTS POINTS LOOP #}
+                        <div class="flex justify-end">
+                            <twig:Button variant="success" data-action="modal#close">
+                            See Results
+                            </twig:Button>
+                        </div>
+                    </twig:Modal>
+                </div>
+                {# SET UPDATE RESULT #}
+                {% set services_length = services|length %}
+                {% block service_result_count %}
+                    <div id="service-result-count" class="whitespace-nowrap m-2 mr-4">{{ services_length }} results</div>
+                {% endblock %}
+                {# END UPDATE RESULT #}
+            </form>
+            {# END SEARCH #}
+{# CONTENT REFRESH VIA TURBO-FRAME #}
+<turbo-frame id="service-list" data-turbo-action="advance">          
 <div class="m-4 p-4 bg-gray-800 rounded-lg">
     {# ASSIGN modal_controller.js #}
     <div
@@ -50,7 +111,7 @@
                 <path d="M12 9v6"/>
             </svg>
         </twig:Button>
-    </div>
+    </div>                     
     <table class="min-w-full bg-gray-800 text-white" id="service-list">
         <thead class="border-b border-gray-700">
             <tr>
@@ -126,4 +187,10 @@
     </div>
     {# END OF PAGINATION #}
  </div>
+    <turbo-stream action="replace" target="service-result-count">
+    <template>
+        {{ block('service_result_count') }}
+    </template>
+    </turbo-stream>
+</turbo-frame>
 {% endblock %}
