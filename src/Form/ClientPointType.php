@@ -7,7 +7,9 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Validator\Constraints\Length;
+use App\Model\YesOrNoEnum;
 
 class ClientPointType extends AbstractType
 {
@@ -19,6 +21,11 @@ class ClientPointType extends AbstractType
             ->add('zipCode')
             ->add('town')
             ->add('email')
+            ->add('sendNotify',EnumType::class,[
+                'class'=> YesOrNoEnum::class,
+                'required' => true,
+                'data_class'=>null,
+            ])
             ->add('phoneNumber')
             ->add('client', null, [
                 'choice_label' => 'name',
