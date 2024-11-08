@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Model\YesOrNoEnum;
 use App\Repository\ClientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -63,6 +64,12 @@ class Client
 
     #[ORM\Column(nullable: true)]
     private ?float $mileageRate = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $email = null;
+
+    #[ORM\Column(nullable: true, enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $sendNotify = null;
 
     public function __construct()
     {
@@ -257,6 +264,30 @@ class Client
     public function setMileageRate(?float $mileageRate): static
     {
         $this->mileageRate = $mileageRate;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(?string $email): static
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    public function getSendNotify(): ?YesOrNoEnum
+    {
+        return $this->sendNotify;
+    }
+
+    public function setSendNotify(?YesOrNoEnum $sendNotify): static
+    {
+        $this->sendNotify = $sendNotify;
 
         return $this;
     }
