@@ -7,6 +7,8 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use App\Model\TypeOfServiceEnum;
 
 class ServiceType extends AbstractType
 {
@@ -14,6 +16,11 @@ class ServiceType extends AbstractType
     {
         $builder
             ->add('description')
+            ->add('typeOfService',EnumType::class,[
+                'class'=> TypeOfServiceEnum::class,
+                'required' => true,
+                'data_class'=>null,
+            ])
             ->add('startedAt', DateTimeType::class, [
                 'date_label' => 'Starts On',
             ]) 
