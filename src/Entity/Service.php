@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Model\TypeOfServiceEnum;
 use App\Repository\ServiceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -68,6 +69,9 @@ class Service
 
     #[ORM\Column(nullable: true)]
     private ?float $realTime = null;
+
+    #[ORM\Column(nullable: true, enumType: TypeOfServiceEnum::class)]
+    private ?TypeOfServiceEnum $typeOfService = null;
 
     public function __construct()
     {
@@ -270,6 +274,18 @@ class Service
     public function setRealTime(?float $realTime): static
     {
         $this->realTime = $realTime;
+
+        return $this;
+    }
+
+    public function getTypeOfService(): ?TypeOfServiceEnum
+    {
+        return $this->typeOfService;
+    }
+
+    public function setTypeOfService(?TypeOfServiceEnum $typeOfService): static
+    {
+        $this->typeOfService = $typeOfService;
 
         return $this;
     }
