@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Model\YesOrNoEnum;
 use App\Repository\ClientPointRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -41,6 +42,9 @@ class ClientPoint
 
     #[ORM\Column(nullable: true)]
     private ?float $distance = null;
+
+    #[ORM\Column(nullable: true, enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $sendNotify = null;
 
     public function getId(): ?int
     {
@@ -138,6 +142,18 @@ class ClientPoint
     public function setDistance(?float $distance): static
     {
         $this->distance = $distance;
+
+        return $this;
+    }
+
+    public function getSendNotify(): ?YesOrNoEnum
+    {
+        return $this->sendNotify;
+    }
+
+    public function setSendNotify(?YesOrNoEnum $sendNotify): static
+    {
+        $this->sendNotify = $sendNotify;
 
         return $this;
     }
