@@ -20,7 +20,6 @@ final class Version20241029153752 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE classification_of_activities DROP classification_id');
         $this->addSql('ALTER TABLE client_classification_of_activities ADD client_id INT NOT NULL, ADD classification_id INT NOT NULL');
         $this->addSql('ALTER TABLE client_classification_of_activities ADD CONSTRAINT FK_9A51741919EB6921 FOREIGN KEY (client_id) REFERENCES client (id)');
         $this->addSql('ALTER TABLE client_classification_of_activities ADD CONSTRAINT FK_9A5174192A86559F FOREIGN KEY (classification_id) REFERENCES classification_of_activities (id)');
