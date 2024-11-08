@@ -12,6 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormInterface;
 use App\Service\ConvertTime;
+use App\Controller\MailerController;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Address;
 
 #[Route('/service')]
 class ServiceController extends AbstractController
@@ -24,7 +28,7 @@ class ServiceController extends AbstractController
         ]);
     }
     #[Route('/new', name: 'app_service_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailerInterface): Response
     {
         $service = new Service();
         $form = $this->createServiceForm($service);
@@ -34,6 +38,10 @@ class ServiceController extends AbstractController
             $entityManager->persist($service);
             $entityManager->flush();
             $this->addFlash('success', 'Saved');
+            /*
+             * SEND NOTIFY
+             */
+             self::sendNotify($service,$mailerInterface);
             /*
              * ADD CHECK HEADER FOR MODAL
              */
@@ -60,6 +68,7 @@ class ServiceController extends AbstractController
     #[Route('/{id}/edit', name: 'app_service_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Service $service, EntityManagerInterface $entityManager): Response
     {
+        
         $form = $this->createServiceForm($service);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -165,5 +174,56 @@ class ServiceController extends AbstractController
         $service->setRealTime($convertTime->get());
         $service->setCost($convertTime->get()*$rate);
         return $service;
+    }
+    private function sendNotify(Service $service, MailerInterface $mailerInterface):void
+    {       
+        (string) $emailTo = '';
+        (string) $emailCc = '';
+        /*
+         * SET CLIENT EMAIL
+         */
+        if($service->getClientPoint()->getClient()->getEmail()!==null && $service->getClientPoint()->getClient()->getSendNotify()->value==='YES'){
+            $emailTo = $service->getClientPoint()->getClient()->getEmail();
+        }
+        /*
+         * SET CLIENT POINT EMAIL
+         */
+        if($service->getClientPoint()->getEmail()!==null && $service->getClientPoint()->getSendNotify()->value==='YES'){
+            $emailCc = $service->getClientPoint()->getEmail();
+            
+        }
+        /*
+         * CHECK EMAIL
+         */
+        if($emailTo === '' && $emailCc === ''){
+            return;
+        }
+        /*
+         * CHECK EMAIL TO
+         */
+        if($emailTo === '' && $emailCc!==''){
+            $emailTo = $emailCc;
+            $emailCc = '';
+        }
+        (string) $journey = '';
+        (string) $realTime = strval($service->getRealTime())."h";
+        //dd($service->getRoute());
+        if($service->getRoute() !== 0.0 && $service->getRoute() !== 0){
+            $journey = ' + dojazd';
+        }
+        $subject = 'Serwis ['.$service->getEndedAt()->format("d.m.Y").'] '.$service->getClientPoint()->getName()." ".$service->getClientPoint()->getStreet()." - ".$realTime.$journey;
+        $html = nl2br($service->getDescription()."\r\nCzas pracy ".$realTime.$journey."\r\n<span style=\"font-size:10px;color:rgb(152,152,152)\">--\r\nWiadomość wysłana z aplikacji timeForService@TimeForIT Tomasz Borczyński</span>");
+        $email = new Email();
+        $email->from(new Address('tborczynski87@gmail.com','TimeForIT Tomasz Borczyński'))
+            ->to($emailTo)
+            ->bcc('tborczynski87@gmail.com')
+            ->replyTo('tborczynski87@gmail.com')
+            ->priority(Email::PRIORITY_HIGH)
+            ->subject($subject)
+            ->html($html);
+        if($emailCc!==''){
+            $email->cc($emailCc);
+        }
+        $mailerInterface->send($email);
     }
 }
