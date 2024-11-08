@@ -32,7 +32,7 @@ class MainController extends AbstractController
         //dd($searchClientsPoints);
         $validSorts = ['description','clientPoint','user','endedAt'];
         $sort = in_array($sort,$validSorts) ? $sort : 'endedAt';
-        $maxPerPage = 4;
+        $maxPerPage = 10;
         $pager = Pagerfanta::createForCurrentPageWithMaxPerPage(
                 new QueryAdapter($serviceRepository->findBySearchWithClientPointQueryBuilder($query, $searchClientsPoints,$sort,$sortDirection),false),
                 $page,
