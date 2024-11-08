@@ -1,7 +1,33 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}{{ parent() }} - Manage Service{% endblock %}
-
+{% macro sortArrow(sortName, sort, sortDirection) %}
+    {% if sort == sortName %}
+        {% if sortDirection == 'asc' %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none">
+                </path>
+                <path d="M6 15l6 -6l6 6">
+                </path>
+            </svg> {% else %}
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none">
+                </path>
+                <path d="M6 9l6 6l6 -6">
+                </path>
+            </svg>
+        {% endif %}
+    {% else %} <!-- up and down arrow svg -->
+        <svg xmlns="http://www.w3.org/2000/svg" class="inline-block w-4 h-4 text-slate-300" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none">
+            </path>
+            <path d="M8 9l4 -4l4 4">
+            </path>
+            <path d="M16 15l-4 4l-4 -4">
+            </path>
+        </svg>
+    {% endif %}
+{% endmacro %}
 {% block body %}
 <div class="m-4 p-4 bg-gray-800 rounded-lg">
     {# ASSIGN modal_controller.js #}
@@ -28,10 +54,50 @@
     <table class="min-w-full bg-gray-800 text-white" id="service-list">
         <thead class="border-b border-gray-700">
             <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Id</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Client Point</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Description</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">endedAt</th>
+                <th class="text-left py-2">
+                    <a
+                        href="{{ path('app_service_index',{
+                               ...app.request.query.all(),
+                                sort: 'id',
+                                sortDirection: sort == 'id' and sortDirection == 'asc' ? 'desc' : 'asc'
+                        }) }}"
+                    >
+                    ID {{ _self.sortArrow('id', sort, sortDirection) }}
+                    </a>
+                </th>
+                <th class="text-left py-2 pr-4">
+                    <a
+                        href="{{ path('app_service_index',{
+                                 ...app.request.query.all(),
+                                sort: 'clientPoint',
+                                sortDirection: sort == 'clientPoint' and sortDirection == 'asc' ? 'desc' : 'asc'
+                        }) }}"
+                    >
+                    Client Point {{ _self.sortArrow('clientPoint', sort, sortDirection) }}
+                    </a>
+                </th>
+                <th class="text-left py-2">
+                    <a
+                        href="{{ path('app_service_index',{
+                                ...app.request.query.all(),
+                                sort: 'description',
+                                sortDirection: sort == 'description' and sortDirection == 'asc' ? 'desc' : 'asc'
+                        }) }}"
+                    >
+                    Description {{ _self.sortArrow('decription', sort, sortDirection) }}
+                    </a>
+                </th>
+                <th class="text-left py-2">
+                    <a
+                        href="{{ path('app_service_index',{
+                               ...app.request.query.all(),
+                                sort: 'endedAt',
+                                sortDirection: sort == 'endedAt' and sortDirection == 'asc' ? 'desc' : 'asc'
+                        }) }}"
+                    >
+                    Ended at {{ _self.sortArrow('endedAt', sort, sortDirection) }}
+                    </a>
+                </th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
             </tr>
         </thead>
@@ -46,4 +112,18 @@
         </tbody>
     </table>
 </div>
+<div class="flex items-center mt-6 space-x-4">
+    {# SETUP PAGINATION #}
+    {# DEFAULT {{ pagerfanta(services) }} #}
+    {% if services.hasPreviousPage %}
+        <a href="{{ pagerfanta_page_url(services,services.previousPage) }}" class="block py-2 px-4 bg-gray-700 text-white rounded hover:bg-gray-600">Previous</a>
+    {% endif %}
+    {% if services.hasNextPage %}
+        <a href="{{ pagerfanta_page_url(services,services.nextPage) }}" class="block py-2 px-4 bg-gray-700 text-white rounded hover:bg-gray-600">Next</a>
+    {% endif %}
+    <div class="ml-4">
+        Page {{ services.currentPage }} / {{ services.nbPages }}
+    </div>
+    {# END OF PAGINATION #}
+ </div>
 {% endblock %}

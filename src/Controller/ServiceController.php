@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Service;
 use App\Form\ServiceType;
 use App\Repository\ServiceRepository;
+use App\Repository\ClientPointRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -16,15 +17,37 @@ use App\Controller\MailerController;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
+use Pagerfanta\Pagerfanta;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 
 #[Route('/service')]
 class ServiceController extends AbstractController
 {
     #[Route('/', name: 'app_service_index', methods: ['GET'])]
-    public function index(ServiceRepository $serviceRepository): Response
+    public function index(
+            ServiceRepository $serviceRepository,
+            ClientPointRepository $clientPointRepository,
+            /* VARIABLE NAME MUST EQUAL URL PART ex. ?page => $page */
+            #[MapQueryParameter] int $page = 1,
+            #[MapQueryParameter] string $sort = 'id',
+            #[MapQueryParameter] string $sortDirection = 'DESC',
+            #[MapQueryParameter] string $query = null,
+            #[MapQueryParameter('clientsPoints', \FILTER_VALIDATE_INT)] array $searchClientsPoints = [],
+    ): Response
     {
+        $maxPerPage = 10;
+        $pager = Pagerfanta::createForCurrentPageWithMaxPerPage(
+                new QueryAdapter($serviceRepository->findBySearchWithClientPointQueryBuilder($query, $searchClientsPoints,$sort,$sortDirection),false),
+                $page,
+                $maxPerPage
+        );
         return $this->render('service/index.html.twig', [
-            'services' => $serviceRepository->findByWithClientPoint()
+            'services' => $pager,
+            'clientsPoints'=>$clientPointRepository->findAll(),
+            'searchClientsPoints' => $searchClientsPoints,
+            'sort' => $sort,
+            'sortDirection' => $sortDirection
         ]);
     }
     #[Route('/new', name: 'app_service_new', methods: ['GET', 'POST'])]
