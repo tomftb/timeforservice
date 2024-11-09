@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Model\TypeOfServiceEnum;
+use App\Model\YesOrNoEnum;
 use App\Repository\ServiceRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -73,12 +74,23 @@ class Service
     #[ORM\Column(nullable: true, enumType: TypeOfServiceEnum::class)]
     private ?TypeOfServiceEnum $typeOfService = null;
 
+    #[ORM\Column(nullable: true, enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $notified = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?int $notifyCounter = null;
+
+    #[ORM\Column(nullable: true, enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $deleted = null;
+
     public function __construct()
     {
         $this->route=0;
         $this->routeCost=0;
         $this->realTime=0;
         $this->time=0;
+        $this->notifyCounter=0;
+        $this->deleted=YesOrNoEnum::NO;
     }
     
     public function getId(): ?int
@@ -286,6 +298,42 @@ class Service
     public function setTypeOfService(?TypeOfServiceEnum $typeOfService): static
     {
         $this->typeOfService = $typeOfService;
+
+        return $this;
+    }
+
+    public function getNotified(): ?YesOrNoEnum
+    {
+        return $this->notified;
+    }
+
+    public function setNotified(?YesOrNoEnum $notified): static
+    {
+        $this->notified = $notified;
+
+        return $this;
+    }
+
+    public function getNotifyCounter(): ?int
+    {
+        return $this->notifyCounter;
+    }
+
+    public function setNotifyCounter(?int $notifyCounter): static
+    {
+        $this->notifyCounter = $notifyCounter;
+
+        return $this;
+    }
+
+    public function getDeleted(): ?YesOrNoEnum
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(?YesOrNoEnum $deleted): static
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }
