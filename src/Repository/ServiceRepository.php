@@ -7,6 +7,7 @@ use App\Entity\ClientPoint;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Model\YesOrNoEnum;
 
 /**
  * @extends ServiceEntityRepository<Service>
@@ -38,12 +39,16 @@ class ServiceRepository extends ServiceEntityRepository
     public function findBySearchWithClientPointQueryBuilder(?string $query, array $searchClientsPoints, ?string $sort = null, string $direction = 'DESC'): QueryBuilder
     {
         $qb = $this->createQueryBuilder('service');
+        $qb->andWhere('service.deleted=:deleted')
+                ->setParameter('deleted', YesOrNoEnum::NO);
         if ($query) {
-            $qb->andWhere('service.description LIKE :query')
+               
+                $qb->andWhere('service.description LIKE :query')
                 ->setParameter('query', '%' . $query . '%');
         }
         if ($searchClientsPoints) {
-            $qb->andWhere('service.clientPoint IN (:id)')
+                
+                $qb->andWhere('service.clientPoint IN (:id)')
                 ->setParameter('id', $searchClientsPoints);
         }
         if ($sort) {
@@ -71,6 +76,8 @@ class ServiceRepository extends ServiceEntityRepository
                 ->leftJoin('service.clientPoint','clientPoint')
                 ->leftJoin('clientPoint.client','client')
                 ->andWhere('client.id=:clientId')
+                ->andWhere('service.deleted=:deleted')
+                ->setParameter('deleted', YesOrNoEnum::NO)
                 ->setParameter('clientId', $clientId)
                 ->orderBy('service.id',$direction);
     }
