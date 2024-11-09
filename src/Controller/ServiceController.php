@@ -20,6 +20,8 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
+use App\Model\YesOrNoEnum;
+use Psr\Log\LoggerInterface;
 
 #[Route('/service')]
 class ServiceController extends AbstractController
@@ -64,7 +66,11 @@ class ServiceController extends AbstractController
             /*
              * SEND NOTIFY
              */
-             self::sendNotify($service,$mailerInterface);
+            if($service->getNotified()->value==='YES'){
+                self::sendNotify($service,$mailerInterface);
+                $this->service->setNotifyCounter(1);
+            }
+             
             /*
              * ADD CHECK HEADER FOR MODAL
              */
@@ -116,14 +122,17 @@ class ServiceController extends AbstractController
         ]);
     }
     #[Route('/{id}', name: 'app_service_delete', methods: ['POST'])]
-    public function delete(Request $request, Service $service, EntityManagerInterface $entityManager): Response
+    public function delete(
+            Request $request,
+            Service $service,
+            EntityManagerInterface $entityManager,
+    ): Response
     {
         if ($this->isCsrfTokenValid('delete'.$service->getId(), $request->request->get('_token'))) {
             $id = $service->getId();
-            $entityManager->remove($service);
+            $service->setDeleted(YesOrNoEnum::YES);
             $entityManager->flush();
             $this->addFlash('success', 'Service deleted!');
-            
             /*
              * ADD CHECK HEADER FOR MODAL
              */
@@ -134,7 +143,7 @@ class ServiceController extends AbstractController
                 $this->addFlash('stream',$stream);
             }
         }
-        return $this->redirectToRoute('app_service_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_service_index',  self::getRequestFilter($request), Response::HTTP_SEE_OTHER);
     }
     private function createServiceForm(Service $service=null ): FormInterface
     {
@@ -201,7 +210,7 @@ class ServiceController extends AbstractController
     private function sendNotify(Service $service, MailerInterface $mailerInterface):void
     {       
         (string) $emailTo = '';
-        (string) $emailCc = '';
+        (string) $emailCc = '';        
         /*
          * SET CLIENT EMAIL
          */
@@ -248,5 +257,39 @@ class ServiceController extends AbstractController
             $email->cc($emailCc);
         }
         $mailerInterface->send($email);
+    }
+    #[Route('/{id}/notify', name: 'app_service_notify', methods: ['POST'])]
+    public function notify(Request $request, Service $service, EntityManagerInterface $entityManager, MailerInterface $mailerInterface): Response
+    {
+        if ($this->isCsrfTokenValid('notify'.$service->getId(), $request->request->get('_token'))) {
+            $id = $service->getId();
+            //self::sendNotify($service,$mailerInterface);
+            $notifyCounter = intval($service->getNotifyCounter(),10);
+            $service->setNotifyCounter($notifyCounter+1);
+            $service->setNotified(YesOrNoEnum::YES);
+            $entityManager->flush();
+            $this->addFlash('success', 'Notified');
+            /*
+             * ADD CHECK HEADER FOR MODAL
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('service/notify.html.twig','stream_success',[
+                    'id' => $id
+                ]);
+                $this->addFlash('stream',$stream);
+            }
+        }
+        return $this->redirectToRoute('app_service_index', self::getRequestFilter($request) , Response::HTTP_SEE_OTHER);
+    }
+    private function getRequestFilter(Request $request):array
+    {
+        $requestFilter = json_decode($request->request->get('all'));
+        if(is_array($requestFilter)){
+            return $requestFilter;
+        }
+        if(is_object($requestFilter)){
+            return get_object_vars($requestFilter);
+        }
+        return [];
     }
 }
