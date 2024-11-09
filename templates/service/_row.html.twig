@@ -4,9 +4,32 @@
     <td class="px-6 py-4">{{ service.description|nl2br }}</td>
     <td class="px-6 py-4 whitespace-nowrap">{{ service.endedAt ? service.endedAt|date('Y-m-d H:i:s') : '' }}</td>
     <td class="px-6 py-4 whitespace-nowrap flex">
+        <twig:Modal :allowSmallWidth="true">
+            <twig:block name="trigger">
+                <button
+                    class="text-indigo-400 hover:text-indigo-600"
+                    data-action="modal#open"
+                >notify</button>
+            </twig:block>
+            <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
+                <path d="M12 9v4"/>
+                <path d="M12 16v.01"/>
+            </svg>
+            <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                    Notify Client and Client Point about service?
+            </h3>
+            <div class="flex justify-between">
+                <form method="dialog">
+                    <twig:Button variant="link">Cancel</twig:Button>
+                </form>
+                {{ include('service/_notify_form.html.twig') }}
+            </div>
+        </twig:Modal>
         <a 
             href="{{ path('app_service_show', {'id': service.id}) }}" 
-            class="text-blue-400 hover:text-blue-600"
+            class="ml-4 text-blue-400 hover:text-blue-600"
             data-turbo-frame="modal"
         >show</a>
         <a 
