@@ -263,7 +263,7 @@ class ServiceController extends AbstractController
     {
         if ($this->isCsrfTokenValid('notify'.$service->getId(), $request->request->get('_token'))) {
             $id = $service->getId();
-            //self::sendNotify($service,$mailerInterface);
+            self::sendNotify($service,$mailerInterface);
             $notifyCounter = intval($service->getNotifyCounter(),10);
             $service->setNotifyCounter($notifyCounter+1);
             $service->setNotified(YesOrNoEnum::YES);
