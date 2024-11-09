@@ -8,14 +8,19 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use App\Model\TypeOfServiceEnum;
+use App\Model\YesOrNoEnum;
 
 class ServiceType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('description')
+            ->add('description', TextareaType::class,[
+                'label'=>'Description',
+                "attr" => array("rows" => 10)
+            ])
             ->add('typeOfService',EnumType::class,[
                 'class'=> TypeOfServiceEnum::class,
                 'required' => true,
@@ -54,6 +59,12 @@ class ServiceType extends AbstractType
                     },
                 'placeholder' => 'Choose type of service',
                 'autocomplete'=> true
+            ])
+            ->add('notified',EnumType::class,[
+                'class'=> YesOrNoEnum::class,
+                'label'=>'Notified',
+                'required' => true,
+                'data_class'=>null,
             ])
         ;
     }
