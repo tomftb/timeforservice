@@ -2,7 +2,11 @@
     <td class="px-6 py-4 whitespace-nowrap">{{ service.id }}</td>
     <td class="px-6 py-4">{{ service.clientPoint.name }}<br/>{{ service.clientPoint.street }}<br/>{{ service.clientPoint.town }}</td>
     <td class="px-6 py-4">{{ service.description|nl2br }}</td>
-    <td class="px-6 py-4 whitespace-nowrap">{{ service.endedAt ? service.endedAt|date('Y-m-d H:i:s') : '' }}</td>
+    <td class="px-6 py-4">{{ service.realTime }}</td>
+    {% set notifiedYes = '<span class="text-blue-600">'~service.notified.value~'</span>' %}
+    {% set notifiedNo = '<span class="text-red-600">'~service.notified.value~'</span>' %}
+    <td class="px-6 py-4">{{ service.notified.value == 'YES' ? notifiedYes|raw : notifiedNo|raw  }}</td>
+    <td class="px-6 py-4">{{ service.endedAt ? service.endedAt|date('Y-m-d H:i:s') : '' }}</td>
     <td class="px-6 py-4 whitespace-nowrap flex">
         <twig:Modal :allowSmallWidth="true">
             <twig:block name="trigger">
