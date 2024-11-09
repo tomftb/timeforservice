@@ -68,7 +68,7 @@ class ServiceController extends AbstractController
              */
             if($service->getNotified()->value==='YES'){
                 self::sendNotify($service,$mailerInterface);
-                $this->service->setNotifyCounter(1);
+                $service->setNotifyCounter(1);
             }
              
             /*
