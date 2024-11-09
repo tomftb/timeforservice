@@ -89,7 +89,7 @@
             </form>
             {# END SEARCH #}
 {# CONTENT REFRESH VIA TURBO-FRAME #}
-<turbo-frame id="service-list" data-turbo-action="advance">          
+{# <turbo-frame id="service-list" data-turbo-action="advance">#}
 <div class="m-4 p-4 bg-gray-800 rounded-lg">
     {# ASSIGN modal_controller.js #}
     <div
@@ -192,5 +192,5 @@
         {{ block('service_result_count') }}
     </template>
     </turbo-stream>
-</turbo-frame>
+{# </turbo-frame> #}
 {% endblock %}
