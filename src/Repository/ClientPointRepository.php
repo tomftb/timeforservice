@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\ClientPoint;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<ClientPoint>
@@ -15,7 +16,12 @@ class ClientPointRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ClientPoint::class);
     }
-
+    public function findAllQueryBuilder(): QueryBuilder
+    {
+        $qb = $this->createQueryBuilder('clientPoint');
+        $qb->orderBy('clientPoint.id', "ASC");
+        return $qb;
+    }
     //    /**
     //     * @return ClientPoint[] Returns an array of ClientPoint objects
     //     */
