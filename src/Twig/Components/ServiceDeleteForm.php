@@ -7,7 +7,7 @@ use Symfony\UX\LiveComponent\DefaultActionTrait;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\Component\Form\FormInterface;
 use App\Entity\Service;
-use App\Form\ServiceType;
+use App\Form\ServiceDeleteType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 
@@ -18,7 +18,7 @@ use Symfony\UX\LiveComponent\Attribute\LiveProp;
  * @author Tomasz
  */
 #[AsLiveComponent]
-class ServiceForm extends AbstractController{
+class ServiceDeleteForm extends AbstractController{
     
     use DefaultActionTrait;
     use ComponentWithFormTrait;
@@ -29,11 +29,9 @@ class ServiceForm extends AbstractController{
     #[\Override]
     protected function instantiateForm(): FormInterface
     {
-        //dd($this->initialFormData);
-        $service=$this->initialFormData ?? new Service();
-        
-        return $this->createForm(ServiceType::class,$service ,[
-            'action' => $service->getId() ? $this->generateUrl('app_service_edit',['id'=>$service->getId()]) : $this->generateUrl( 'app_service_new' ), 
+        $service=$this->initialFormData;
+        return parent::createForm(ServiceDeleteType::class,$service ,[
+            'action' => $this->generateUrl('app_service_delete',['id'=>$service->getId()])
         ]);
     }
 }
