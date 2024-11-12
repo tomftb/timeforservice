@@ -1,7 +1,1 @@
-<form method="post" action="{{ path('app_service_delete', {'id': service.id}) }}">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ service.id) }}">
-    <input type="hidden" name="all" value="{{ app.request.query.all()|json_encode() }}">
-    <twig:Button variant="danger">
-        Delete
-    </twig:Button>
-</form>
+<twig:ServiceDeleteForm :form="form" :initialFormData="service" />
