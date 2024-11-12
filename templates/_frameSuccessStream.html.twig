@@ -1,4 +1,4 @@
-{% if app.request.headers.get('turbo-frame') == frame %}
+{% if app.request.headers.get('turbo-frame') == 'modal' %}
     {# ADD TURBO STREAM FOR TOAST NOTIFICATION TARGET - DIV WITH ID flash-container #}
     <turbo-stream action="append" target="flash-container">
         <template>{{ include('_flashes.html.twig') }}</template>
