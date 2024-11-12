@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Service;
 use App\Form\ServiceType;
+use App\Form\ServiceDeleteType;
 use App\Repository\ServiceRepository;
 use App\Repository\ClientPointRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -53,10 +54,17 @@ class ServiceController extends AbstractController
         ]);
     }
     #[Route('/new', name: 'app_service_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, MailerInterface $mailerInterface): Response
+    public function new(
+            Request $request,
+            ServiceRepository $serviceRepository,
+            EntityManagerInterface $entityManager,
+            MailerInterface $mailerInterface,
+            #[MapQueryParameter] string $query = null,
+            #[MapQueryParameter('clientsPoints', \FILTER_VALIDATE_INT)] array $searchClientsPoints = [],
+    ): Response
     {
         $service = new Service();
-        $form = $this->createServiceForm($service);
+        $form = self::createServiceForm($service);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             self::prepare($service);
@@ -70,13 +78,14 @@ class ServiceController extends AbstractController
                 self::sendNotify($service,$mailerInterface);
                 $service->setNotifyCounter(1);
             }
-             
+            $servicesCount = count($serviceRepository->findBySearchWithClientPoint($query, $searchClientsPoints));
             /*
              * ADD CHECK HEADER FOR MODAL
              */
             if($request->headers->has('turbo-frame')){
                 $stream = $this->renderBlockView('service/new.html.twig','stream_success',[
-                    'service' => $service
+                    'service' => $service,
+                    'servicesCount' => $servicesCount,
                 ]);
                 $this->addFlash('stream',$stream);
             }
@@ -95,10 +104,13 @@ class ServiceController extends AbstractController
         ]);
     }
     #[Route('/{id}/edit', name: 'app_service_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Service $service, EntityManagerInterface $entityManager): Response
+    public function edit(
+            Request $request,
+            Service $service,
+            EntityManagerInterface $entityManager
+    ): Response
     {
-        
-        $form = $this->createServiceForm($service);
+        $form = self::createServiceForm($service);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             self::prepare($service);
@@ -113,7 +125,6 @@ class ServiceController extends AbstractController
                 ]);
                 $this->addFlash('stream',$stream);
             }
-           
             return $this->redirectToRoute('app_service_edit', ['id'=>$service->getId()], Response::HTTP_SEE_OTHER);
         }
         return $this->render('service/edit.html.twig', [
@@ -121,29 +132,41 @@ class ServiceController extends AbstractController
             'form' => $form,
         ]);
     }
-    #[Route('/{id}', name: 'app_service_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_service_delete', methods: ['GET','POST'])]
     public function delete(
             Request $request,
             Service $service,
             EntityManagerInterface $entityManager,
+            ServiceRepository $serviceRepository,
+            #[MapQueryParameter] string $query = null,
+            #[MapQueryParameter('clientsPoints', \FILTER_VALIDATE_INT)] array $searchClientsPoints = [],
     ): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$service->getId(), $request->request->get('_token'))) {
-            $id = $service->getId();
+        $form = $this->createForm(ServiceDeleteType::class,$service ,[
+            'action' => $this->generateUrl('app_service_delete',['id'=>$service->getId()]), 
+        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             $service->setDeleted(YesOrNoEnum::YES);
             $entityManager->flush();
             $this->addFlash('success', 'Service deleted!');
+            $servicesCount = count($serviceRepository->findBySearchWithClientPoint($query, $searchClientsPoints));
             /*
              * ADD CHECK HEADER FOR MODAL
              */
             if($request->headers->has('turbo-frame')){
                 $stream = $this->renderBlockView('service/delete.html.twig','stream_success',[
-                    'id' => $id
+                    'service' => $service,
+                    'servicesCount' => $servicesCount,
                 ]);
                 $this->addFlash('stream',$stream);
             }
+            return $this->redirectToRoute('app_service_index',[], Response::HTTP_SEE_OTHER);
         }
-        return $this->redirectToRoute('app_service_index',  self::getRequestFilter($request), Response::HTTP_SEE_OTHER);
+        return $this->render('service/delete.html.twig', [
+            'service' => $service,
+            'form' => $form,
+        ]);
     }
     private function createServiceForm(Service $service=null ): FormInterface
     {
