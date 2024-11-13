@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Service;
 use App\Form\ServiceType;
 use App\Form\ServiceDeleteType;
+use App\Form\ServiceNotifyType;
 use App\Repository\ServiceRepository;
 use App\Repository\ClientPointRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -66,19 +67,21 @@ class ServiceController extends AbstractController
         $service = new Service();
         $form = self::createServiceForm($service);
         $form->handleRequest($request);
+        $flashMessage="Saved";
         if ($form->isSubmitted() && $form->isValid()) {
             self::prepare($service);
             $entityManager->persist($service);
             $entityManager->flush();
-            $this->addFlash('success', 'Saved');
             /*
              * SEND NOTIFY
              */
             if($service->getNotified()->value==='YES'){
                 self::sendNotify($service,$mailerInterface);
                 $service->setNotifyCounter(1);
+                $flashMessage.=' & Notified';
             }
             $servicesCount = count($serviceRepository->findBySearchWithClientPoint($query, $searchClientsPoints));
+            $this->addFlash('success', $flashMessage);
             /*
              * ADD CHECK HEADER FOR MODAL
              */
@@ -281,38 +284,39 @@ class ServiceController extends AbstractController
         }
         $mailerInterface->send($email);
     }
-    #[Route('/{id}/notify', name: 'app_service_notify', methods: ['POST'])]
-    public function notify(Request $request, Service $service, EntityManagerInterface $entityManager, MailerInterface $mailerInterface): Response
+    #[Route('/{id}/notify', name: 'app_service_notify', methods: ['GET','POST'])]
+    public function notify(
+            Request $request,
+            Service $service,
+            EntityManagerInterface $entityManager,
+            MailerInterface $mailerInterface
+    ): Response
     {
-        if ($this->isCsrfTokenValid('notify'.$service->getId(), $request->request->get('_token'))) {
-            $id = $service->getId();
+        $form = $this->createForm(ServiceNotifyType::class,$service ,[
+            'action' => $this->generateUrl('app_service_notify',['id'=>$service->getId()]), 
+        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
             self::sendNotify($service,$mailerInterface);
             $notifyCounter = intval($service->getNotifyCounter(),10);
             $service->setNotifyCounter($notifyCounter+1);
             $service->setNotified(YesOrNoEnum::YES);
             $entityManager->flush();
-            $this->addFlash('success', 'Notified');
+            $this->addFlash('success', 'Notified!');
             /*
              * ADD CHECK HEADER FOR MODAL
              */
             if($request->headers->has('turbo-frame')){
                 $stream = $this->renderBlockView('service/notify.html.twig','stream_success',[
-                    'id' => $id
+                    'service' => $service,
                 ]);
                 $this->addFlash('stream',$stream);
             }
+            return $this->redirectToRoute('app_service_index',[], Response::HTTP_SEE_OTHER);
         }
-        return $this->redirectToRoute('app_service_index', self::getRequestFilter($request) , Response::HTTP_SEE_OTHER);
-    }
-    private function getRequestFilter(Request $request):array
-    {
-        $requestFilter = json_decode($request->request->get('all'));
-        if(is_array($requestFilter)){
-            return $requestFilter;
-        }
-        if(is_object($requestFilter)){
-            return get_object_vars($requestFilter);
-        }
-        return [];
+        return $this->render('service/notify.html.twig', [
+            'service' => $service,
+            'form' => $form,
+        ]);
     }
 }
