@@ -12,9 +12,6 @@ class ServiceDeleteType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
-        $builder
-            ->add('id', HiddenType::class)
-        ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
