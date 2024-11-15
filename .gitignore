@@ -23,3 +23,4 @@
 /tmp/*
 /tmp/
 ###< symfony/asset-mapper ###
+/uploads/attachments/
