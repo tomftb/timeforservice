@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Model\TypeOfServiceEnum;
 use App\Model\YesOrNoEnum;
 use App\Repository\ServiceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -83,6 +85,12 @@ class Service
     #[ORM\Column(nullable: true, enumType: YesOrNoEnum::class)]
     private ?YesOrNoEnum $deleted = null;
 
+    /**
+     * @var Collection<int, ServiceAttachment>
+     */
+    #[ORM\OneToMany(targetEntity: ServiceAttachment::class, mappedBy: 'service')]
+    private Collection $serviceAttachments;
+
     public function __construct()
     {
         $this->route=0;
@@ -91,6 +99,7 @@ class Service
         $this->time=0;
         $this->notifyCounter=0;
         $this->deleted=YesOrNoEnum::NO;
+        $this->serviceAttachments = new ArrayCollection();
     }
     
     public function getId(): ?int
@@ -340,6 +349,36 @@ class Service
     public function setDeleted(?YesOrNoEnum $deleted): static
     {
         $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ServiceAttachment>
+     */
+    public function getServiceAttachments(): Collection
+    {
+        return $this->serviceAttachments;
+    }
+
+    public function addServiceAttachment(ServiceAttachment $serviceAttachment): static
+    {
+        if (!$this->serviceAttachments->contains($serviceAttachment)) {
+            $this->serviceAttachments->add($serviceAttachment);
+            $serviceAttachment->setService($this);
+        }
+
+        return $this;
+    }
+
+    public function removeServiceAttachment(ServiceAttachment $serviceAttachment): static
+    {
+        if ($this->serviceAttachments->removeElement($serviceAttachment)) {
+            // set the owning side to null (unless already changed)
+            if ($serviceAttachment->getService() === $this) {
+                $serviceAttachment->setService(null);
+            }
+        }
 
         return $this;
     }

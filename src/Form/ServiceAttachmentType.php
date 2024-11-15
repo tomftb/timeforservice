@@ -2,69 +2,48 @@
 
 namespace App\Form;
 
-use App\Entity\Service;
+use App\Entity\ServiceAttachment;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
-use Symfony\Component\Form\Extension\Core\Type\EnumType;
-use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use App\Model\TypeOfServiceEnum;
-use App\Model\YesOrNoEnum;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Validator\Constraints\File;
 
-class ServiceType extends AbstractType
+class ServiceAttachmentType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('description', TextareaType::class,[
-                'label'=>'Description',
-                "attr" => array("rows" => 10)
-            ])
-            ->add('typeOfService',EnumType::class,[
-                'class'=> TypeOfServiceEnum::class,
-                'required' => true,
-                'data_class'=>null,
-            ])
-            ->add('startedAt', DateTimeType::class, [
-                'date_label' => 'Starts On',
-            ]) 
-            ->add('endedAt', DateTimeType::class, [
-                'date_label' => 'Starts On',
-            ])
-            ->add('time',null,[
-                'label'=>'Time (in minutes)'
-            ]) 
-            ->add('route',null,[
-                'label'=>'Route (in kilometers)'
-            ]) 
-            ->add('clientPoint', null, [
-                'choice_label' =>  function ($clientPoint) {
-                        return $clientPoint->getName() . ' (' .$clientPoint->getStreet().",". $clientPoint->getTown().")";
-                    },
-                'placeholder' => 'Choose a client point',
-                'autocomplete'=> true
-            ])
-            ->add('user', null, [
-                'choice_label' => function ($user) {
-                        return $user->getFirstName() ." ".$user->getLastName(). ' (' .$user->getName().")";
-                    },
-                'placeholder' => 'Choose a user',
-                'autocomplete'=> true
-            ])
-            ->add('classificationOfActivities', null, [
-                'label'=>'Type of service',
-                'choice_label' =>  function ($classificationOfActivities) {
-                        return "[".$classificationOfActivities->getCode() . '] ' .$classificationOfActivities->getName();
-                    },
-                'placeholder' => 'Choose type of service',
-                'autocomplete'=> true
-            ])
-            ->add('notified',EnumType::class,[
-                'class'=> YesOrNoEnum::class,
-                'label'=>'Notified',
-                'required' => true,
-                'data_class'=>null,
+            ->add('files', FileType::class, [
+                'label' => 'Set file/files (IMAGE/PDF)',
+
+                // unmapped means that this field is not associated to any entity property
+                'mapped' => false,
+                'multiple' => true,
+                // make it optional so you don't have to re-upload the PDF file
+                // every time you edit the Product details
+                'required' => false,
+
+                // unmapped fields can't define their validation using attributes
+                // in the associated entity, so you can use the PHP constraint classes
+                /* NOT WORKING WITH multiple = true
+                'constraints' => [
+                    new File([
+                        'maxSize' => '8096k',
+
+                        'mimeTypes' => [
+                            'application/pdf',
+                            'application/x-pdf',
+                            "image/*",
+                        ],
+                        'mimeTypesMessage' => 'Please upload a valid IMAGE/PDF file',
+                    ])
+                ],
+                 */
+                'attr'  => [
+                    'accept' => 'image/*',
+                    'multiple' => 'multiple'
+                ],
             ])
         ;
     }
@@ -72,7 +51,7 @@ class ServiceType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Service::class,
+            'data_class' => ServiceAttachment::class,
         ]);
     }
 }

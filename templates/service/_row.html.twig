@@ -23,6 +23,11 @@
             class="ml-4 text-yellow-400 hover:text-yellow-600"
             data-turbo-frame="modal"
         >edit</a>
+        <a 
+            href="{{ path('app_service_attachment', {'id': service.id}) }}" 
+            class="ml-4 text-emerald-400 hover:text-emerald-600"
+            data-turbo-frame="modal"
+        >attachment</a>
         <a
             href="{{ path('app_service_delete', {'id': service.id}) }}"
             class="ml-4 text-red-400 hover:text-red-600"

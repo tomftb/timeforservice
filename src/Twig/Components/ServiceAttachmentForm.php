@@ -6,8 +6,8 @@ use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\Component\Form\FormInterface;
-use App\Entity\Service;
-use App\Form\ServiceType;
+use App\Entity\ServiceAttachment;
+use App\Form\ServiceAttachmentType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 
@@ -18,22 +18,26 @@ use Symfony\UX\LiveComponent\Attribute\LiveProp;
  * @author Tomasz
  */
 #[AsLiveComponent]
-class ServiceForm extends AbstractController{
+class ServiceAttachmentForm extends AbstractController{
     
     use DefaultActionTrait;
     use ComponentWithFormTrait;
 
     #[LiveProp]
-    public ?Service $initialFormData = null;
+    public ?ServiceAttachment $initialFormData = null;
+    
+    #[LiveProp]
+    public ?int $serviceId = null;
     
     #[\Override]
     protected function instantiateForm(): FormInterface
     {
         //dd($this->initialFormData);
-        $service=$this->initialFormData ?? new Service();
+        $serviceAttachment=$this->initialFormData;
+        $serviceId=$this->serviceId;
         
-        return $this->createForm(ServiceType::class,$service ,[
-            'action' => $service->getId() ? $this->generateUrl('app_service_edit',['id'=>$service->getId()]) : $this->generateUrl( 'app_service_new' ), 
+        return $this->createForm(ServiceAttachmentType::class,$serviceAttachment ,[
+            'action' => $this->generateUrl( 'app_service_attachment',['id'=>$serviceId] ), 
         ]);
     }
 }
