@@ -4,7 +4,8 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
-
+    app.attachment_dir: "%env(resolve:APP_ATTACHMENT_DIR)%"
+    app.temp_dir: "%env(resolve:APP_TMP_DIR)%"
 services:
     # default configuration for services in *this* file
     _defaults:
@@ -24,7 +25,7 @@ services:
     # please note that last definitions always *replace* previous ones
     App\Service\Excel\ClientPoint:
         bind:
-            string $appTmp: '%env(resolve:APP_TMP)%'
+            string $appTmp: '%env(resolve:APP_TMP_DIR)%'
     App\Service\Excel\Client:
         bind:
-            string $appTmp: '%env(resolve:APP_TMP)%'
+            string $appTmp: '%env(resolve:APP_TMP_DIR)%'
