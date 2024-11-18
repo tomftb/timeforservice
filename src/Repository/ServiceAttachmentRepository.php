@@ -15,29 +15,15 @@ class ServiceAttachmentRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ServiceAttachment::class);
     }
-
-    //    /**
-    //     * @return ServiceAttachment[] Returns an array of ServiceAttachment objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('s.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?ServiceAttachment
-    //    {
-    //        return $this->createQueryBuilder('s')
-    //            ->andWhere('s.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * @return ServiceAttachment[] Returns an array of ServiceAttachment objects
+     */
+    public function findByService(int $serviceId=0): array
+    {
+        return $this->createQueryBuilder('service_attachment')
+                ->andWhere('service_attachment.service = :service')
+                ->setParameter('service', $serviceId)
+                ->getQuery()
+                ->getResult();
+    }
 }
