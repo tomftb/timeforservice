@@ -1,0 +1,11 @@
+{# ADD TURBO STREAM TO UPDATE ROW IN TABLE WITH CONTENT #}
+{% block stream_success %}
+    {# CLEAR MODAL TO CLOSE IT #}
+    <turbo-stream action="update" target="modalDelete">
+        <template>
+        </template>
+    </turbo-stream>
+    {# add `s` to target to use CSS selector #}
+    <turbo-stream action="remove" target="attachment-list-item-{{ id }}">
+    </turbo-stream>
+{% endblock %}

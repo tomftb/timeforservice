@@ -95,7 +95,7 @@ class ServiceAttachmentController extends AbstractController
                 ]);
                 $this->addFlash('stream',$stream);
             }
-            return $this->redirectToRoute('app_service_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_service_attachment', [ 'id' => $serviceId], Response::HTTP_SEE_OTHER);
         }
         return $this->render('service/attachment.html.twig', [
             'serviceAttachment' => $serviceAttachment,
@@ -119,5 +119,29 @@ class ServiceAttachmentController extends AbstractController
         $imginfo = getimagesize($src);
         header("Content-type: {$imginfo['mime']}");
         readfile($src);
+    }
+    #[Route('/{id}/attachmentdelete', name: 'app_service_attachment_delete', methods: ['GET','POST'])]
+    public function delete(Request $request, ServiceAttachment $serviceAttachment, EntityManagerInterface $entityManager):Response
+    {
+        //dd($request->request->get('serviceId'));
+         if ($this->isCsrfTokenValid('delete'.$serviceAttachment->getId(), $request->request->get('_token'))) {
+            $id = $serviceAttachment->getId();
+            $entityManager->remove($serviceAttachment);
+            $filesystem = new Filesystem();
+            $path = $this->getParameter('app.attachment_dir').strval($serviceAttachment->getService()->getId())."/".$serviceAttachment->getName();
+            $filesystem->remove($path);
+            $entityManager->flush();
+            $this->addFlash('success', 'Attachment deleted');
+            /*
+             * ADD CHECK HEADER FOR MODAL
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('service/attachment_delete.html.twig','stream_success',[
+                    'id' => $id
+                ]);
+                $this->addFlash('stream',$stream);
+            }
+        }
+        return $this->redirectToRoute('app_service_attachment', [ 'id' => $request->request->get('serviceId')], Response::HTTP_SEE_OTHER);
     }
 }

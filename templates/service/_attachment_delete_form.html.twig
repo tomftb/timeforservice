@@ -1,0 +1,7 @@
+<form method="POST" action="{{ path('app_service_attachment_delete', {'id': attachment.getId()}) }}">
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ attachment.getId()) }}">
+    <input type="hidden" name="serviceId" value="{{ serviceId }}">
+    <twig:Button variant="danger">
+        Delete
+    </twig:Button>
+</form>
