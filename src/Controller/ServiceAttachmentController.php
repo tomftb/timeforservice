@@ -9,7 +9,6 @@ use App\Form\ServiceAttachmentType;
 use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -19,6 +18,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormInterface;
 
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Path;
+
+use App\Repository\ServiceAttachmentRepository;
+
+use Symfony\Component\HttpFoundation\StreamedResponse;
+
 #[Route('/service')]
 class ServiceAttachmentController extends AbstractController
 {
@@ -27,16 +34,18 @@ class ServiceAttachmentController extends AbstractController
             Request $request,
             Service $service,
             EntityManagerInterface $entityManager,
+            ServiceAttachmentRepository $serviceAttachmentRepository,
             SluggerInterface $slugger,
-            #[Autowire('%kernel.project_dir%/uploads/attachments')] string $uploadAttachmentDir
     ): Response
     {
-        //dd($service->getId());
         $serviceId = $request->get('id');
         $serviceAttachment = new ServiceAttachment();
+        $listOfAttachments = self::listAttachments($service,$serviceAttachmentRepository);
         $form = parent::createForm(ServiceAttachmentType::class, $serviceAttachment);
-
+        $filesystem = new Filesystem();
         $form->handleRequest($request);
+        $uploadAttachmentDir = $this->getParameter('app.attachment_dir').strval($request->get('id'));
+
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $brochureFile */
             $attachmentsFiles=$form->get('files')->getData();
@@ -48,6 +57,9 @@ class ServiceAttachmentController extends AbstractController
                  */
             }
             else{
+                if(!$filesystem->exists($uploadAttachmentDir)){
+                    $filesystem->mkdir($uploadAttachmentDir, 0755);
+                }
                 foreach($attachmentsFiles as $attachment){
                     $serviceAttachment = new ServiceAttachment();
                     $originalFilename = pathinfo($attachment->getClientOriginalName(), PATHINFO_FILENAME);
@@ -87,8 +99,25 @@ class ServiceAttachmentController extends AbstractController
         }
         return $this->render('service/attachment.html.twig', [
             'serviceAttachment' => $serviceAttachment,
+            'listOfAttachments' => $listOfAttachments,
             'serviceId' => $serviceId,
             'form' => $form,
         ]);
+    }
+    public function listAttachments(
+            Service $service,
+            ServiceAttachmentRepository $serviceAttachmentRepository,
+    ):array
+    {
+        $attachments = $serviceAttachmentRepository->findByService($service->getId());
+        return $attachments;
+    }
+    #[Route('/{id}/attachmentread', name: 'app_service_attachment_read', methods: ['GET'])]
+    public function read(ServiceAttachment $serviceAttachment)
+    {
+        $src = $this->getParameter('app.attachment_dir').strval($serviceAttachment->getService()->getId())."/".$serviceAttachment->getName();
+        $imginfo = getimagesize($src);
+        header("Content-type: {$imginfo['mime']}");
+        readfile($src);
     }
 }
