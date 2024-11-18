@@ -26,7 +26,9 @@ use Pagerfanta\Pagerfanta;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use App\Model\YesOrNoEnum;
 use Psr\Log\LoggerInterface;
-
+use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Component\Mime\Part\File;
+use App\Repository\ServiceAttachmentRepository;
 
 #[Route('/service')]
 class ServiceController extends AbstractController
@@ -236,7 +238,7 @@ class ServiceController extends AbstractController
         $service->setCost($convertTime->get()*$rate);
         return $service;
     }
-    private function sendNotify(Service $service, MailerInterface $mailerInterface):void
+    private function sendNotify(Service $service, MailerInterface $mailerInterface, array $attachments=[]):void
     {       
         (string) $emailTo = '';
         (string) $emailCc = '';        
@@ -285,6 +287,12 @@ class ServiceController extends AbstractController
         if($emailCc!==''){
             $email->cc($emailCc);
         }
+        $uploadAttachmentDir = $this->getParameter('app.attachment_dir').strval($service->getId());
+        //dd($uploadAttachmentDir);
+        foreach($attachments as $attachment){
+            //dd($attachment);
+           $email->addPart(new DataPart(new File($uploadAttachmentDir.'/'.$attachment->getName()), $attachment->getOriginalName(), $attachment->getType()));
+        }
         $mailerInterface->send($email);
     }
     #[Route('/{id}/notify', name: 'app_service_notify', methods: ['GET','POST'])]
@@ -292,15 +300,17 @@ class ServiceController extends AbstractController
             Request $request,
             Service $service,
             EntityManagerInterface $entityManager,
-            MailerInterface $mailerInterface
+            MailerInterface $mailerInterface,
+            ServiceAttachmentRepository $serviceAttachmentRepository,
     ): Response
     {
         $form = $this->createForm(ServiceNotifyType::class,$service ,[
             'action' => $this->generateUrl('app_service_notify',['id'=>$service->getId()]), 
         ]);
+        $attachments = $serviceAttachmentRepository->findByService($service->getId());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            self::sendNotify($service,$mailerInterface);
+            self::sendNotify($service,$mailerInterface,$attachments);
             $notifyCounter = intval($service->getNotifyCounter(),10);
             $service->setNotifyCounter($notifyCounter+1);
             $service->setNotified(YesOrNoEnum::YES);
