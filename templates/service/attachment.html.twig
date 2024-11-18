@@ -13,6 +13,62 @@
             </div>
         </div>
         {{ include('service/_attachment_form.html.twig') }}
+        <div>
+            <table class="min-w-full bg-gray-800 text-white" id="table-attachment-list">
+                <thead class="border-b border-gray-700">
+                    <tr>
+                        <th class="text-left py-2">
+                            ID
+                        </th>
+                        <th class="text-left py-2 pr-4 whitespace-nowrap">
+                            Name
+                        </th> 
+                        <th class="text-left py-2 pr-4 whitespace-nowrap">
+                            Action
+                        </th> 
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-600">
+                    {% for attachment in listOfAttachments %}
+                        <tr class="even:bg-gray-700 odd:bg-gray-600" id="attachment-list-item-{{ attachment.getId() }}">
+                            <td class="px-6 py-4 whitespace-nowrap">{{ attachment.getId() }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <a href="{{ path('app_service_attachment_read', {'id': attachment.getId()}) }}" target="_blank" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">{{  attachment.getOriginalName() }}</a>
+                            </td>
+                            <td>
+                                <twig:Modal :allowSmallWidth="true">
+                                <twig:block name="trigger">
+                                    <button
+                                        class="ml-4 text-red-400 hover:text-red-600"
+                                        data-action="modal#open"
+                                    >delete</button>
+                                </twig:block>
+                                <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
+                                    <path d="M12 9v4"/>
+                                    <path d="M12 16v.01"/>
+                                </svg>
+                                <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+                                        Delete this attachment???
+                                </h3>
+                                <div class="flex justify-between">
+                                    <form method="dialog">
+                                        <twig:Button variant="link">Cancel</twig:Button>
+                                    </form>
+                                    {{ include('service/_attachment_delete_form.html.twig') }}
+                                </div>
+                            </twig:Modal>
+                            </td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="3" class="px-6 py-4 whitespace-nowrap text-center text-gray-400">No attachments</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
     </div>
 {% endblock %}
 {# ADD TURBO STREAM TO APPEND IN NEW ROW IN TABLE #}
