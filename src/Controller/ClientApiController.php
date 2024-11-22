@@ -89,7 +89,11 @@ class ClientApiController extends AbstractController{
                 $client->getMileageUnit(),
                 $client->getMileageRate()
             );
-            $clientExcel->setCooperationMileageProperties(self::getClientMileageProperties($client));
+            $clientExcel->setCooperationMileageProperties(
+                $client->getMileageCode()." ".$client->getMileageName(),
+                $client->getMileageUnit(),
+                $client->getMileageRate()
+        );
             $clientExcel->set($client,$serviceRepository->{$findBy}($client->getId(),'ASC',$endedFrom,$endedTo));
         }
         $clientExcel->setWholeCost();
