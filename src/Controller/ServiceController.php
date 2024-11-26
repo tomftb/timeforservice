@@ -173,7 +173,7 @@ class ServiceController extends AbstractController
         }
         return $this->render('service/delete.html.twig', [
             'service' => $service,
-            'form' => $form,
+            //'form' => $form,
         ]);
     }
     private function createServiceForm(Service $service=null ): FormInterface
