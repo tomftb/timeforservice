@@ -61,7 +61,7 @@ App\Entity\Service:
             - Type: \DateTimeInterface
         time:
             - NotBlank: ~
-            - Positive: ~
+            - PositiveOrZero: ~
         description:
             - NotBlank: ~
             - Length:
