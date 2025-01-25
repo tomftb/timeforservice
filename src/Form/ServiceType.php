@@ -37,6 +37,9 @@ class ServiceType extends AbstractType
             ]) 
             ->add('route',null,[
                 'label'=>'Route (in kilometers)'
+            ])
+            ->add('materialCosts',null,[
+                'label'=>'Material costs (gross)'
             ]) 
             ->add('clientPoint', null, [
                 'choice_label' =>  function ($clientPoint) {
