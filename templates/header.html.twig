@@ -16,43 +16,9 @@
     </head>
     <body class="bg-black text-white font-mono">
         <div class="container mx-auto min-h-screen flex flex-col">
-            <header class="my-8 px-4">
+            <header class="my-0 px-4">
                 <nav class="flex items-center justify-between mb-4">
-                    <div class="flex items-center">
-                        <a href="{{ path('app_main_homepage') }}">
-                            <img src="{{ asset('images/logo_white.png') }}" width="50" alt="TimeForService Logo" >
-                        </a>
-                        <a href="{{ path('app_main_homepage') }}" class="text-xl ml-3">Main page</a>
-                        <a href="{{ path('app_service_index') }}" class="ml-6 hover:text-gray-400">Services</a>
-                        <a href="{{ path('app_client_index') }}" class="ml-4 hover:text-gray-400">Clients</a>
-                        <a href="{{ path('app_clientpoint_index') }}" class="ml-4 hover:text-gray-400">Clients points</a>
-                        <a href="{{ path('app_user_index') }}" class="ml-4 hover:text-gray-400">Invoices</a>
-                        <a href="{{ path('app_user_index') }}" class="ml-4 hover:text-gray-400">Users</a>
-                        <a href="{{ path('app_classificationofactivities_index') }}" class="ml-4 hover:text-gray-400">Classification of Activities</a>
-                    </div>
-                    {# GLOBAL SEARCH #}
-                    <twig:Modal 
-                        :closeButton="true"
-                        padding=""
-                        :fixedTop="true"
-                        data-turbo-permanent
-                        id="global-search-service"
-                        data-action="keydown.ctrl+k@window->modal#open keydown.meta+k@window->modal#open"
-                    >
-                        <twig:block name="trigger">
-                            <div
-                                class="hidden md:flex pr-10 items-center space-x-2 border-2 border-gray-900 rounded-lg p-2 bg-gray-800 text-white cursor-pointer"
-                                data-action="click->modal#open"
-                            >
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"/><path d="M21 21l-6 -6"/></svg>
-                                <span class="pl-2 pr-10 text-gray-500">Search Cmd+K</span>
-                            </div>
-                        </twig:block>
-                        {# SearchSite component add attrbiute defer to load lazy #}
-                        <twig:SearchSite defer/>
-                        {# END SearchSite component #}
-                    </twig:Modal>
-                    {# END GLOBAL SEARCH #}
+
                 </nav>
             </header>
 
@@ -66,39 +32,7 @@
                 </div>
             </footer>
         </div>
-            <twig:Modal>
-                <div class="text-white space-y-4">
-                    <turbo-frame 
-                        id="modal"
-                        data-modal-target="dynamicContent"
-                        {# ADD LOAD CONTENT ACTION #}
-                        data-action="turbo:before-fetch-request->modal#showLoading"
-                        {# SET CSS EFFECT WHE PRES THE SUBMIT BUTTON #}
-                        class="aria-busy:opacity-50 transition-opacity"
-                    >
-                        {{ include('_frameSuccessStream.html.twig',{ frame: 'modal' }) }}
-                    </turbo-frame>
-                </div>
-                    <twig:block name="loading_template">
-                        <div class="bg-space-pattern bg-cover rounded-lg p-8">
-                            <div class="space-y-2">
-                                <div class="h-4 bg-gray-700 rounded w-3/4 animate-pulse"></div>
-                                <div class="h-4 bg-gray-700 rounded animate-pulse"></div>
-                                <div class="h-4 bg-gray-700 rounded animate-pulse"></div>
-                                <div class="h-4"></div>
-                                <div class="h-4 bg-gray-700 rounded animate-pulse"></div>
-                                <div class="h-4 bg-gray-700 rounded w-1/2 animate-pulse"></div>
-                                <div class="h-4 bg-gray-700 rounded w-3/4 animate-pulse"></div>
-                                <div class="h-4"></div>
-                                <div class="h-4 bg-gray-700 rounded w-1/2 animate-pulse"></div>
-                            </div>
-                        </div>
-                    </twig:block>
-            </twig:Modal>
-            {# MOVE AFTER MODAL TO SHOW TOAST NOTIFICATIONS #}
-            <div id="flash-container">
-                {{ include('_flashes.html.twig') }}
-            </div>
-            {# END OF TOAST NOTIFICATIONS #}
+
+            
     </body>
 </html>
