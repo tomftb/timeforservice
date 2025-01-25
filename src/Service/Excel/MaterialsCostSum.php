@@ -7,7 +7,7 @@ namespace App\Service\Excel;
  *
  * @author Tomasz Borczynski
  */
-class RouteCostSum {
+class MaterialsCostSum {
     
     public function __construct(
         private float $sum = 0
