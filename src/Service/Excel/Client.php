@@ -7,6 +7,7 @@ use App\Service\Excel\TimeSum;
 use App\Service\Excel\RouteSum;
 use App\Service\Excel\CostSum;
 use App\Service\Excel\RouteCostSum;
+use App\Service\Excel\MaterialsCostSum;
 use App\Service\Cooperation\Cost as CooperationCost;
 use PhpOffice\PhpSpreadsheet\RichText\RichText;
 use PhpOffice\PhpSpreadsheet\Style\Color;
@@ -18,7 +19,9 @@ class Client extends _Main
     private array $route=[];
     private array $timeCost=[];
     private array $routeCost=[];
+    private array $materialsCost=[];
     private ?float $sumTimeCost=null;
+    private ?float $sumMaterialsCost=null;
 
     private float $properRouteCost=0;
     private CooperationCost $cooperationCost;
@@ -39,7 +42,8 @@ class Client extends _Main
             'B'=>11,
             'C'=>45,
             'D'=>8,
-            'E'=>10
+            'E'=>10,
+            'F'=>16,
         ]);
         /*
          * INITIATE COOPERATION COST
@@ -63,7 +67,8 @@ class Client extends _Main
             'B'=>"Data:",
             'C'=>"Punkt:",
             'D'=>"Czas(h):",
-            'E'=>'Trasa(km):'
+            'E'=>'Trasa(km):',
+            'F'=>'Materiały(zł):'
         ]);
         /*
          * SET ROWS WITH DATA
@@ -77,6 +82,7 @@ class Client extends _Main
         $distanceSum = new RouteSum();
         $costSum = new CostSum();
         $routeCostSum = new RouteCostSum();
+        $materialsCostSum = new MaterialsCostSum();
         //$cooperationCost = new CooperationCost();
         foreach($serviceRepository as $value){
             /*
@@ -96,6 +102,10 @@ class Client extends _Main
              */
             $routeCostSum->add($value->getRouteCost());
             /*
+             * UPDATE MATERIALS COST SUM
+             */
+            $materialsCostSum->add($value->getMaterialCosts());
+            /*
              * SET FIRST DATA SET ROW
              */
             if($this->firstDataSetRow===null){
@@ -107,6 +117,7 @@ class Client extends _Main
             $this->spreadsheet->getActiveSheet()->getStyle('C'.$this->row)->getAlignment()->setWrapText(true);
             $this->activeWorksheet->setCellValue('D'.$this->row, $value->getRealTime());
             $this->activeWorksheet->setCellValue('E'.$this->row, ($value->getRoute() > 0) ? strval($value->getRoute()) : '' );
+            $this->activeWorksheet->setCellValue('F'.$this->row, ($value->getMaterialCosts() > 0 && $value->getMaterialCosts()!==null) ? strval($value->getMaterialCosts()) : '');
             /*
              * SET LAST DATA SET ROW
              */
@@ -131,7 +142,8 @@ class Client extends _Main
         array_push($this->route,$distanceSum->get());
         array_push($this->timeCost,$costSum->get());
         array_push($this->routeCost,$routeCostSum->get());
-        parent::setSum($timeSum->get(),$distanceSum->get(),$costSum->get(),$routeCostSum->get());
+        array_push($this->materialsCost,$materialsCostSum->get());
+        parent::setSum($timeSum->get(),$distanceSum->get(),$costSum->get(),$routeCostSum->get(),$materialsCostSum->get());
        
         /*
          * SET DEFAULTS
@@ -156,11 +168,13 @@ class Client extends _Main
          * SET THE WHOLE COST
          */
         $this->activeWorksheet->setCellValue("C".$this->row,"Łączna suma:");
+        $this->sumMaterialsCost = array_sum($this->materialsCost);
          /*
-         * SET TIME AND DISTNACE COST SUM VALUE
+         * SET TIME, DISTNACE AND MATERIALS COST SUM VALUE
          */
         $this->activeWorksheet->setCellValue("D".$this->row,array_sum($this->time));
         $this->activeWorksheet->setCellValue("E".$this->row,array_sum($this->route));
+        $this->activeWorksheet->setCellValue("F".$this->row,$this->sumMaterialsCost);
         $this->row++;
         /*
          * SET THE WHOLE COST
@@ -170,9 +184,10 @@ class Client extends _Main
         $this->mileage->setSumRouteCost(array_sum($this->routeCost));
         $this->activeWorksheet->setCellValue("D".$this->row,$this->sumTimeCost);
         $this->activeWorksheet->setCellValue("E".$this->row,$this->mileage->getSumRouteCost());
+        $this->activeWorksheet->setCellValue("F".$this->row,$this->sumMaterialsCost);
         $this->row++;
         $this->activeWorksheet->setCellValue("C".$this->row,"Łącznie:");
-        $this->activeWorksheet->setCellValue("D".$this->row,$this->sumTimeCost + $this->mileage->getSumRouteCost());
+        $this->activeWorksheet->setCellValue("D".$this->row,$this->sumTimeCost + $this->mileage->getSumRouteCost() + $this->sumMaterialsCost);
         $this->row++;
     }
     public function setCooperation():void
@@ -207,21 +222,21 @@ class Client extends _Main
             $this->row++;
             $cost+=$cooperation->getCost();
         }
-        self::setCooperationMileage(
+        self::setCooperationMileageAndMaterials(
             $lp,
             '74.90.Z Pozostała działalność profesjonalna, naukowa i techniczna, gdzie indziej niesklasyfikowana',
             'g',
-            95
+            80
         );
-        $this->activeWorksheet->setCellValue("G".$this->row,$cost+$this->properRouteCost);
+        $this->activeWorksheet->setCellValue("G".$this->row,$cost+$this->properRouteCost+$this->sumMaterialsCost);
         $this->row++;
     }
 
-    private function setCooperationMileage(int $lp=1):void
+    private function setCooperationMileageAndMaterials(int $lp=1):void
     {
-        if($this->mileage->getSumRouteCost()===0.0 || $this->mileage->getSumRouteCost()===0){
-            return;
-        }
+        //if($this->mileage->getSumRouteCost()===0.0 || $this->mileage->getSumRouteCost()===0){
+        //    return;
+       // }
         $this->mileage->setRouteCost();
         $this->mileage->setRoundRouteCost();
         $this->properRouteCost = $this->mileage->getProperRouteCost();
@@ -230,7 +245,7 @@ class Client extends _Main
         $this->activeWorksheet->setCellValue("D".$this->row,$this->mileage->getUnit());
         $this->activeWorksheet->setCellValue("E".$this->row,$this->mileage->getRoundRouteCost());
         $this->activeWorksheet->setCellValue("F".$this->row,$this->mileage->getRate());
-        $this->activeWorksheet->setCellValue("G".$this->row,$this->mileage->getProperRouteCost());
+        $this->activeWorksheet->setCellValue("G".$this->row,$this->mileage->getProperRouteCost()+$this->sumMaterialsCost);
         $this->row++;
     }
 }
