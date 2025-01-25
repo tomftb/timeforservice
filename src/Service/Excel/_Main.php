@@ -71,7 +71,7 @@ abstract class _Main {
         unlink($fileName);
         return $fileContent;
     }
-    protected function setSum($time,$distance,$timeCost,$distanceCost)
+    protected function setSum($time,$distance,$timeCost,$distanceCost,$materialsCost)
     {
         /*
          * SET SUM LABEL
@@ -86,6 +86,10 @@ abstract class _Main {
          */
         $this->activeWorksheet->setCellValue("E".$this->row,$distance);
         /*
+         * SET MATERIALS SUM VALUE
+         */
+        $this->activeWorksheet->setCellValue("F".$this->row,$materialsCost);
+        /*
          * INCREMENT ROW
          */
         $this->row++;
@@ -96,13 +100,15 @@ abstract class _Main {
         /*
          * SET TIME SUM COST VALUE
          */
-       
         $this->activeWorksheet->setCellValue("D".$this->row,$timeCost);
         /*
          * SET DISTANCE SUM COST VALUE
          */
-        
         $this->activeWorksheet->setCellValue("E".$this->row,$distanceCost);
+        /*
+         * SET MATERIALS SUM COST VALUE
+         */
+        $this->activeWorksheet->setCellValue("F".$this->row,$materialsCost);
         $this->row++;
         /*
          * SET THE WHOLE COST
@@ -111,7 +117,7 @@ abstract class _Main {
          /*
          * SET TIME AND DISTNACE COST SUM VALUE
          */
-        $this->activeWorksheet->setCellValue("D".$this->row,$timeCost+$distanceCost);
+        $this->activeWorksheet->setCellValue("D".$this->row,$timeCost+$distanceCost+$materialsCost);
         $this->row++;
     }
     public function setDocumentDescription(?string $creator=null,?string $lastModifiedBy=null,?string $title=null,?string $subject=null,?string $description=null,?string $keywords=null,?string $category=null):void
