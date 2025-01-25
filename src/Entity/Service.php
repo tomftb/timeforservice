@@ -91,6 +91,9 @@ class Service
     #[ORM\OneToMany(targetEntity: ServiceAttachment::class, mappedBy: 'service')]
     private Collection $serviceAttachments;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $materialCosts = null;
+
     public function __construct()
     {
         $this->route=0;
@@ -100,6 +103,7 @@ class Service
         $this->notifyCounter=0;
         $this->deleted=YesOrNoEnum::NO;
         $this->serviceAttachments = new ArrayCollection();
+        $this->materialCosts=0;
     }
     
     public function getId(): ?int
@@ -379,6 +383,18 @@ class Service
                 $serviceAttachment->setService(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMaterialCosts(): ?float
+    {
+        return $this->materialCosts;
+    }
+
+    public function setMaterialCosts(?float $materialCosts): static
+    {
+        $this->materialCosts = $materialCosts;
 
         return $this;
     }
