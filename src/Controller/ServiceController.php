@@ -269,13 +269,27 @@ class ServiceController extends AbstractController
             $emailCc = '';
         }
         (string) $journey = '';
-        (string) $realTime = strval($service->getRealTime())."h";
+        (string) $journeySubject = '';
+        (string) $realTime = "<br/>Czas pracy - ".strval($service->getRealTime())."h";
+        (string) $realTimeSubject = " Czas pracy - ".strval($service->getRealTime())."h";
+        (string) $materials = '';
         //dd($service->getRoute());
+        /*
+         * CHECK ROUTE
+         */
         if($service->getRoute() !== 0.0 && $service->getRoute() !== 0){
-            $journey = ' + dojazd';
+            $journey = "<br/>Dojazd - ".strval($service->getRoute())."km";
+            $journeySubject = " Dojazd - ".strval($service->getRoute())."km";
         }
-        $subject = 'Serwis ['.$service->getEndedAt()->format("d.m.Y").'] '.$service->getClientPoint()->getName()." ".$service->getClientPoint()->getStreet()." - ".$realTime.$journey;
-        $html = nl2br($service->getDescription()."\r\nCzas pracy ".$realTime.$journey."\r\n<span style=\"font-size:10px;color:rgb(152,152,152)\">--\r\nWiadomość wysłana z aplikacji timeForService@TimeForIT Tomasz Borczyński</span>");
+        /*
+         * CHECK MATERIALS COSTS
+         */
+        if($service->getMaterialCosts() !== 0.0 && $service->getMaterialCosts() !== 0 && $service->getMaterialCosts() !== null){
+            $materials = "<br/>Koszt materiałów - ".$service->getMaterialCosts()."zł";
+        }
+        $subject = 'Serwis ['.$service->getEndedAt()->format("d.m.Y").'] '.$service->getClientPoint()->getName()." ".$service->getClientPoint()->getStreet()." -".$realTimeSubject.$journeySubject;
+        $html = nl2br($service->getDescription());
+        $html.=$realTime.$journey.$materials."<br/><span style=\"font-size:10px;color:rgb(152,152,152)\">--<br/>Wiadomość wysłana z aplikacji timeForService@TimeForIT Tomasz Borczyński</span>";
         $email = new Email();
         $email->from(new Address('tborczynski87@gmail.com','TimeForIT Tomasz Borczyński'))
             ->to($emailTo)
