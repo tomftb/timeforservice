@@ -17,7 +17,9 @@ class LoginController extends AbstractController
     public function login(
     ): Response
     {
+        $form = self::createServiceForm($service);
         return $this->render('login/index.html.twig', [
+            'form' => $form,
         ]);
     }
 }
