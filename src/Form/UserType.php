@@ -7,6 +7,11 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class UserType extends AbstractType
 {
@@ -16,18 +21,11 @@ class UserType extends AbstractType
             ->add('name')
             ->add('firstName')
             ->add('lastName')
-            //->add('town')
-            //->add('nin')
-                /*
-            ->add('imageFilename', ChoiceType::class, [
-                'choices' => [
-                    'Choose an image...' => '',
-                    'Planet 1' => 'planet-1.png',
-                    'Planet 2' => 'planet-2.png',
-                    'Planet 3' => 'planet-3.png',
-                    'Planet 4' => 'planet-4.png',
-                ]
-            ])*/
+            ->add('password', PasswordType::class, [//PasswordType::class
+                'always_empty'=>false,
+                'toggle' => true,
+                'empty_data' => ''
+            ])
         ;
     }
 
