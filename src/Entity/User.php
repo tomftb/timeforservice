@@ -5,9 +5,12 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
+use Symfony\Component\Validator\Constraints\PasswordStrength;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User
+class User implements PasswordAuthenticatedUserInterface
 {
     use TimestampableEntity;
     
@@ -25,6 +28,18 @@ class User
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
 
+
+    #[ORM\Column(length: 255, nullable: false)]
+    #[Assert\PasswordStrength([
+        'minScore' => PasswordStrength::STRENGTH_MEDIUM, // Very strong password required
+        'message' => 'Your password is too easy to guess. Company\'s security policy requires to use a stronger password.'
+    ])]
+    private ?string $password = null;
+    
+    public function __construct()
+    {
+
+    }
     public function getId(): ?int
     {
         return $this->id;
@@ -62,6 +77,18 @@ class User
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getPassword(): ?string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(?string $password): static
+    {
+        $this->password = $password;
 
         return $this;
     }
