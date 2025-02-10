@@ -236,6 +236,11 @@ class ServiceController extends AbstractController
         $convertTime->add($service->getTime());
         $service->setRealTime($convertTime->get());
         $service->setCost($convertTime->get()*$rate);
+        /*
+         * SET USER
+         * $this->getUser()->getId()
+         */
+        $service->setUser($this->getUser());
         return $service;
     }
     private function sendNotify(Service $service, MailerInterface $mailerInterface, array $attachments=[]):void
