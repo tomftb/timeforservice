@@ -15,8 +15,10 @@
         {% if error %}
             <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
         {% endif %}
-
-        {% if app.user %}
+        {% if errorIsValid.status %}
+            <div class="alert alert-danger">{{ errorIsValid.data }}</div>
+        {% endif %}
+        {% if app.user and not errorIsValid.status %}
             <div class="mb-3">
                 You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
             </div>

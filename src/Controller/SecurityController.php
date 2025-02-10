@@ -12,18 +12,42 @@ class SecurityController extends AbstractController
     #[Route(path: '/login', name: 'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
     {
+        $errorIsValid = new \stdClass();
+        $errorIsValid->status = false;
+        $errorIsValid->data="";
+        
         $error = $authenticationUtils->getLastAuthenticationError();
 
         $lastUsername = $authenticationUtils->getLastUsername();
+        
+        $login = function($lastUsername,$errorIsValid,$error){
+            return $this->render('security/login.html.twig', [
+                'last_username' => $lastUsername,
+                'errorIsValid' => $errorIsValid,
+                'error' => $error,
+            ]);
+        };
 
-        if($this->getUser() !== null){
-            return $this->redirectToRoute('app_main_homepage', [], Response::HTTP_SEE_OTHER);
+        if($error){
+            return $login($lastUsername,$errorIsValid,$error);
         }
-        //dd($this->getUser());
-        return $this->render('security/login.html.twig', [
-            'last_username' => $lastUsername,
-            'error' => $error,
-        ]);
+
+        if($this->getUser() === null ){
+            
+            return $login($lastUsername,$errorIsValid,$error);
+            
+        }
+
+        if($this->getUser()->isVerified() === false){
+
+            $errorIsValid->status = true;
+            $errorIsValid->data = "Verify e-mail address!";
+            
+            return $login($lastUsername,$errorIsValid,$error);
+
+        }
+
+        return $this->redirectToRoute('app_main_homepage', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route(path: '/logout', name: 'app_logout')]
