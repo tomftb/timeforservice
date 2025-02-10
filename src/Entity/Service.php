@@ -42,6 +42,11 @@ class Service
     #[ORM\ManyToOne()]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+    
+    //#[ORM\ManyToOne('User',null,'EAGER')]
+    #[ORM\ManyToOne()]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Employe $employe = null;
 
     #[ORM\Column(nullable: true)]
     private ?float $route = null;
@@ -398,4 +403,17 @@ class Service
 
         return $this;
     }
+    
+    public function getEmploye(): ?Employe
+    {
+        return $this->employe;
+    }
+
+    public function setEmploye(?Employe $employe): static
+    {
+        $this->employe = $employe;
+
+        return $this;
+    }
+    
 }
