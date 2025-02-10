@@ -16,7 +16,13 @@ use Pagerfanta\Doctrine\ORM\QueryAdapter;
 
 class MainController extends AbstractController
 {
-    #[Route('/', name: 'app_main_homepage')]
+    #[Route('/', name: 'app_main')]
+    public function main(): Response
+    {
+        //return $this->render('main/home.html.twig');
+        return $this->redirectToRoute('app_login', [], Response::HTTP_SEE_OTHER);
+    }
+    #[Route('/home', name: 'app_main_homepage')]
     public function homepage(
         ServiceRepository $serviceRepository,
         ClientRepository $clientRepository,
@@ -29,6 +35,13 @@ class MainController extends AbstractController
         #[MapQueryParameter('clientsPoints', \FILTER_VALIDATE_INT)] array $searchClientsPoints = [],
     ): Response
     {
+        //dd($this->getUser()->getId());
+        // BAD - $user->getRoles() will not know about the role hierarchy
+        //$hasAccess = in_array('ROLE_ADMIN', $user->getRoles());
+
+        // GOOD - use of the normal security methods
+        //$hasAccess = $this->isGranted('ROLE_ADMIN');
+        //$this->denyAccessUnlessGranted('ROLE_ADMIN');
         //dd($searchClientsPoints);
         $validSorts = ['description','clientPoint','user','endedAt'];
         $sort = in_array($sort,$validSorts) ? $sort : 'endedAt';
