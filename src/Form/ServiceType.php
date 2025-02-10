@@ -48,11 +48,11 @@ class ServiceType extends AbstractType
                 'placeholder' => 'Choose a client point',
                 'autocomplete'=> true
             ])
-            ->add('user', null, [
-                'choice_label' => function ($user) {
-                        return $user->getFirstName() ." ".$user->getLastName(). ' (' .$user->getName().")";
+            ->add('employe', null, [
+                'choice_label' => function ($employe) {
+                        return "[".$employe->getId()."] ".$employe->getFirstName() ." ".$employe->getLastName();
                     },
-                'placeholder' => 'Choose a user',
+                'placeholder' => 'Choose a employe',
                 'autocomplete'=> true
             ])
             ->add('classificationOfActivities', null, [
