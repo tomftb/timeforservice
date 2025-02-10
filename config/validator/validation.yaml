@@ -68,23 +68,23 @@ App\Entity\Service:
                 min: 3
         clientPoint:
             - NotBlank: ~
-        user:
+        employe:
             - NotBlank: ~
         classificationOfActivities:
             - NotBlank: ~
             
-App\Entity\User:
-    properties:
-        name:
-            - NotBlank: ~
-            - Length:
-                min: 3
-            - App\Validator\ContainsAlphanumeric: ~
-        firstName:
-            - NotBlank: ~
-            - Length:
-                min: 2
-        lastName:
-            - NotBlank: ~
-            - Length:
-                min: 2
+#App\Entity\User:
+#    properties:
+#        name:
+#            - NotBlank: ~
+#            - Length:
+#                min: 3
+#            - App\Validator\ContainsAlphanumeric: ~
+#        firstName:
+#            - NotBlank: ~
+#            - Length:
+#                min: 2
+#        lastName:
+#            - NotBlank: ~
+#            - Length:
+#                min: 2
