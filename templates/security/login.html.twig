@@ -1,0 +1,54 @@
+{% extends 'header.html.twig' %}
+{% block title %}TimeForService - Log in!{% endblock %}
+
+{% block body %}
+<div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
+    <div class="flex justify-center">
+        <h1 class="text-xl font-semibold text-white mb-4"><;>TimeForService - Login page</h1>
+        <div class="mr-0">
+            
+        </div>
+    </div>
+    
+    <div>
+    <form method="post">
+        {% if error %}
+            <div class="alert alert-danger">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
+        {% endif %}
+
+        {% if app.user %}
+            <div class="mb-3">
+                You are logged in as {{ app.user.userIdentifier }}, <a href="{{ path('app_logout') }}">Logout</a>
+            </div>
+        {% endif %}
+
+        <h1 class="h3 mb-3 font-weight-normal">Please sign in</h1>
+        <div class="mb-3">
+        <label for="username" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white required">Email</label>
+        <input type="email" value="{{ last_username }}" name="_username" id="username" autocomplete="email" required autofocus class="text-gray-900 bg-gray-50 rounded-lg text-sm block w-full p-2.5 border border-gray-300 focus:z-10 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        </div>
+        <div class="mb-3">
+        <label for="password" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white required">Password</label>
+        <input type="password" name="_password" id="password" autocomplete="current-password" required class="text-gray-900 bg-gray-50 rounded-lg text-sm block w-full p-2.5 border border-gray-300 focus:z-10 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:placeholder-gray-400 dark:focus:ring-blue-500 dark:focus:border-blue-500">
+        </div>
+
+    <input type="hidden" name="_csrf_token" data-controller="csrf-protection" value="{{ csrf_token('authenticate') }}">
+        {#
+            Uncomment this section and add a remember_me option below your firewall to activate remember me functionality.
+            See https://symfony.com/doc/current/security/remember_me.html
+
+            <div class="checkbox mb-3">
+                <input type="checkbox" name="_remember_me" id="_remember_me">
+                <label for="_remember_me">Remember me</label>
+            </div>
+        #}
+        <div class="flex justify-end">
+        <button class="btn btn-lg btn-primary" type="submit">
+            Sign in
+        </button>
+        </div>
+    </form>
+    </div>
+</div>
+
+{% endblock %}
