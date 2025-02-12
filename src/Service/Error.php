@@ -3,70 +3,42 @@
 namespace App\Service;
 
 /**
- * Description of Time
+ * Description of Error
  *
  * @author Tomasz Borczynski
  */
-class ConvertTime {
+class Error {
     
-    private float $time;
-    private float $modulo=0;
-    private float $half=0;
-    private int $hour=0;
+    private bool $status=false;
+    private string $message = "";
+    private array $value = [];
     
-    public function __construct(){ }
-    public function add(int|string $time=0):void
-    {
-        $this->time = intval($time,10);
-        self::convert();
+    public function __construct(){
+
     }
-    private function convert()
-    {
-        //echo "start time -> ".$this->time;
-        if($this->time === 0){
-            return 0;
-        }
-        self::setModulo();
-        self::setWhole();
-        self::setHalf();
-        $this->time = $this->modulo+$this->hour+$this->half;
+    public function set(string $message=""):self{
+        $this->status = true;
+        $this->value[] = $message;
+        return $this;
     }
-    /*
-     * SET MODULO
-     */
-    private function setModulo():void
-    { 
-        $modulo = $this->time % 30;
-        if($modulo>0){
-            $this->modulo = 0.5;
-            $this->time = $this->time - $modulo;
-        }
+
+    public function get():self{
+        $this->message = implode(" , ",$this->value);
+        return $this;
     }
-    /*
-     * SET DIVIDED = 60
-     */
-    private function setWhole():void
-    {
-        /*
-         * GET HOUR
-         */
-        $this->hour = $this->time / 60;
-        if($this->hour>0){
-            $this->time = $this->time - ($this->hour * 60);
-        }
+
+    public function clear():self{
+        $this->status = false;
+        $this->message="";
+        $this->value=[];
+        return $this;
     }
-    private function setHalf():void
-    {
-        /*
-         * GET HALF AN HOUR
-         */
-        $half = $this->time / 30;
-        if($half>0){
-            $this->half = 0.5;
-        }
+    
+    public function getStatus(){
+        return $this->status;
     }
-    public function get():float
-    {
-        return $this->time;
+    
+    public function getMessage(){
+        return $this->message;
     }
 }
