@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 #[ORM\Entity(repositoryClass: ClientClassificationOfActivitiesRepository::class)]
 class ClientClassificationOfActivities
-{
+{    
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -34,6 +34,7 @@ class ClientClassificationOfActivities
     public function __construct()
     {
         $this->classificationOfActivities = new ArrayCollection();
+        $this->updatedAt = \DateTimeImmutable::createFromFormat('Y-m-d H:i:s',date('Y-m-d H:i:s'));
     }
 
     public function getId(): ?int
