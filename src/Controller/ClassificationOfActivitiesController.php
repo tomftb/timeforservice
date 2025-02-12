@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 
 /**
- * Description of ClientPointController
+ * Description of ClassificationOfActivitiesController
  *
  * @author Tomasz Borczynski
  */
