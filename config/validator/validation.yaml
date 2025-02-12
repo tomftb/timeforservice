@@ -84,3 +84,9 @@ App\Entity\ClassificationOfActivities:
             - Positive: ~
         unit:
             - NotBlank: ~
+App\Entity\Employe:
+    properties:
+        firstName:
+            - NotBlank: ~
+        lastName:
+            - NotBlank: ~
