@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
+use App\Service\Error;
 
 /**
  * Description of ClientClassificationOfActivitiesController
@@ -26,7 +27,7 @@ class ClientClassificationOfActivitiesController extends AbstractController{
     private object $error;
     
     public function __construct(){
-        self::initError();
+
     }
 
     #[Route('/{id}/cooperation', name: 'app_client_cooperation', methods: ['GET', 'POST'])]
@@ -34,10 +35,11 @@ class ClientClassificationOfActivitiesController extends AbstractController{
     {
         $this->client = $client;
         $this->entityManager = $entityManager;
+        $this->request = $request;
+        $this->error = new Error();        
         $this->classificationOfActivitiesRepository = $classificationOfActivitiesRepository;
         $this->clientClassificationOfActivities = $this->entityManager->getRepository(ClientClassificationOfActivities::class)->findByClientId($this->client->getId());
 
-        $this->request = $request;
 
         $classificationOfActivities = self::getSetup();
 
@@ -45,26 +47,26 @@ class ClientClassificationOfActivitiesController extends AbstractController{
             return $this->render('client/cooperation.html.twig', [
                 'client' => $client,
                 'classifications' => $classificationOfActivities,
-                'error' => self::getError(),
+                'error' => $this->error->get(),
             ]);
         }
         if($request->getMethod() !== "POST"){
-            self::setError("WRONG METHOD");
+            $this->error->set("WRONG METHOD");
             return $this->render('client/cooperation.html.twig', [
                 'client' => $client,
                 'classifications' => $classificationOfActivities,
-                'error' => self::getError(),
+                'error' => $this->error->get(),
             ],new Response(null,422));
         }
 
         $submittedToken = $request->getPayload()->get('_csrf_token');
 
         if (!$this->isCsrfTokenValid('cooperation', $submittedToken)) {
-            self::setError("WRONG CSRF");
+            $this->error->set("WRONG CSRF");
             return $this->render('client/cooperation.html.twig', [
                     'client' => $client,
                     'classifications' => $classificationOfActivities,
-                    'error' => self::getError(),
+                    'error' => $this->error->get(),
             ],new Response(null,422));
         }
         /*
@@ -82,7 +84,7 @@ class ClientClassificationOfActivitiesController extends AbstractController{
             $stream = $this->renderBlockView('service/attachment.html.twig','stream_success',[
                 'client' => $client,
                 'classifications' => $classificationOfActivities,
-                'error' => self::getError(),
+                'error' => $this->error->get(),
             ]);
             $this->addFlash('stream',$stream);
         }
@@ -98,8 +100,7 @@ class ClientClassificationOfActivitiesController extends AbstractController{
         $clientClassificationOfActivities = $this->clientClassificationOfActivities;
         foreach($classificationOfActivities as &$classification){
 
-            foreach($clientClassificationOfActivities as $key => $clientClassification){
-                //dd($clientClassification->getClassification()->getId());
+            foreach($clientClassificationOfActivities as $clientClassification){
                 if($clientClassification->getClassification()->getId() === $classification->getId()){
                     $found = true;
                     $price = $clientClassification->getPrice();
@@ -108,7 +109,6 @@ class ClientClassificationOfActivitiesController extends AbstractController{
             }
             if($found){
                 $classification->setPrice($price);
-                //UNSET($clientClassificationOfActivities[$foundKey]);
             }
             $found = false;
             $price = 0;
@@ -121,29 +121,6 @@ class ClientClassificationOfActivitiesController extends AbstractController{
             $this->entityManager->remove($clientClassification);
         }
         $this->entityManager->flush();
-    }
-
-    private function setError(string $message=""):void{
-        $this->error->status = true;
-        $this->error->value[] = $message;
-    }
-
-    private function getError(){
-        $this->error->message = implode(" , ",$this->error->value);
-        return $this->error;
-    }
-
-    private function initError(){
-        $this->error = new \stdClass();
-        $this->error->status = false;
-        $this->error->message="";
-        $this->error->value=[];
-    }
-
-    private function clearError(){
-        $this->error->status = false;
-        $this->error->message="";
-        $this->error->value=[];
     }
 
     private function insert(){
