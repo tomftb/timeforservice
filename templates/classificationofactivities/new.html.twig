@@ -1,0 +1,26 @@
+{% set backPath=path('app_client_index') %}
+{% extends 'modalBase.html.twig' %}
+{% block title %}{{ parent() }} - New Client{% endblock %}
+{% block body %}
+    {# ADD CLASS FOR tailwind.config.js  -> addVariant('modal','dialog &'); modal:m-0 and modal:p-0 #}
+    <div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
+        <div class="flex justify-between">
+            <h1 class="text-xl font-semibold text-white mb-4">Create New Client</h1>
+            <div class="mr-0">
+                {# CLOSE ACTION - DEPENDS OF WINDOWS TYPE #}
+                {{ loadFrame.closeAction | raw }}
+                {# END CLOSE ACTION #}
+            </div>
+        </div>
+        {{ include('client/_form.html.twig') }}
+    </div>
+{% endblock %}
+{# ADD TURBO STREAM TO APPEND IN NEW ROW IN TABLE #}
+{% block stream_success %}
+    {# add `s` to target to use CSS selector #}
+    <turbo-stream action="prepend" targets="#client-list tbody">
+        <template>
+             {% include('client/_row.html.twig') %}
+        </template>
+    </turbo-stream>
+{% endblock %}

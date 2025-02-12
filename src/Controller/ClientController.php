@@ -25,7 +25,7 @@ class ClientController extends AbstractController{
     public function index(ClientRepository $clientRepository): Response
     {
         return $this->render('client/index.html.twig', [
-            'clients' => $clientRepository->findAll(),
+            'clients' => $clientRepository->findAllDesc(),
         ]);
     }
     #[Route('/new', name: 'app_client_new', methods: ['GET', 'POST'])]
@@ -99,22 +99,10 @@ class ClientController extends AbstractController{
     public function delete(Request $request, Client $client, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$client->getId(), $request->request->get('_token'))) {
-            $id = $client->getId();
             $entityManager->remove($client);
             $entityManager->flush();
-
             $this->addFlash('success', 'Client deleted');
-            /*
-             * ADD CHECK HEADER FOR MODAL
-             */
-            if($request->headers->has('turbo-frame')){
-                $stream = $this->renderBlockView('client/delete.html.twig','stream_success',[
-                    'id' => $id
-                ]);
-                $this->addFlash('stream',$stream);
-            }
         }
-
         return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
     }
     /*

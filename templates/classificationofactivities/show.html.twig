@@ -1,0 +1,78 @@
+{% set backPath=path('app_client_index') %}
+{% extends 'modalBase.html.twig' %}
+{% block title %}{{ parent() }} - Client{% endblock %}
+{% block body %}
+<div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
+    <div class="flex justify-between">
+    <h1 class="text-xl font-semibold text-white mb-4">Client</h1>
+            <div class="mr-0">
+            {# CLOSE ACTION - DEPENDS OF WINDOWS TYPE #}
+            {{ loadFrame.closeAction | raw }}
+            {# END CLOSE ACTION #}
+        </div>
+    </div>
+    <turbo-frame id="client-info">
+    <table class="min-w-full bg-gray-800 text-white">
+        <tbody class="bg-gray-700 divide-y divide-gray-600">
+            <tr>
+                <th class="w-1/6 px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Photo</th>
+                <td class="px-2 py-4">
+                    <img
+                        class="flex-shrink-0 w-8 h-8 bg-gray-600 rounded-full group-hover:bg-gray-500 transition duration-300 ease-in-out"
+                        src=""
+                        alt="Image of {{ client.name }}"
+                    >
+                </td>
+            </tr>
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Name</th>
+                <td class="px-2 py-4">{{ client.name }}</td>
+            </tr>
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Street</th>
+                <td class="px-2 py-4 whitespace-nowrap">{{ client.street }}</td>
+            </tr>
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">ZIP-CODE</th>
+                <td class="px-2 py-4" >{{ client.zipCode }}</td>
+            </tr>
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Town</th>
+                <td class="px-2 py-4" >{{ client.town }}</td>
+            </tr>
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">NIN</th>
+                <td class="px-2 py-4" >{{ client.nin }}</td>
+            </tr>
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Hourly rate</th>
+                <td class="px-2 py-4" >{{ client.getHourlyRate() }}</td>
+            </tr>
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Kilometer rate</th>
+                <td class="px-2 py-4" >{{ client.getKilometerRate() }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% if app.request.headers.get( 'turbo-frame' ) != 'modal' %}
+    <div class="mt-2 hidden turbo-frame:block">
+        <a href="{{ path('app_main_homepage') }}"> &lt; Back</a>
+        <a data-turbo-frame="_top" href="{{ path('app_client_edit',{id:client.id}) }}">Edit </a>
+    </div>
+    {% endif %}
+    </turbo-frame>
+    <div class="flex space-x-4 mt-4 justify-end">
+        {# DELETE BUTTON #}
+        {{ include('client/_delete_form.html.twig') }}
+        {# END DELETE BUTTON #}
+        {# EDIT BUTTON #}
+        <twig:Button 
+            variant="success"
+            tag="a"
+            href="{{ path('app_client_edit', {'id': client.id}) }}"
+            data-turbo-frame="modal"
+        >Edit</twig:Button>
+        {# END EDIT BUTTON #}
+    </div>
+</div>
+{% endblock %}
