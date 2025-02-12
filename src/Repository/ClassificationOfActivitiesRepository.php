@@ -15,29 +15,22 @@ class ClassificationOfActivitiesRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ClassificationOfActivities::class);
     }
+    public function shortFindAll()
+    {
+        return $this->createQueryBuilder('c')
+                ->select('c.id','c.code','c.name')
+                ->orderBy('c.id', 'ASC')
+                ->getQuery()
+                ->getResult()
+            ;
+    }
 
-    //    /**
-    //     * @return ClassificationOfActivities[] Returns an array of ClassificationOfActivities objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?ClassificationOfActivities
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findById(int $id=0): array
+    {
+        return $this->createQueryBuilder('c')
+                ->andWhere('c.id = :id')
+                ->setParameter('id', $id)
+                ->getQuery()
+                ->getResult();
+    }
 }
