@@ -33,4 +33,11 @@ class ClassificationOfActivitiesRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();
     }
+    
+    public function findAllDesc(){
+        return $this->createQueryBuilder('c')
+                ->orderBy('c.id', "DESC")
+                ->getQuery()
+                ->getResult();
+    }
 }

@@ -6,34 +6,33 @@ use Symfony\UX\LiveComponent\Attribute\AsLiveComponent;
 use Symfony\UX\LiveComponent\DefaultActionTrait;
 use Symfony\UX\LiveComponent\ComponentWithFormTrait;
 use Symfony\Component\Form\FormInterface;
-use App\Entity\Client;
-use App\Form\ClientType;
+use App\Entity\ClassificationOfActivities;
+use App\Form\ClassificationOfActivitiesType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\UX\LiveComponent\Attribute\LiveProp;
 
 
 /**
- * Description of ClientForm
+ * Description of ClassificationOfActivitiesForm
  *
  * @author Tomasz
  */
 #[AsLiveComponent]
-class ClientForm extends AbstractController{
+class ClassificationOfActivitiesForm extends AbstractController{
     
     use DefaultActionTrait;
     use ComponentWithFormTrait;
 
     #[LiveProp]
-    public ?Client $initialFormData = null;
+    public ?ClassificationOfActivities $initialFormData = null;
     
     #[\Override]
     protected function instantiateForm(): FormInterface
     {
-        //dd($this->initialFormData);
-        $client=$this->initialFormData ?? new Client();
+        $classificationOfActivities=$this->initialFormData ?? new ClassificationOfActivities();
         
-        return $this->createForm(ClientType::class,$client ,[
-            'action' => $client->getId() ? $this->generateUrl('app_client_edit',['id'=>$client->getId()]) : $this->generateUrl( 'app_client_new' ), 
+        return $this->createForm(ClassificationOfActivitiesType::class,$classificationOfActivities ,[
+            'action' => $classificationOfActivities->getId() ? parent::generateUrl('app_classificationofactivities_edit',['id'=>$classificationOfActivities->getId()]) : parent::generateUrl( 'app_classificationofactivities_new' ), 
         ]);
     }
 }

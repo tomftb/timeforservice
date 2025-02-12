@@ -73,18 +73,14 @@ App\Entity\Service:
         classificationOfActivities:
             - NotBlank: ~
             
-#App\Entity\User:
-#    properties:
-#        name:
-#            - NotBlank: ~
-#            - Length:
-#                min: 3
-#            - App\Validator\ContainsAlphanumeric: ~
-#        firstName:
-#            - NotBlank: ~
-#            - Length:
-#                min: 2
-#        lastName:
-#            - NotBlank: ~
-#            - Length:
-#                min: 2
+App\Entity\ClassificationOfActivities:
+    properties:
+        name:
+            - NotBlank: ~
+        code:
+            - NotBlank: ~
+        price:
+            - NotBlank: ~
+            - Positive: ~
+        unit:
+            - NotBlank: ~
