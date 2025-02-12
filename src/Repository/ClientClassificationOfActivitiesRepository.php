@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Repository\ClassificationOfActivitiesRepository;
 use App\Entity\ClientClassificationOfActivities;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -25,28 +26,21 @@ class ClientClassificationOfActivitiesRepository extends ServiceEntityRepository
                 ->getQuery()
                 ->getResult();
     }
-    //    /**
-    //     * @return ClientClassificationOfActivities[] Returns an array of ClientClassificationOfActivities objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?ClientClassificationOfActivities
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function tightFindByClientId(int $clientId=0): array
+    {
+        return $this->createQueryBuilder('c')
+                ->select('c.id','c.price','identity(c.classification) classificationId')
+                ->andWhere('c.client = :clientId')
+                ->setParameter('clientId', $clientId)
+                ->getQuery()
+                ->getResult();
+    }
+    public function findByClientId(int $clientId=0): array
+    {
+        return $this->createQueryBuilder('c')
+                ->andWhere('c.client = :clientId')
+                ->setParameter('clientId', $clientId)
+                ->getQuery()
+                ->getResult();
+    }
 }
