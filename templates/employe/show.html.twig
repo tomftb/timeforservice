@@ -1,0 +1,48 @@
+{% set backPath=path('app_employe_index') %}
+{% extends 'modalBase.html.twig' %}
+{% block title %}{{ parent() }} - Employe{% endblock %}
+{% block body %}
+<div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
+    <div class="flex justify-between">
+    <h1 class="text-xl font-semibold text-white mb-4">Employe:</h1>
+            <div class="mr-0">
+            {# CLOSE ACTION - DEPENDS OF WINDOWS TYPE #}
+            {{ loadFrame.closeAction | raw }}
+            {# END CLOSE ACTION #}
+        </div>
+    </div>
+    <turbo-frame id="client-info">
+    <table class="min-w-full bg-gray-800 text-white">
+        <tbody class="bg-gray-700 divide-y divide-gray-600">
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">First name:</th>
+                <td class="px-2 py-4">{{ employe.firstName }}</td>
+            </tr>
+            <tr>
+                <th class="px-2 py-4 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Last name:</th>
+                <td class="px-2 py-4 whitespace-nowrap">{{ employe.lastName }}</td>
+            </tr>
+        </tbody>
+    </table>
+    {% if app.request.headers.get( 'turbo-frame' ) != 'modal' %}
+    <div class="mt-2 hidden turbo-frame:block">
+        <a href="{{ path('app_employe_index') }}"> &lt; Back</a>
+        <a data-turbo-frame="_top" href="{{ path('app_employe_edit',{id:employe.id}) }}">Edit</a>
+    </div>
+    {% endif %}
+    </turbo-frame>
+    <div class="flex space-x-4 mt-4 justify-end">
+        {# DELETE BUTTON #}
+        {{ include('employe/_delete_form.html.twig') }}
+        {# END DELETE BUTTON #}
+        {# EDIT BUTTON #}
+        <twig:Button 
+            variant="success"
+            tag="a"
+            href="{{ path('app_employe_edit', {'id': employe.id}) }}"
+            data-turbo-frame="modal"
+        >Edit</twig:Button>
+        {# END EDIT BUTTON #}
+    </div>
+</div>
+{% endblock %}
