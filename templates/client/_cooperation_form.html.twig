@@ -2,8 +2,8 @@
 <div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
     <div>
     <form method="POST" ACTION="{{ path('app_client_cooperation',{id:client.id}) }}" data-controller="autosubmit"">
-        {% if error.status %}
-            <div class="alert alert-danger">{{ error.message }}</div>
+        {% if error.getStatus() %}
+            <div class="alert alert-danger">{{ error.getMessage() }}</div>
         {% endif %}
         <h1 class="h3 mb-3 font-weight-normal">Set price:</h1>
         {% for classification in classifications %}
