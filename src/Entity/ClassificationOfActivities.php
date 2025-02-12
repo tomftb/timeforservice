@@ -42,6 +42,9 @@ class ClassificationOfActivities
     #[ORM\OneToMany(targetEntity: Service::class, mappedBy: 'classificationOfActivities')]
     private Collection $services;
 
+    #[ORM\Column(nullable: true)]
+    private ?float $price = null;
+
     public function __construct()
     {
         $this->clientClassificationOfActivities = new ArrayCollection();
@@ -169,6 +172,18 @@ class ClassificationOfActivities
                 $service->setClassificationOfActivities(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPrice(): ?float
+    {
+        return $this->price;
+    }
+
+    public function setPrice(?float $price): static
+    {
+        $this->price = $price;
 
         return $this;
     }
