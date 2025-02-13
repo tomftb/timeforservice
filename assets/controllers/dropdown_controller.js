@@ -13,15 +13,15 @@ export default class extends Controller {
     static values = { index: String }
     connect() {}
     show(){
-        console.log("show()");
+        //console.log("show()\r\n",this.indexValue,event);
         let actionList = document.getElementById(this.indexValue);
         actionList.classList.remove('hidden');
-        actionList.classList.add('z-999');
+        //actionList.classList.add('z-999');
     }
     hide(){
-        console.log("hide()");
+        //console.log("hide()",this.indexValue,event);
         let actionList = document.getElementById(this.indexValue);
         actionList.classList.add('hidden');
-        actionList.classList.remove('z-999');
+        //actionList.classList.remove('z-999');
     }
 }

@@ -1,9 +1,6 @@
 <tr 
     class="even:bg-gray-700 odd:bg-gray-600"
     id="service-list-item-{{ service.id }}"
-    data-controller="dropdown"
-    data-action="click->dropdown#hide mouseout->dropdown#hide"
-    data-dropdown-index-value="service-list-action-{{ service.id }}"
 >
     <td class="px-6 py-4 whitespace-nowrap">{{ service.id }}</td>
     <td class="px-6 py-4">{{ service.clientPoint.name }}<br/>{{ service.clientPoint.street }}<br/>{{ service.clientPoint.town }}</td>
@@ -15,12 +12,11 @@
     <td class="px-6 py-4">{{ service.endedAt ? service.endedAt|date('Y-m-d H:i:s') : '' }}</td>
     <td 
         class="px-6 py-4 whitespace-nowrap flex"
-        
     >
         <div 
-            class="relative inline-block text-left bg-transparent"
+            class=" inline-block text-left"
             data-controller="dropdown"
-            data-action="mouseover->dropdown#show click->dropdown#hide"
+            data-action="mouseover->dropdown#show click->dropdown#hide mouseout->dropdown#hide"
             data-dropdown-index-value="service-list-action-{{ service.id }}"
         >
         <div>
@@ -38,7 +34,7 @@
         </div>
         <div 
             id="service-list-action-{{ service.id }}" 
-            class="hidden absolute right-0 mt-0 w-32 origin-top-right rounded-md bg-white  ring-1 shadow-lg ring-black/5 focus:outline-hidden" 
+            class="hidden absolute z-10 right-0 mt-0 w-32 origin-top-right rounded-md bg-gray-600  ring-1 shadow-lg ring-black/5 focus:outline-hidden" 
             role="menu" 
             aria-orientation="vertical" 
             aria-labelledby="menu-button" 
