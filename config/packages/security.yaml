@@ -71,4 +71,6 @@ security:
         - { path: '^/classificationofactivities', roles: ROLE_ADMIN }
         # require ROLE_ADMIN for /admin*
         - { path: '^/service', roles: ROLE_ADMIN }
+        # require ROLE_ADMIN for /admin*
+        - { path: '^/employe', roles: ROLE_ADMIN }
         
