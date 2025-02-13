@@ -1,4 +1,10 @@
-<tr class="even:bg-gray-700 odd:bg-gray-600" id="service-list-item-{{ service.id }}">
+<tr 
+    class="even:bg-gray-700 odd:bg-gray-600"
+    id="service-list-item-{{ service.id }}"
+    data-controller="dropdown"
+    data-action="click->dropdown#hide mouseout->dropdown#hide"
+    data-dropdown-index-value="service-list-action-{{ service.id }}"
+>
     <td class="px-6 py-4 whitespace-nowrap">{{ service.id }}</td>
     <td class="px-6 py-4">{{ service.clientPoint.name }}<br/>{{ service.clientPoint.street }}<br/>{{ service.clientPoint.town }}</td>
     <td class="px-6 py-4">{{ service.description|slice(0,100)|nl2br }}</td>
@@ -7,17 +13,22 @@
     {% set notifiedNo = '<span class="text-red-600">'~service.notified.value~'</span>' %}
     <td class="px-6 py-4">{{ service.notified.value == 'YES' ? notifiedYes|raw : notifiedNo|raw  }}</td>
     <td class="px-6 py-4">{{ service.endedAt ? service.endedAt|date('Y-m-d H:i:s') : '' }}</td>
-    <td class="px-6 py-4 whitespace-nowrap flex">
-        <div class="relative inline-block text-left bg-transparent">
+    <td 
+        class="px-6 py-4 whitespace-nowrap flex"
+        
+    >
+        <div 
+            class="relative inline-block text-left bg-transparent"
+            data-controller="dropdown"
+            data-action="mouseover->dropdown#show click->dropdown#hide"
+            data-dropdown-index-value="service-list-action-{{ service.id }}"
+        >
         <div>
           <span
-            class="bg-transparent cursor-pointer inline-flex w-full justify-center gap-x-1.5 px-3 py-2 text-sm font-semibold text-indigo-400 hover:text-indigo-600"
+            class="cursor-pointer inline-flex w-full justify-center gap-x-1.5 px-3 py-2 text-sm font-semibold text-indigo-400 hover:text-indigo-600"
             id="menu-button"
             aria-expanded="true"
             aria-haspopup="true"
-            data-controller="dropdown"
-            data-action="mouseover->dropdown#show click->dropdown#hide"
-            data-dropdown-index-value="service-list-action"
         >
             actions
             <svg class="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
@@ -26,17 +37,18 @@
           </span>
         </div>
         <div 
-            id="service-list-action" 
-            class="hidden absolute right-0 z-10 mt-0 w-32 origin-top-right rounded-md bg-gray-600 ring-1 shadow-lg ring-black/5 focus:outline-hidden" 
+            id="service-list-action-{{ service.id }}" 
+            class="hidden absolute right-0 mt-0 w-32 origin-top-right rounded-md bg-white  ring-1 shadow-lg ring-black/5 focus:outline-hidden" 
             role="menu" 
             aria-orientation="vertical" 
             aria-labelledby="menu-button" 
             tabindex="-1"
-            data-controller="dropdown"
-            data-action="click->dropdown#hide"
-            data-dropdown-index-value="service-list-action"
         >
-          <div class="py-1" role="none"  >
+            <div 
+                class="py-1"
+                role="none"
+            >
+
             <a
                 href="{{ path('app_service_notify', {'id': service.id}) }}"
                 class="block px-4 py-2 text-sm text-indigo-400 hover:text-indigo-600"
