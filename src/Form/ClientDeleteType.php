@@ -2,12 +2,12 @@
 
 namespace App\Form;
 
-use App\Entity\Service;
+use App\Entity\Client;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ServiceDeleteType extends AbstractType
+class ClientDeleteType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
@@ -16,7 +16,7 @@ class ServiceDeleteType extends AbstractType
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Service::class,
+            'data_class' => Client::class,
         ]);
     }
 }
