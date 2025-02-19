@@ -71,6 +71,9 @@ class Client
     #[ORM\Column(nullable: true, enumType: YesOrNoEnum::class)]
     private ?YesOrNoEnum $sendNotify = null;
 
+    #[ORM\Column(enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $deleted = null;
+
     public function __construct()
     {
         $this->status='NEW';
@@ -288,6 +291,18 @@ class Client
     public function setSendNotify(?YesOrNoEnum $sendNotify): static
     {
         $this->sendNotify = $sendNotify;
+
+        return $this;
+    }
+
+    public function getDeleted(): ?YesOrNoEnum
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(YesOrNoEnum $deleted): static
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }

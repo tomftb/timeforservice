@@ -5,50 +5,83 @@
     <td class="px-6 py-4">{{ client.street }}</td>
     <td class="px-6 py-4 whitespace-nowrap">{{ client.town }}</td>
     <td class="px-6 py-4 whitespace-nowrap flex">
-        <a 
-            href="{{ path('app_client_services', {'id': client.id}) }}" 
-            class="text-indigo-400 hover:text-indigo-600"
-            data-turbo-frame="modal"
-        >services</a>
-        <a 
-            href="{{ path('app_client_show', {'id': client.id}) }}" 
-            class="ml-4 text-blue-400 hover:text-blue-600"
-            data-turbo-frame="modal"
-        >show</a>
-        <a 
-            href="{{ path('app_client_edit', {'id': client.id}) }}" 
-            class="ml-4 text-yellow-400 hover:text-yellow-600"
-            data-turbo-frame="modal"
-        >edit</a>
-        <a 
-            href="{{ path('app_client_cooperation', {'id': client.id}) }}" 
-            class="ml-4 text-green-400 hover:text-green-600"
-            data-turbo-frame="modal"
-            title="Coopeartion terms"
-        >cooperation</a>
-            {# use :allowSmallWidth with : at the beginning of the variable name to send a boolean value, oposite it will send a string value #}
-        <twig:Modal :allowSmallWidth="true">
-            <twig:block name="trigger">
-                <button
-                    class="ml-4 text-red-400 hover:text-red-600"
-                    data-action="modal#open"
-                >delete</button>
-            </twig:block>
-            <svg class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
-                <path d="M12 9v4"/>
-                <path d="M12 16v.01"/>
+                        <!-- -->
+                <div 
+            class=" inline-block text-left"
+            data-controller="dropdown"
+            data-action="mouseover->dropdown#show click->dropdown#hide mouseout->dropdown#hide"
+            data-dropdown-index-value="client-list-action-{{ client.id }}"
+        >
+        <div>
+          <span
+            class=" cursor-pointer inline-flex w-full justify-center gap-x-1.5 px-3 py-2 text-sm font-semibold text-indigo-400 hover:text-indigo-600"
+            id="menu-button"
+            aria-expanded="true"
+            aria-haspopup="true"
+        >
+            actions
+            <svg class="-mr-1 size-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" data-slot="icon">
+              <path fill-rule="evenodd" d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
             </svg>
-            <h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                    Delete this client???
-            </h3>
-            <div class="flex justify-between">
-                <form method="dialog">
-                    <twig:Button variant="link">Cancel</twig:Button>
-                </form>
-                {{ include('client/_delete_form.html.twig') }}
-            </div>
-        </twig:Modal>
+          </span>
+        </div>
+        <div 
+            id="client-list-action-{{ client.id }}" 
+            class="hidden absolute z-10  w-32 origin-top-right rounded-md bg-gray-600  ring-1 shadow-lg ring-black/5 focus:outline-hidden"
+            role="menu" 
+            aria-orientation="vertical" 
+            aria-labelledby="menu-button" 
+            tabindex="-1"
+        >
+            <div
+                class="py-1"
+                role="none"
+            >
+
+            <a
+                href="{{ path('app_client_services', {'id': client.id}) }}"
+                class="block px-4 py-2 text-sm text-indigo-400 hover:text-indigo-600"
+                data-turbo-frame="modal"
+                role="menuitem"
+                tabindex="-1"
+                id="menu-item-0"
+                >services</a>
+            <a
+                href="{{ path('app_client_show', {'id': client.id}) }}"
+                class="block px-4 py-2 text-sm text-blue-400 hover:text-blue-600"
+                data-turbo-frame="modal"
+                role="menuitem"
+                tabindex="-1"
+                id="menu-item-1"
+            >show</a>
+            <a
+                href="{{ path('app_client_edit', {'id': client.id}) }}"
+                class="block px-4 py-2 text-sm text-yellow-400 hover:text-yellow-600"
+                data-turbo-frame="modal"
+                role="menuitem"
+                tabindex="-1"
+                id="menu-item-2"
+            >edit</a>
+            <a
+                href="{{ path('app_client_cooperation', {'id': client.id}) }}"
+                class="block px-4 py-2 text-sm text-green-400 hover:text-green-600"
+                data-turbo-frame="modal"
+                role="menuitem"
+                tabindex="-1"
+                id="menu-item-3"
+                title="Coopeartion terms"
+            >cooperation</a>
+            <a
+                href="{{ path('app_client_delete', {'id': client.id}) }}"
+                class="block px-4 py-2 text-sm text-red-400 hover:text-red-600"
+                data-turbo-frame="modal"
+                role="menuitem"
+                tabindex="-1"
+                id="menu-item-4"
+                title="Delete client"
+            >delete</a>
+          </div>
+        </div>
+      </div>
     </td>
 </tr>

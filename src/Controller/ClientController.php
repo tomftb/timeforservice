@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Client;
 use App\Form\ClientType;
+use App\Form\ClientDeleteType;
 use App\Repository\ClientRepository;
 use App\Repository\ServiceRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Form\FormInterface;
+use App\Model\YesOrNoEnum;
 
 /**
  * Description of ClientController
@@ -95,16 +97,6 @@ class ClientController extends AbstractController{
             'form' => $form,
         ]);
     }
-    #[Route('/{id}', name: 'app_client_delete', methods: ['POST'])]
-    public function delete(Request $request, Client $client, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$client->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($client);
-            $entityManager->flush();
-            $this->addFlash('success', 'Client deleted');
-        }
-        return $this->redirectToRoute('app_client_index', [], Response::HTTP_SEE_OTHER);
-    }
     /*
      * Custom Client Form
      */
@@ -121,6 +113,36 @@ class ClientController extends AbstractController{
         return $this->render('client/services.html.twig', [
             'client' => $client,
             'services' => $serviceRepository->findByClientId($client->getId(),'DESC')
+        ]);
+    }
+    #[Route('/{id}/delete', name: 'app_client_delete', methods: ['GET','POST'])]
+    public function delete(
+            Request $request,
+            Client $client,
+            EntityManagerInterface $entityManager
+    ): Response
+    {
+        $form = $this->createForm(ClientDeleteType::class,$client ,[
+            'action' => $this->generateUrl('app_client_delete',['id'=>$client->getId()]), 
+        ]);
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $client->setDeleted(YesOrNoEnum::YES);
+            $entityManager->flush();
+            $this->addFlash('success', 'Client deleted!');
+            /*
+             * ADD CHECK HEADER FOR MODAL
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('client/delete.html.twig','stream_success',[
+                    'client' => $client,
+                ]);
+                $this->addFlash('stream',$stream);
+            }
+            return $this->redirectToRoute('app_client_index',[], Response::HTTP_SEE_OTHER);
+        }
+        return $this->render('client/delete.html.twig', [
+            'client' => $client
         ]);
     }
 }
