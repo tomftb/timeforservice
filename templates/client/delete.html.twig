@@ -1,10 +1,10 @@
-{% set backPath=path('app_service_index') %}
+{% set backPath=path('app_client_index') %}
 {% extends 'modalBase.html.twig' %}
-{% block title %}{{ parent() }} - Delete Service - {{ service.id }}{% endblock %}
+{% block title %}{{ parent() }} - Delete Client - {{ client.id }}{% endblock %}
 {% block body %}
     <div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
         <div class="flex justify-between">
-            <h1 class="text-xl font-semibold text-white mb-4">Delete Service</h1>
+            <h1 class="text-xl font-semibold text-white mb-4">Delete Client</h1>
             <div class="mr-0">
                 {# CLOSE ACTION - DEPENDS OF WINDOWS TYPE #}
                 {{ loadFrame.closeAction | raw }}
@@ -18,9 +18,9 @@
                 <path d="M12 16v.01"/>
             </svg>
             <h3 class="mb-5 text-lg font-normal text-red-500 dark:text-red-400">
-                    Delete this service ?
+                    Delete this client ?
             </h3>
-        {{ include('service/_delete_form.html.twig') }}
+        {{ include('client/_delete_form.html.twig') }}
     </div>
 {% endblock %}
 {# ADD TURBO STREAM TO UPDATE ROW IN TABLE WITH CONTENT #}
@@ -31,11 +31,6 @@
         </template>
     </turbo-stream>
     {# add `s` to target to use CSS selector #}
-    <turbo-stream action="remove" target="service-list-item-{{ service.id }}">
-    </turbo-stream>
-    <turbo-stream action="replace" target="service-result-count">
-        <template>
-           <div id="service-result-count" class="whitespace-nowrap m-2 mr-4">{{ servicesCount }} results</div>
-        </template>
+    <turbo-stream action="remove" target="client-list-item-{{ client.id }}">
     </turbo-stream>
 {% endblock %}
