@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Model\YesOrNoEnum;
 use App\Repository\EmployeRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
@@ -21,6 +22,14 @@ class Employe
 
     #[ORM\Column(length: 255)]
     private ?string $lastName = null;
+
+    #[ORM\Column(enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $active = null;
+
+    public function __construct()
+    {
+        $this->active=YesOrNoEnum::YES;
+    }
 
     public function getId(): ?int
     {
@@ -47,6 +56,18 @@ class Employe
     public function setLastName(string $lastName): static
     {
         $this->lastName = $lastName;
+
+        return $this;
+    }
+
+    public function getActive(): ?YesOrNoEnum
+    {
+        return $this->active;
+    }
+
+    public function setActive(YesOrNoEnum $active): static
+    {
+        $this->active = $active;
 
         return $this;
     }
