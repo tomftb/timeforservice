@@ -46,6 +46,18 @@ class ClientPoint
     #[ORM\Column(nullable: true, enumType: YesOrNoEnum::class)]
     private ?YesOrNoEnum $sendNotify = null;
 
+    #[ORM\Column(enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $active = null;
+
+    #[ORM\Column(enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $deleted = null;
+
+    public function __construct()
+    {
+        $this->active=YesOrNoEnum::YES;
+        $this->deleted=YesOrNoEnum::NO;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
@@ -154,6 +166,30 @@ class ClientPoint
     public function setSendNotify(?YesOrNoEnum $sendNotify): static
     {
         $this->sendNotify = $sendNotify;
+
+        return $this;
+    }
+
+    public function getActive(): ?YesOrNoEnum
+    {
+        return $this->active;
+    }
+
+    public function setActive(YesOrNoEnum $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    public function getDeleted(): ?YesOrNoEnum
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(YesOrNoEnum $deleted): static
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }
