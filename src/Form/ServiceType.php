@@ -66,8 +66,12 @@ class ServiceType extends AbstractType
             ->add('notified',EnumType::class,[
                 'class'=> YesOrNoEnum::class,
                 'label'=>'Notified',
-                'required' => true,
-                'data_class'=>null,
+                'required' => true
+            ])
+            ->add('paided',EnumType::class,[
+                'class'=> YesOrNoEnum::class,
+                'label'=>'Paided',
+                'required' => true
             ])
         ;
     }
