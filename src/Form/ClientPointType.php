@@ -37,6 +37,16 @@ class ClientPointType extends AbstractType
                 'required' => true,
                 'constraints' => [new Length(['min' => 0])],
             ])
+            ->add('active',EnumType::class,[
+                'class'=> YesOrNoEnum::class,
+                'label'=>'Active',
+                'required' => true
+            ])
+            ->add('deleted',EnumType::class,[
+                'class'=> YesOrNoEnum::class,
+                'label'=>'Deleted',
+                'required' => true
+            ])
         ;
     }
 
