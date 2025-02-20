@@ -74,9 +74,13 @@ class Client
     #[ORM\Column(enumType: YesOrNoEnum::class)]
     private ?YesOrNoEnum $deleted = null;
 
+    #[ORM\Column(enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $active = null;
+
     public function __construct()
     {
         $this->status='NEW';
+        $this->active=YesOrNoEnum::YES;
         $this->clientClassificationOfActivities = new ArrayCollection();
     }
     
@@ -303,6 +307,18 @@ class Client
     public function setDeleted(YesOrNoEnum $deleted): static
     {
         $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    public function getActive(): ?YesOrNoEnum
+    {
+        return $this->active;
+    }
+
+    public function setActive(YesOrNoEnum $active): static
+    {
+        $this->active = $active;
 
         return $this;
     }
