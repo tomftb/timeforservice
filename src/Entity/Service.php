@@ -99,6 +99,9 @@ class Service
     #[ORM\Column(nullable: true)]
     private ?float $materialCosts = null;
 
+    #[ORM\Column(enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $paided = null;
+
     public function __construct()
     {
         $this->route=0;
@@ -109,6 +112,7 @@ class Service
         $this->deleted=YesOrNoEnum::NO;
         $this->serviceAttachments = new ArrayCollection();
         $this->materialCosts=0;
+        $this->paided=YesOrNoEnum::NO;
     }
     
     public function getId(): ?int
@@ -412,6 +416,18 @@ class Service
     public function setEmploye(?Employe $employe): static
     {
         $this->employe = $employe;
+
+        return $this;
+    }
+
+    public function getPaided(): ?YesOrNoEnum
+    {
+        return $this->paided;
+    }
+
+    public function setPaided(YesOrNoEnum $paided): static
+    {
+        $this->paided = $paided;
 
         return $this;
     }
