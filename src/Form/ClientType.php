@@ -70,6 +70,11 @@ class ClientType extends AbstractType
                 'required' => true,
                 'constraints' => [new Length(['min' => 1])],
             ])
+            ->add('active',EnumType::class,[
+                'class'=> YesOrNoEnum::class,
+                'label'=>'Active',
+                'required' => true
+            ])
         ;
     }
 
