@@ -8,7 +8,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Validator\Constraints\Length;
+use App\Model\YesOrNoEnum;
 
 class EmployeType extends AbstractType
 {
@@ -22,6 +24,11 @@ class EmployeType extends AbstractType
             ->add('lastName',TextType::class,[
                 'required' => true,
                 'constraints' => [new Length(['min' => 1])],
+            ])
+            ->add('active',EnumType::class,[
+                'class'=> YesOrNoEnum::class,
+                'label'=>'Active',
+                'required' => true
             ])
         ;
     }
