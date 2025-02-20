@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Model\YesOrNoEnum;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -47,6 +48,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private bool $isVerified = false;
+
+    #[ORM\Column(enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $active = null;
+
+    #[ORM\Column(enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $deleted = null;
+
+    public function __construct()
+    {
+        $this->active=YesOrNoEnum::NO;
+        $this->deleted=YesOrNoEnum::NO;
+    }
 
     public function getId(): ?int
     {
@@ -168,6 +181,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setVerified(bool $isVerified): static
     {
         $this->isVerified = $isVerified;
+
+        return $this;
+    }
+
+    public function getActive(): ?YesOrNoEnum
+    {
+        return $this->active;
+    }
+
+    public function setActive(YesOrNoEnum $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    public function getDeleted(): ?YesOrNoEnum
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(YesOrNoEnum $deleted): static
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }
