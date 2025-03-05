@@ -102,6 +102,48 @@ class Service
     #[ORM\Column(enumType: YesOrNoEnum::class)]
     private ?YesOrNoEnum $paided = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $clientPointName = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $clientPointStreet = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $clientPointZipCode = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $clientPointTown = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $clientPointEmail = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $clientPointPhoneNumber = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $clientName = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $clientStreet = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $clientZipCode = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $clientTown = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $clientNin = null;
+
+    #[ORM\Column(length: 100, nullable: true)]
+    private ?string $clientEmail = null;
+
+    #[ORM\Column(enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $clientSendNotify = null;
+
+    #[ORM\Column(enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $clientPointSendNotify = null;
+
     public function __construct()
     {
         $this->route=0;
@@ -113,6 +155,8 @@ class Service
         $this->serviceAttachments = new ArrayCollection();
         $this->materialCosts=0;
         $this->paided=YesOrNoEnum::NO;
+        $this->startedAt = new \DateTimeImmutable(date("d-m-Y H:i:s"));
+        $this->endedAt = new \DateTimeImmutable(date("d-m-Y H:i:s",strtotime("+30 minutes")));
     }
     
     public function getId(): ?int
@@ -428,6 +472,174 @@ class Service
     public function setPaided(YesOrNoEnum $paided): static
     {
         $this->paided = $paided;
+
+        return $this;
+    }
+
+    public function getClientPointName(): ?string
+    {
+        return $this->clientPointName;
+    }
+
+    public function setClientPointName(?string $clientPointName): static
+    {
+        $this->clientPointName = $clientPointName;
+
+        return $this;
+    }
+
+    public function getClientPointStreet(): ?string
+    {
+        return $this->clientPointStreet;
+    }
+
+    public function setClientPointStreet(?string $clientPointStreet): static
+    {
+        $this->clientPointStreet = $clientPointStreet;
+
+        return $this;
+    }
+
+    public function getClientPointZipCode(): ?string
+    {
+        return $this->clientPointZipCode;
+    }
+
+    public function setClientPointZipCode(?string $clientPointZipCode): static
+    {
+        $this->clientPointZipCode = $clientPointZipCode;
+
+        return $this;
+    }
+
+    public function getClientPointTown(): ?string
+    {
+        return $this->clientPointTown;
+    }
+
+    public function setClientPointTown(?string $clientPointTown): static
+    {
+        $this->clientPointTown = $clientPointTown;
+
+        return $this;
+    }
+
+    public function getClientPointEmail(): ?string
+    {
+        return $this->clientPointEmail;
+    }
+
+    public function setClientPointEmail(?string $clientPointEmail): static
+    {
+        $this->clientPointEmail = $clientPointEmail;
+
+        return $this;
+    }
+
+    public function getClientPointPhoneNumber(): ?string
+    {
+        return $this->clientPointPhoneNumber;
+    }
+
+    public function setClientPointPhoneNumber(?string $clientPointPhoneNumber): static
+    {
+        $this->clientPointPhoneNumber = $clientPointPhoneNumber;
+
+        return $this;
+    }
+
+    public function getClientName(): ?string
+    {
+        return $this->clientName;
+    }
+
+    public function setClientName(?string $clientName): static
+    {
+        $this->clientName = $clientName;
+
+        return $this;
+    }
+
+    public function getClientStreet(): ?string
+    {
+        return $this->clientStreet;
+    }
+
+    public function setClientStreet(?string $clientStreet): static
+    {
+        $this->clientStreet = $clientStreet;
+
+        return $this;
+    }
+
+    public function getClientZipCode(): ?string
+    {
+        return $this->clientZipCode;
+    }
+
+    public function setClientZipCode(?string $clientZipCode): static
+    {
+        $this->clientZipCode = $clientZipCode;
+
+        return $this;
+    }
+
+    public function getClientTown(): ?string
+    {
+        return $this->clientTown;
+    }
+
+    public function setClientTown(?string $clientTown): static
+    {
+        $this->clientTown = $clientTown;
+
+        return $this;
+    }
+
+    public function getClientNin(): ?string
+    {
+        return $this->clientNin;
+    }
+
+    public function setClientNin(?string $clientNin): static
+    {
+        $this->clientNin = $clientNin;
+
+        return $this;
+    }
+
+    public function getClientEmail(): ?string
+    {
+        return $this->clientEmail;
+    }
+
+    public function setClientEmail(?string $clientEmail): static
+    {
+        $this->clientEmail = $clientEmail;
+
+        return $this;
+    }
+
+    public function getClientSendNotify(): ?YesOrNoEnum
+    {
+        return $this->clientSendNotify;
+    }
+
+    public function setClientSendNotify(YesOrNoEnum $clientSendNotify): static
+    {
+        $this->clientSendNotify = $clientSendNotify;
+
+        return $this;
+    }
+
+    public function getClientPointSendNotify(): ?YesOrNoEnum
+    {
+        return $this->clientPointSendNotify;
+    }
+
+    public function setClientPointSendNotify(YesOrNoEnum $clientPointSendNotify): static
+    {
+        $this->clientPointSendNotify = $clientPointSendNotify;
 
         return $this;
     }

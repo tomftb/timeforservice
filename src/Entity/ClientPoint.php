@@ -193,4 +193,9 @@ class ClientPoint
 
         return $this;
     }
+    
+    public function __toString()
+    {
+        return $this->name." (".$this->street.", ".$this->town.")";
+    }
 }

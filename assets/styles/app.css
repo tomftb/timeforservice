@@ -2,17 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+
 /* tom-select custom styling */
 /* Base Styles for Dark Mode */
 .ts-wrapper {
-  @apply border-gray-600;
+    @apply border-gray-600;
 }
 .ts-wrapper .ts-control,
 .ts-wrapper.single .ts-control,
 .ts-wrapper.single.input-active .ts-control,
 .full .ts-control,
 .ts-dropdown {
-  @apply bg-gray-700 text-white !important;
+  @apply bg-gray-700 text-white;
   box-shadow: none !important;
   background-image: none !important;
   border: none !important;

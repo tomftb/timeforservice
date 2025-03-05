@@ -31,7 +31,7 @@ class ServiceForm extends AbstractController{
     {
         $service=$this->initialFormData ?? new Service();
         return $this->createForm(ServiceType::class,$service ,[
-            'action' => $service->getId() ? $this->generateUrl('app_service_edit',['id'=>$service->getId()]) : $this->generateUrl( 'app_service_new' ), 
+            'action' => $service->getId() ? $this->generateUrl('app_service_edit',['id'=>$service->getId()]) : $this->generateUrl( 'app_service_new' ),
         ]);
     }
 }

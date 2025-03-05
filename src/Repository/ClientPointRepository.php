@@ -22,28 +22,38 @@ class ClientPointRepository extends ServiceEntityRepository
         $qb->orderBy('clientPoint.id', "ASC");
         return $qb;
     }
-    //    /**
-    //     * @return ClientPoint[] Returns an array of ClientPoint objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('c.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?ClientPoint
-    //    {
-    //        return $this->createQueryBuilder('c')
-    //            ->andWhere('c.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function findAllActive(): array
+    {
+        return $this->createQueryBuilder('cp')
+                ->andWhere('cp.active = :active')
+                ->setParameter('active', "YES")
+                ->andWhere('cp.deleted = :deleted')
+                ->setParameter('deleted', "NO")
+                ->orderBy('cp.name', "ASC")
+                ->getQuery()
+                ->getResult();
+    }
+    public function getSelected(int $id=0): array
+    {
+        return $this->createQueryBuilder('cp')
+                ->andWhere('cp.id = :id')
+                ->setParameter('id', $id)
+                ->orderBy('cp.name', "ASC")
+                ->getQuery()
+                ->getResult();
+    }
+    public function findAllActiveWithSelected(int $id=0): QueryBuilder
+    {
+       return $this->createQueryBuilder('cp')
+                ->andWhere('cp.id = :id')
+                ->setParameter('id', $id)
+                ->orderBy('cp.name', "ASC")
+                ->join('cp.id', "client_point")
+                ->andWhere('cp2.id != cp.id')
+                ->andWhere('cp2.active = :active')
+                ->setParameter('active', "YES")
+                ->andWhere('cp2.deleted = :deleted')
+                ->setParameter('deleted', "NO")
+                ->orderBy('cp2.name', "ASC");
+    }
 }
