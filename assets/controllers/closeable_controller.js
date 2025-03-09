@@ -10,6 +10,7 @@ export default class extends Controller {
     static targets = ['timebar'];
     
     connect(){
+        console.log("connect");
         /*
          * use useTransition
          */
@@ -21,11 +22,13 @@ export default class extends Controller {
         });
         
         if(this.autoCloseValue){
+            console.log("autoCloseValue",this);
             setTimeout(()=>{
                 this.close();
             },this.autoCloseValue);
         }
         if(this.hasTimebarTarget){
+            console.log("hasTimebarTarget",this);
             setTimeout(()=>{
                  this.timebarTarget.style.width = 0;
             },10);
@@ -33,6 +36,7 @@ export default class extends Controller {
         }
     }
     close() {
-       this.leave();
+        console.log("close",this);
+        this.leave();
    }
 }

@@ -1,6 +1,6 @@
 {% block body %}
 <div class="m-4 p-4 modal:m-0 modal:p-0 bg-gray-800 rounded-lg">
-    <div>
+
     <form method="POST" ACTION="{{ path('app_client_cooperation',{id:client.id}) }}" data-controller="autosubmit"">
         {% if error.getStatus() %}
             <div class="alert alert-danger">{{ error.getMessage() }}</div>
@@ -20,7 +20,7 @@
         </twig:Button>
         </div>
     </form>
-    </div>
+
 </div>
 
 {% endblock %}

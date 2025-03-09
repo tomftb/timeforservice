@@ -3,18 +3,17 @@
 namespace App\Form;
 
 use App\Entity\Service;
-use App\Entity\ClientPoint;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use App\Model\TypeOfServiceEnum;
 use App\Model\YesOrNoEnum;
 use App\Repository\ClientPointRepository;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 
 class ServiceType extends AbstractType
 {
@@ -106,21 +105,23 @@ class ServiceType extends AbstractType
                 'label'=>'Paided',
                 'required' => true
             ])
-                            /*
-            ->add('clientPointNew',EntityType::class ,
-            [
-                'class' => ClientPoint::class,
-                'query_builder'=> function(ClientPointRepository $clientPointRepository) use ($options){
-                    return $clientPointRepository->findAllActive();
-                },
-                'required' => true,
-                'mapped'=>false
-            ])*/
             ->add('clientPointNew',ChoiceType::class ,
             [
                 'choices'  =>$this->getClientPointSet($options),
+                //'placeholder' => 'Choose a client point',
                 'required' => true,
                 'mapped'=>false
+            ])
+            ->add('files', FileType::class, [
+                'label' => 'Set file/files (IMAGE/PDF)',
+
+                'mapped' => false,
+                'multiple' => true,
+                'required' => false,
+                'attr'  => [
+                    'accept' => 'image/*',
+                    'multiple' => 'multiple'
+                ],
             ])
             ;
     }
