@@ -7,6 +7,8 @@ use Symfony\Component\Mailer\MailerInterface;
 use App\Entity\Service;
 use Symfony\Component\Mime\Email;
 use Symfony\Component\Mime\Address;
+use Symfony\Component\Mime\Part\DataPart;
+use Symfony\Component\Mime\Part\File;
 
 /**
  * Description of Notify
