@@ -79,7 +79,7 @@
                         {# ADD LOAD CONTENT ACTION #}
                         data-action="turbo:before-fetch-request->modal#showLoading"
                         {# SET CSS EFFECT WHE PRES THE SUBMIT BUTTON #}
-                        class="flex relative min-h-full aria-busy:opacity-50 items-end justify-center text-left sm:items-center sm:p-0"
+                        class="flex relative min-h-full  items-end justify-center text-left sm:items-center sm:p-0 aria-busy:opacity-50"
                     >
                         {{ include('_frameSuccessStream.html.twig',{ frame: 'modal' }) }}
                     </turbo-frame>

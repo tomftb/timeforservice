@@ -2,7 +2,9 @@
 {% extends 'modalBase.html.twig' %}
 {% block title %}{{ parent() }} - Edit Client - {{ client.id }}{% endblock %}
 {% block body %}
-<div class=" w-1/3 modal:m-0 modal:p-0 bg-gray-800 rounded-lg text-white space-y-4 m-4 p-4">
+{% set rawModalWidth = loadFrame.modalWidth | raw  %}
+    {# ADD CLASS FOR tailwind.config.js  -> addVariant('modal','dialog &'); modal:m-0 and modal:p-0 #}
+    <div class="{{ rawModalWidth == '' ? 'w-screen md:w-2/3 lg:w-2/4 xl:w-2/5 modal:m-0 modal:p-0' : rawModalWidth }} bg-gray-800 rounded-lg text-white space-y-4 m-4 p-4 ">
     <div class="flex justify-between">
         <h1 class="text-xl font-semibold text-white mb-4">Edit Client</h1>
         <div class="mr-0">
