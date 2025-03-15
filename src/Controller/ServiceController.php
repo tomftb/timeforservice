@@ -14,15 +14,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\FormInterface;
-use App\Controller\MailerController;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpKernel\Attribute\MapQueryParameter;
 use Pagerfanta\Pagerfanta;
 use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use App\Model\YesOrNoEnum;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Mime\Part\DataPart;
-use Symfony\Component\Mime\Part\File;
 use App\Repository\ServiceAttachmentRepository;
 use App\Service\Service\Notify;
 use App\Service\Service\Save;
@@ -75,7 +72,6 @@ class ServiceController extends AbstractController
         $flashMessage="Saved";
         if ($form->isSubmitted() && $form->isValid()) {
             $save->save($service,$entityManager);
-            
             /*
              * SEND NOTIFY
              */
@@ -121,7 +117,7 @@ class ServiceController extends AbstractController
         $form = self::createServiceForm($service);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $save->prepare($service);
+            $save->save($service,$entityManager);
             $entityManager->flush();
             $this->addFlash('success', 'Service updated!');
             /*
