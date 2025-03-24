@@ -66,8 +66,8 @@ App\Entity\Service:
             - NotBlank: ~
             - Length:
                 min: 3
-        clientPoint:
-            - NotBlank: ~
+        #clientPoint:
+         #   - NotBlank: ~
         employe:
             - NotBlank: ~
         classificationOfActivities:

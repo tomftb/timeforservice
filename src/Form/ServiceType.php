@@ -14,6 +14,9 @@ use App\Model\YesOrNoEnum;
 use App\Repository\ClientPointRepository;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 
 class ServiceType extends AbstractType
 {
@@ -21,21 +24,19 @@ class ServiceType extends AbstractType
      * @var ClientPointRepository
      */
     protected $clientPointRepository;
+    /*
+     * 
+     */
+    protected ?Service $service;
     
     public function __construct(ClientPointRepository $clientPointRepository)
     {
         $this->clientPointRepository = $clientPointRepository;
-        
     }
     
     protected function getClientPointSet(array $options=[]):array{
-        //dd($this->clientPointRepository->findAllActive());
         $clientPointSet = [];
-        if($options['data']->getClientPoint() !== null){
-            
-            //dd($options['data']);
-            //dd($options['data']->getClientPoint()->getId());
-            
+        if($options['data']->getClientPoint() !== null){           
             foreach($this->clientPointRepository->getSelected($options['data']->getClientPoint()->getId()) as $selectedClientPoint){
                 $clientPointSet[$selectedClientPoint->getName()." (".$selectedClientPoint->getStreet().", ".$selectedClientPoint->getTown().")"] = $selectedClientPoint->getId();
             }
@@ -48,6 +49,10 @@ class ServiceType extends AbstractType
     
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+        
+        /** @var Service|null $article */
+        $this->service = $options['data'] ?? null;
+        
         $builder
             ->add('description', TextareaType::class,[
                 'label'=>'Description',
@@ -73,17 +78,17 @@ class ServiceType extends AbstractType
             ->add('materialCosts',null,[
                 'label'=>'Material costs (gross)'
             ]) 
-            ->add('clientPoint', null, [
-                'choice_label' =>  function ($clientPoint) {
-                        return $clientPoint->getName() . ' (' .$clientPoint->getStreet().",". $clientPoint->getTown().")";
-                },
+            ->add('clientPoint',ChoiceType::class ,
+            [
+                'choices'  =>$this->getClientPointSet($options),
                 'placeholder' => 'Choose a client point',
-                'autocomplete'=> true
+                'required' => true,
+                'mapped'=>false
             ])
             ->add('employe', null, [
                 'choice_label' => function ($employe) {
                         return "[".$employe->getId()."] ".$employe->getFirstName() ." ".$employe->getLastName();
-                    },
+                },
                 'placeholder' => 'Choose a employe',
                 'autocomplete'=> true
             ])
@@ -91,7 +96,7 @@ class ServiceType extends AbstractType
                 'label'=>'Type of service',
                 'choice_label' =>  function ($classificationOfActivities) {
                         return "[".$classificationOfActivities->getCode() . '] ' .$classificationOfActivities->getName();
-                    },
+                },
                 'placeholder' => 'Choose type of service',
                 'autocomplete'=> true
             ])
@@ -105,13 +110,6 @@ class ServiceType extends AbstractType
                 'label'=>'Paided',
                 'required' => true
             ])
-            ->add('clientPointNew',ChoiceType::class ,
-            [
-                'choices'  =>$this->getClientPointSet($options),
-                //'placeholder' => 'Choose a client point',
-                'required' => true,
-                'mapped'=>false
-            ])
             ->add('files', FileType::class, [
                 'label' => 'Set file/files (IMAGE/PDF)',
 
@@ -124,6 +122,18 @@ class ServiceType extends AbstractType
                 ],
             ])
             ;
+                
+                
+        $builder->get('clientPoint')->addEventListener(
+            FormEvents::POST_SUBMIT,
+            function(FormEvent $event) {
+                $form = $event->getForm();
+                self::setupClientPoint(
+                    $form->getParent(),
+                    $form->getData()
+                );
+            }
+        );
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -132,4 +142,14 @@ class ServiceType extends AbstractType
             'data_class' => Service::class,
         ]);
     }
+    
+    private function setupClientPoint(FormInterface $form, ?string $clientPointId){
+        foreach($this->clientPointRepository->findAllActive() as $clientPoint){
+            if(intval($clientPointId,10) === $clientPoint->getId()){
+                $this->service->setClientPoint($clientPoint);
+            }
+        }
+
+    }
+    
 }
