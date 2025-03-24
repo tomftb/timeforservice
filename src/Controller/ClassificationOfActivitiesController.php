@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ClassificationOfActivities;
 use App\Form\ClassificationOfActivitiesType;
+use App\Form\ClassificationOfActivitiesDeleteType;
 use App\Repository\ClassificationOfActivitiesRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\FormInterface;
+use App\Model\YesOrNoEnum;
 
 /**
  * Description of ClassificationOfActivitiesController
@@ -86,8 +88,8 @@ class ClassificationOfActivitiesController extends AbstractController{
             'form' => $form,
         ]);
     }
-    #[Route('/{id}', name: 'app_classificationofactivities_delete', methods: ['POST'])]
-    public function delete(Request $request, ClassificationOfActivities $classificationOfActivities, EntityManagerInterface $entityManager): Response
+    #[Route('/{id}', name: 'app_classificationofactivities_delete_old', methods: ['POST'])]
+    public function delete_old(Request $request, ClassificationOfActivities $classificationOfActivities, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$classificationOfActivities->getId(), $request->request->get('_token'))) {
             $entityManager->remove($classificationOfActivities);
@@ -95,6 +97,40 @@ class ClassificationOfActivitiesController extends AbstractController{
             $this->addFlash('success', 'Classification deleted');
         }
         return $this->redirectToRoute('app_classificationofactivities_index', [], Response::HTTP_SEE_OTHER);
+    }
+    #[Route('/{id}/delete', name: 'app_classificationofactivities_delete', methods: ['GET','POST'])]
+    public function delete(
+            Request $request,
+            ClassificationOfActivities $classificationOfActivities,
+            EntityManagerInterface $entityManager,
+            ClassificationOfActivitiesRepository $classificationOfActivitiesRepository
+    ): Response
+    {
+        $form = $this->createForm(ClassificationOfActivitiesDeleteType::class,$classificationOfActivities ,[
+            'action' => $this->generateUrl('app_classificationofactivities_delete',['id'=>$classificationOfActivities->getId()]), 
+        ]);
+        //dd($request);
+        $form->handleRequest($request);
+        //dd($form);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $classificationOfActivities->setDeleted(YesOrNoEnum::YES);
+            $entityManager->flush();
+            $this->addFlash('success', 'Classification of activities deleted!');
+            /*
+             * ADD CHECK HEADER FOR MODAL
+             */
+            if($request->headers->has('turbo-frame')){
+                $stream = $this->renderBlockView('classificationofactivities/delete.html.twig','stream_success',[
+                    'classificationOfActivities' => $classificationOfActivities,
+                ]);
+                $this->addFlash('stream',$stream);
+            }
+            return $this->redirectToRoute('app_classificationofactivities_index',[], Response::HTTP_SEE_OTHER);
+        }
+        return $this->render('classificationofactivities/delete.html.twig', [
+            'classificationOfActivities' => $classificationOfActivities,
+        ]);
+        
     }
     /*
      * Custom Classification Form

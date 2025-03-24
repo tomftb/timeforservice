@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Model\YesOrNoEnum;
 use App\Repository\ClassificationOfActivitiesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -42,8 +43,12 @@ class ClassificationOfActivities
     #[ORM\Column(nullable: true)]
     private ?float $price = null;
 
+    #[ORM\Column(nullable: true, enumType: YesOrNoEnum::class)]
+    private ?YesOrNoEnum $deleted = null;
+
     public function __construct()
     {
+        $this->deleted=YesOrNoEnum::NO;
         $this->clientClassificationOfActivities = new ArrayCollection();
         $this->services = new ArrayCollection();
     }
@@ -157,6 +162,18 @@ class ClassificationOfActivities
     public function setPrice(?float $price): static
     {
         $this->price = $price;
+
+        return $this;
+    }
+
+    public function getDeleted(): ?YesOrNoEnum
+    {
+        return $this->deleted;
+    }
+
+    public function setDeleted(?YesOrNoEnum $deleted): static
+    {
+        $this->deleted = $deleted;
 
         return $this;
     }

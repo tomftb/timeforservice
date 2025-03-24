@@ -22,8 +22,7 @@ class Attachment {
     public function __construct(SluggerInterface $slugger) {
         $this->slugger = $slugger;
     }
-    
-    //put your code here
+
     public function upload(
                             $dir,
                             $files,

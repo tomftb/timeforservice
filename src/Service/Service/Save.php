@@ -6,7 +6,9 @@ use App\Entity\Service;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Service\ConvertTime;
 use Doctrine\ORM\EntityManagerInterface;
-
+use App\Service\Service\Attachment;
+use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Form\Form;
 /**
  * Description of Notify
  *
@@ -15,18 +17,27 @@ use Doctrine\ORM\EntityManagerInterface;
 class Save extends AbstractController
 {
     private Service $service;
+    private SluggerInterface $slugger;
+    private Form $form;
+    private EntityManagerInterface $entityManager;
     
-    public function __construct(){
-
+    public function __construct(SluggerInterface $slugger){
+        $this->slugger = $slugger;
     }
-    public function save(Service $service,EntityManagerInterface $entityManager):void
-    {       
+    public function save(Service $service,EntityManagerInterface $entityManager,Form $form):void
+    {
         $this->service = $service;
+        $this->entityManager = $entityManager;
+        $this->form = $form;
         self::prepare();
         self::setClient();
         self::setClientPoint();
-        $entityManager->persist($service);
-        $entityManager->flush();
+        $this->entityManager->persist($this->service);
+        $this->entityManager->flush();
+        /*
+         * ATTACHMENT
+         */
+        self::attachment();
     }
     public function prepare():void
     {
@@ -97,7 +108,6 @@ class Save extends AbstractController
         $this->service->setClientSendNotify($this->service->getClientPoint()->getClient()->getSendNotify());
     }
     private function setClientPoint(){
-        //dd($this->service->getClientPoint());
         $this->service->setClientPointName($this->service->getClientPoint()->getName());
         $this->service->setClientPointStreet($this->service->getClientPoint()->getStreet());
         $this->service->setClientPointZipCode($this->service->getClientPoint()->getZipCode());
@@ -108,5 +118,14 @@ class Save extends AbstractController
     }
     public function get():Service{
         return $this->service;
+    }
+    private function attachment(){
+        $attachment = new Attachment($this->slugger);
+        $attachment->upload(
+            $this->getParameter('app.attachment_dir').strval($this->service->getId()),
+            $this->form->get('files')->getData(),
+            $this->service,
+            $this->entityManager
+        );
     }
 }

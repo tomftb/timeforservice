@@ -148,8 +148,8 @@ class Service
     {
         $this->route=0;
         $this->routeCost=0;
-        $this->realTime=0;
-        $this->time=0;
+        $this->realTime=0.5;
+        $this->time=30;
         $this->notifyCounter=0;
         $this->deleted=YesOrNoEnum::NO;
         $this->serviceAttachments = new ArrayCollection();

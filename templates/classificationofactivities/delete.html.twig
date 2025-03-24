@@ -1,0 +1,37 @@
+{% set backPath=path('app_classificationofactivities_index') %}
+{% extends 'modalBase.html.twig' %}
+{% block title %}{{ parent() }} - Delete Classification Of Activities - {{ classificationOfActivities.id }}{% endblock %}
+{% block body %}
+{% set rawModalWidth = loadFrame.modalWidth | raw  %}
+    <div class="{{ rawModalWidth == '' ? 'w-screen sm:w-3/5 md:w-2/5 lg:w-2/5 xl:w-2/5 modal:m-0 modal:p-0' : rawModalWidth }} bg-gray-800 rounded-lg text-white space-y-4 m-4 p-4 ">
+            <div class="flex justify-between">
+                <h1 class="text-xl font-semibold text-white mb-4">Delete Classification Of Activities</h1>
+                <div class="mr-0">
+                    {# CLOSE ACTION - DEPENDS OF WINDOWS TYPE #}
+                    {{ loadFrame.closeAction | raw }}
+                    {# END CLOSE ACTION #}
+                </div>
+            </div>
+                <svg class="mx-auto mb-4 text-red-400 w-12 h-12 dark:text-red-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                    <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/>
+                    <path d="M12 9v4"/>
+                    <path d="M12 16v.01"/>
+                </svg>
+                <h3 class="mb-5 text-lg font-normal text-red-500 dark:text-red-400">
+                        Delete Classification Of Activities {{ classificationOfActivities.id }} ?
+                </h3>
+                {{ include('classificationofactivities/_delete_form.html.twig') }}
+    </div>
+{% endblock %}
+{# ADD TURBO STREAM TO UPDATE ROW IN TABLE WITH CONTENT #}
+{% block stream_success %}
+    {# CLEAR MODAL TO CLOSE IT #}
+    <turbo-stream action="update" target="modal">
+        <template>
+        </template>
+    </turbo-stream>
+    {# add `s` to target to use CSS selector #}
+    <turbo-stream action="remove" target="classificationofactivities-list-item-{{ classificationOfActivities.id }}">
+    </turbo-stream>
+{% endblock %}

@@ -71,7 +71,7 @@ class ServiceController extends AbstractController
         $form->handleRequest($request);
         $flashMessage="Saved";
         if ($form->isSubmitted() && $form->isValid()) {
-            $save->save($service,$entityManager);
+            $save->save($service,$entityManager,$form);
             /*
              * SEND NOTIFY
              */
@@ -117,7 +117,7 @@ class ServiceController extends AbstractController
         $form = self::createServiceForm($service);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $save->save($service,$entityManager);
+            $save->save($service,$entityManager,$form);
             $entityManager->flush();
             $this->addFlash('success', 'Service updated!');
             /*

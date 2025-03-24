@@ -26,11 +26,17 @@ class ServiceAttachmentController extends AbstractController
             ServiceAttachmentRepository $serviceAttachmentRepository
     ): Response
     {
+        $error = new \stdClass();
+        $error->status = false;
+        $error->message='Select file/files!';
+
         $process = false;
         $serviceId = $request->get('id');
         $serviceAttachment = new ServiceAttachment();
         $listOfAttachments = self::listAttachments($service,$serviceAttachmentRepository);
-        $form = parent::createForm(ServiceAttachmentType::class, $serviceAttachment);
+        $form = parent::createForm(ServiceAttachmentType::class, $serviceAttachment,[
+            'action' => $this->generateUrl('app_service_attachment',['id'=>$serviceId]), 
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -38,11 +44,12 @@ class ServiceAttachmentController extends AbstractController
         }
         if(!$process){
             return $this->render('service/attachment.html.twig', [
-                'serviceAttachment' => $serviceAttachment,
-                'listOfAttachments' => $listOfAttachments,
-                'serviceId' => $serviceId,
-                'form' => $form,
-            ]);
+                    'serviceAttachment' => $serviceAttachment,
+                    'listOfAttachments' => $listOfAttachments,
+                    'serviceId' => $serviceId,
+                    'form' => $form,
+                    'error'=>$error
+            ]); 
         }
         /*
          * UPLOAD 
@@ -54,13 +61,17 @@ class ServiceAttachmentController extends AbstractController
             $entityManager
         )){
             /*
-             * FLASH
-             */
-            $this->addFlash('success', 'Service files uploaded!');
-            /*
              * ADD CHECK HEADER FOR MODAL
-             */
+             */            
             if($request->headers->has('turbo-frame')){
+  
+            }
+            else{
+                /*
+                * FLASH
+                */
+                $this->addFlash('success', 'Service files uploaded!');
+               
                 $stream = $this->renderBlockView('service/attachment.html.twig','stream_success',[
                     'serviceAttachment' => $serviceAttachment,
                     'serviceId' => $serviceId,
@@ -72,8 +83,20 @@ class ServiceAttachmentController extends AbstractController
         /*
          * ALERT FLASH - TO DO
          */
-        $this->addFlash('alert', 'Select file/files!');
-        return $this->redirectToRoute('app_service_attachment', [ 'id' => $serviceId], Response::HTTP_SEE_OTHER);
+        if($request->headers->has('turbo-frame')){
+            
+        }
+        else{
+            $this->addFlash('alert', 'Select file/files!');
+        }
+        $error->status = true;
+        return $this->render('service/attachment.html.twig', [
+                    'serviceAttachment' => $serviceAttachment,
+                    'listOfAttachments' => $listOfAttachments,
+                    'serviceId' => $serviceId,
+                    'form' => $form,
+                    'error'=>$error
+        ],new Response(null,422)); 
     }
     public function listAttachments(
             Service $service,
