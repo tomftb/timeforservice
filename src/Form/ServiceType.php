@@ -81,7 +81,7 @@ class ServiceType extends AbstractType
             ->add('clientPoint',ChoiceType::class ,
             [
                 'choices'  =>$this->getClientPointSet($options),
-                'placeholder' => 'Choose a client point',
+                //'placeholder' => 'Choose a client point',
                 'required' => true,
                 'mapped'=>false
             ])
