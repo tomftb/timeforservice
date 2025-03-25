@@ -25,6 +25,11 @@ class ClientPointRepository extends ServiceEntityRepository
     public function findAllActive(): array
     {
         return $this->createQueryBuilder('cp')
+                ->leftJoin('cp.client', "c")
+                ->andWhere('c.active = :activeClient')
+                ->setParameter('activeClient', "YES")
+                ->andWhere('c.deleted = :deletedClient')
+                ->setParameter('deletedClient', "NO")
                 ->andWhere('cp.active = :active')
                 ->setParameter('active', "YES")
                 ->andWhere('cp.deleted = :deleted')
