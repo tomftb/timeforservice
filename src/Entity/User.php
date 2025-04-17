@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Model\YesOrNoEnum;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -55,10 +57,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(enumType: YesOrNoEnum::class)]
     private ?YesOrNoEnum $deleted = null;
 
+    /**
+     * @var Collection<int, UserPermission>
+     */
+    #[ORM\OneToMany(targetEntity: UserPermission::class, mappedBy: 'User', orphanRemoval: true)]
+    private Collection $userPermissions;
+
     public function __construct()
     {
         $this->active=YesOrNoEnum::NO;
         $this->deleted=YesOrNoEnum::NO;
+        $this->userPermissions = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -205,6 +214,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDeleted(YesOrNoEnum $deleted): static
     {
         $this->deleted = $deleted;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, UserPermission>
+     */
+    public function getUserPermissions(): Collection
+    {
+        return $this->userPermissions;
+    }
+
+    public function addUserPermission(UserPermission $userPermission): static
+    {
+        if (!$this->userPermissions->contains($userPermission)) {
+            $this->userPermissions->add($userPermission);
+            $userPermission->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUserPermission(UserPermission $userPermission): static
+    {
+        if ($this->userPermissions->removeElement($userPermission)) {
+            // set the owning side to null (unless already changed)
+            if ($userPermission->getUser() === $this) {
+                $userPermission->setUser(null);
+            }
+        }
 
         return $this;
     }
