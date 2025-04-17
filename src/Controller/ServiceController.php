@@ -23,6 +23,7 @@ use Psr\Log\LoggerInterface;
 use App\Repository\ServiceAttachmentRepository;
 use App\Service\Service\Notify;
 use App\Service\Service\Save;
+use App\Service\Service\Filter;
 
 #[Route('/service')]
 class ServiceController extends AbstractController
@@ -31,17 +32,19 @@ class ServiceController extends AbstractController
     public function index(
             ServiceRepository $serviceRepository,
             ClientPointRepository $clientPointRepository,
+            Filter $filter,
             /* VARIABLE NAME MUST EQUAL URL PART ex. ?page => $page */
             #[MapQueryParameter] int $page = 1,
             #[MapQueryParameter] string $sort = 'id',
             #[MapQueryParameter] string $sortDirection = 'DESC',
             #[MapQueryParameter] string $query = null,
             #[MapQueryParameter('clientsPoints', \FILTER_VALIDATE_INT)] array $searchClientsPoints = [],
+            #[MapQueryParameter('filters', null)] array $selectedFilters = [],
     ): Response
     {
         $maxPerPage = 10;
         $pager = Pagerfanta::createForCurrentPageWithMaxPerPage(
-                new QueryAdapter($serviceRepository->findBySearchWithClientPointQueryBuilder($query, $searchClientsPoints,$sort,$sortDirection),false),
+                new QueryAdapter($serviceRepository->findBySearchWithClientPointQueryBuilder($query, $searchClientsPoints,$sort,$sortDirection,$selectedFilters),false),
                 $page,
                 $maxPerPage
         );
@@ -50,7 +53,9 @@ class ServiceController extends AbstractController
             'clientsPoints'=>$clientPointRepository->findAll(),
             'searchClientsPoints' => $searchClientsPoints,
             'sort' => $sort,
-            'sortDirection' => $sortDirection
+            'sortDirection' => $sortDirection,
+            'filters'=> $filter->getAll(),
+            'selectedFilters' => $selectedFilters,
         ]);
     }
     #[Route('/new', name: 'app_service_new', methods: ['GET', 'POST'])]

@@ -1,0 +1,38 @@
+                    <twig:Modal :closeButton="true" modalWidth="w-screen md:w-2/3 lg:w-2/4  xl:w-2/5">
+                        <twig:block name="trigger">
+                            <twig:Button variant="link" type="button" data-action="modal#open">
+                            Options
+                            </twig:Button>
+                        </twig:block>
+                        <div class="flex justify-between">
+                            <h1 class="text-xl font-semibold text-white">Search Options</h1>
+                                <div class="mr-0">
+                                <button class=" right-4 top-3 text-white flex items-center opacity-70 transition-opacity hover:opacity-100" data-action="modal#close" type="button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                                <path d="M18 6l-12 12"/>
+                                                <path d="M6 6l12 12"/>
+                                            </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <hr class="mb-4">
+                        {# CLIENTS POINTS LOOP #}
+                        <h4 class="text-white text-sm font-semibold mb-2">
+                            Clients Points
+                        </h4>
+                        {% for clientPoint in clientsPoints %}
+                            <div class="flex items-center mb-4">
+                            <input type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" name="clientsPoints[]" value=" {{ clientPoint.id }} " id="clientPoint-search- {{ clientPoint.id }} " {{ clientPoint.id in searchClientsPoints ? 'checked' : '' }}>
+                            <label for="clientPoint-search- {{ clientPoint.id }} " class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
+                            {{ clientPoint.name }}
+                            </label>
+                            </div>
+                        {% endfor %}
+                        {# END OF CLIENTS POINTS LOOP #}
+                        <div class="flex justify-end">
+                            <twig:Button variant="success" data-action="modal#close">
+                            See Results
+                            </twig:Button>
+                        </div>
+                    </twig:Modal>
