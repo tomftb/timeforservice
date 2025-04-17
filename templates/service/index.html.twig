@@ -51,7 +51,8 @@
                         data-action="autosubmit#debouncedSubmit"
                         autofocus
                     >
-                    {% include('service/_options.html.twig') %}
+                    {% include('service/part/_options.html.twig') %}
+                    {% include('service/part/_filter.html.twig') %}
                 </div>
                 {# SET UPDATE RESULT #}
                 {% set services_length = services|length %}
