@@ -24,6 +24,7 @@ class ServiceType extends AbstractType
      * @var ClientPointRepository
      */
     protected $clientPointRepository;
+    protected $activeClientPoints;
     /*
      * 
      */
@@ -32,6 +33,8 @@ class ServiceType extends AbstractType
     public function __construct(ClientPointRepository $clientPointRepository)
     {
         $this->clientPointRepository = $clientPointRepository;
+        $this->activeClientPoints = $this->clientPointRepository->findAllActive();
+        
     }
     
     protected function getClientPointSet(array $options=[]):array{
@@ -41,7 +44,7 @@ class ServiceType extends AbstractType
                 $clientPointSet[$selectedClientPoint->getName()." (".$selectedClientPoint->getStreet().", ".$selectedClientPoint->getTown().")"] = $selectedClientPoint->getId();
             }
         }        
-        foreach($this->clientPointRepository->findAllActive() as $clientPoint){
+        foreach($this->activeClientPoints as $clientPoint){
             $clientPointSet[$clientPoint->getName()." (".$clientPoint->getStreet().", ".$clientPoint->getTown().")"] = $clientPoint->getId();
         }
         return $clientPointSet;
@@ -144,7 +147,7 @@ class ServiceType extends AbstractType
     }
     
     private function setupClientPoint(FormInterface $form, ?string $clientPointId){
-        foreach($this->clientPointRepository->findAllActive() as $clientPoint){
+        foreach($this->activeClientPoints as $clientPoint){
             if(intval($clientPointId,10) === $clientPoint->getId()){
                 $this->service->setClientPoint($clientPoint);
             }
