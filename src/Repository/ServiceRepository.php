@@ -36,7 +36,7 @@ class ServiceRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-    public function findBySearchWithClientPointQueryBuilder(?string $query, array $searchClientsPoints, ?string $sort = null, string $direction = 'DESC'): QueryBuilder
+    public function findBySearchWithClientPointQueryBuilder(?string $query, array $searchClientsPoints=[], ?string $sort = null, string $direction = 'DESC', array $selectedFilters=[]): QueryBuilder
     {
         $qb = $this->createQueryBuilder('service');
         $qb->andWhere('service.deleted=:deleted')
@@ -50,6 +50,24 @@ class ServiceRepository extends ServiceEntityRepository
                 
                 $qb->andWhere('service.clientPoint IN (:id)')
                 ->setParameter('id', $searchClientsPoints);
+        }
+        /*
+         * FILTERS
+         */
+        foreach($selectedFilters as $filter){
+            $filter = trim($filter);
+            switch ($filter):
+                case 'paided':
+                    $qb->andWhere('service.paided=:paided')
+                    ->setParameter('paided', YesOrNoEnum::YES);
+                    break;
+                case 'notified':
+                    $qb->andWhere('service.notified=:notified')
+                    ->setParameter('notified', YesOrNoEnum::YES);
+                    break;
+                default:
+                    break;
+            endswitch;
         }
         if ($sort) {
             $qb->orderBy('service.'.$sort, $direction);
