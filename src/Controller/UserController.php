@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use App\Service\User\Permission as ServicePermission;
 
 /**
  * Description of UserController
@@ -29,13 +30,14 @@ class UserController extends AbstractController{
         ]);
     }
     #[Route('/new', name: 'app_user_new', methods: ['GET', 'POST'])]
-    public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher): Response
+    public function new(Request $request, EntityManagerInterface $entityManager, UserPasswordHasherInterface $passwordHasher, ServicePermission $servicePermission): Response
     {
         $user = new User();
         $form = $this->createUserForm($user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid() ) {
+           
             /*
              * HASH USER PASSWORD
              */
@@ -47,6 +49,9 @@ class UserController extends AbstractController{
             $user->setPassword($hashedPassword);
             $entityManager->persist($user);
             $entityManager->flush();
+            
+            $servicePermission->setPermission($user);
+            
             $this->addFlash('success', 'User created');
             /*
              * CHECK REQUEST HEADER FOR OPEN PROPER WINDOW - MODAL OR NEW FULL PAGE
@@ -73,12 +78,23 @@ class UserController extends AbstractController{
     }
 
     #[Route('/{id<\d+>}/edit', name: 'app_user_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, User $user, EntityManagerInterface $entityManager): Response
+    public function edit(Request $request, User $user, EntityManagerInterface $entityManager, ServicePermission $servicePermission, UserPasswordHasherInterface $passwordHasher): Response
     {
         $form = $this->createUserForm($user);
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
+            /*
+             * HASH USER PASSWORD
+             */
+            $plaintextPassword = $user->getPassword();
+            $hashedPassword = $passwordHasher->hashPassword(
+                $user,
+                $plaintextPassword
+            );
+            $user->setPassword($hashedPassword);
+            $entityManager->persist($user);
             $entityManager->flush();
+            $servicePermission->setPermission($user);
             $this->addFlash('success', 'User updated');
             /*
              * CHECK REQUEST HEADER
