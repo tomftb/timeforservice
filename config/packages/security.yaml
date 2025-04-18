@@ -54,7 +54,7 @@ security:
         # (this one will match URLs like /api/post/7298 and /api/comment/528491)
         #- { path: ^/api/(post|comment)/\d+$, roles: ROLE_USER }
         # require ROLE_ADMIN for /admin*
-        - { path: '^/home', roles: ROLE_ADMIN }
+        - { path: '^/home', roles: null }
         # require ROLE_ADMIN for /admin*
         - { path: '^/login', roles: null }
         # require ROLE_ADMIN for /admin*
@@ -64,11 +64,11 @@ security:
         # require ROLE_ADMIN for /admin*
         - { path: '^/verify/email', roles: null }
         # require ROLE_ADMIN for /admin*
-        - { path: '^/client', roles: ROLE_ADMIN }
+        - { path: '^/client', roles: null }
         # require ROLE_ADMIN for /admin*
-        - { path: '^/user', roles: ROLE_ADMIN }
+        - { path: '^/user', roles: null }
         # require ROLE_ADMIN for /admin*
-        - { path: '^/classificationofactivities', roles: ROLE_ADMIN }
+        - { path: '^/classificationofactivities', roles: null }
         # require ROLE_ADMIN for /admin*
         - { path: '^/service', roles: ROLE_ADMIN }
         # require ROLE_ADMIN for /admin*
