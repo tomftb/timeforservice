@@ -6,6 +6,7 @@ use App\Repository\UserPermissionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: UserPermissionRepository::class)]
+#[ORM\UniqueConstraint(name: "unique_user_permission", columns: ["user_id", "permission_id"])]
 class UserPermission
 {
     #[ORM\Id]
