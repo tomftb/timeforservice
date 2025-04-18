@@ -37,7 +37,6 @@ class UserController extends AbstractController{
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid() ) {
-           
             /*
              * HASH USER PASSWORD
              */
@@ -49,9 +48,9 @@ class UserController extends AbstractController{
             $user->setPassword($hashedPassword);
             $entityManager->persist($user);
             $entityManager->flush();
-            
+
             $servicePermission->setPermission($user);
-            
+
             $this->addFlash('success', 'User created');
             /*
              * CHECK REQUEST HEADER FOR OPEN PROPER WINDOW - MODAL OR NEW FULL PAGE
