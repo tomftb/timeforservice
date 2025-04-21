@@ -85,12 +85,12 @@ class UserController extends AbstractController{
             /*
              * HASH USER PASSWORD
              */
-            $plaintextPassword = $user->getPassword();
-            $hashedPassword = $passwordHasher->hashPassword(
-                $user,
-                $plaintextPassword
-            );
-            $user->setPassword($hashedPassword);
+            //$plaintextPassword = $user->getPassword();
+            //$hashedPassword = $passwordHasher->hashPassword(
+            //    $user,
+            //    $plaintextPassword
+            //);
+            //$user->setPassword($hashedPassword);
             $entityManager->persist($user);
             $entityManager->flush();
             $servicePermission->setPermission($user);
