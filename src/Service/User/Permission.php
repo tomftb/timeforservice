@@ -56,6 +56,7 @@ class Permission {
         try {
             $permissions = $this->permissionRepository->findAll();
             $permissionsIds = [];
+            $permissionsCodes = [];
             
             /*
              * GET FROM POST
@@ -80,7 +81,7 @@ class Permission {
                 if(!in_array($permissionRepository->getId(),$permissionsIds)){
                     continue;
                 }
-               
+                $permissionsCodes[]=$permissionRepository->getCode();
                 $userPermission = new UserPermission();
                 $userPermission->setUser($this->user);
                 $userPermission->setPermission($permissionRepository);
@@ -98,7 +99,12 @@ class Permission {
             $this->connection->rollBack();
             throw $e;
         }
-       
+        /*
+         * SET ROLES
+         */
+        $this->user->setRoles($permissionsCodes);
+        $this->entityManager->persist($this->user);
+        $this->entityManager->flush();
     }
     private function delete(){
         
