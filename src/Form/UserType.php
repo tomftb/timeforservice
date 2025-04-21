@@ -31,6 +31,7 @@ class UserType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
+       // dd($options['action']);
         $this->userPermissions = $options['data']->getUserPermissions();
 
         $builder
@@ -56,7 +57,13 @@ class UserType extends AbstractType
             ])
             ->add('firstName')
             ->add('lastName')
-            ->add('password', PasswordType::class, [
+        ;
+        /*
+         * CHECK IS NEW OR EDIT
+         * PASSWORD ONLY FOR NEW
+         */
+        if($options['action']==='/user/new'){
+            $builder->add('password', PasswordType::class, [
                 'label' => 'Password*',
                 'always_empty'=>false,
                 'toggle' => true,
@@ -74,8 +81,8 @@ class UserType extends AbstractType
                     'placeholder' => '',
                     'maxlength' => 255,
                 ],
-            ])
-        ;
+            ]);
+        }
         foreach ($this->permissionRepository->findAll() as $perrmission){
             $builder->add('permission_'.$perrmission->getId(), CheckboxType::class, [
                 'label' => $perrmission->getName(),
