@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 /* tom-select custom styling */
 /* Base Styles for Dark Mode */
@@ -12,12 +10,11 @@
 .ts-wrapper.single.input-active .ts-control,
 .full .ts-control,
 .ts-dropdown {
-  @apply bg-gray-700 text-white !important;
-  box-shadow: none !important;
-  background-image: none !important;
-  border: none !important;
+  @apply bg-gray-700 text-white;
+  box-shadow: none;
+  background-image: none;
+  border: none;
 }
-
 /* Specific Style for the Input Field */
 .ts-wrapper .ts-control > input,
 .ts-wrapper.single .ts-control > input {
